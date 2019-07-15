@@ -11,59 +11,7 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
 
     <!-- Styles -->
-    <style>
-        html,
-        body {
-            background-color: #fff;
-            color: #636b6f;
-            font-family: 'Nunito', sans-serif;
-            font-weight: 200;
-            height: 100vh;
-            margin: 0;
-        }
-
-        .full-height {
-            height: 100vh;
-        }
-
-        .flex-center {
-            align-items: center;
-            display: flex;
-            justify-content: center;
-        }
-
-        .position-ref {
-            position: relative;
-        }
-
-        .top-right {
-            position: absolute;
-            right: 10px;
-            top: 18px;
-        }
-
-        .content {
-            text-align: center;
-        }
-
-        .title {
-            font-size: 84px;
-        }
-
-        .links>a {
-            color: #636b6f;
-            padding: 0 25px;
-            font-size: 13px;
-            font-weight: 600;
-            letter-spacing: .1rem;
-            text-decoration: none;
-            text-transform: uppercase;
-        }
-
-        .m-b-md {
-            margin-bottom: 30px;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="./css/app.css">
 </head>
 
 <body>
@@ -83,15 +31,32 @@
         @endif
 
         <div class="content">
-            <div class="title m-b-md">
-                Composition Seven
+            <div class="button-wrapper">
+                <button id="make-some-noise">Make some noise</button>
             </div>
-
-            <div class="links">
-                <a href="#">Coming soon</a>
+            <div class="grid-wrapper">
+                <div class="grid-row">
+                    <div class="column" data-cell-number="0"></div>
+                    <div class="column" data-cell-number="1"></div>
+                    <div class="column" data-cell-number="2"></div>
+                    <div class="column" data-cell-number="3"></div>
+                    <div class="column" data-cell-number="4"></div>
+                    <div class="column" data-cell-number="5"></div>
+                    <div class="column" data-cell-number="6"></div>
+                    <div class="column" data-cell-number="7"></div>
+                    <div class="column" data-cell-number="8"></div>
+                    <div class="column" data-cell-number="9"></div>
+                    <div class="column" data-cell-number="10"></div>
+                    <div class="column" data-cell-number="11"></div>
+                    <div class="column" data-cell-number="12"></div>
+                    <div class="column" data-cell-number="13"></div>
+                    <div class="column" data-cell-number="14"></div>
+                    <div class="column" data-cell-number="15"></div>
+                </div>
             </div>
         </div>
     </div>
+    <script src="/js/app.js"> </script>
 </body>
 
 </html>
