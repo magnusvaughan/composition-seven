@@ -37036,6 +37036,7 @@ function toggleSequence() {
     tone__WEBPACK_IMPORTED_MODULE_0___default.a.Transport.start();
     console.log('sequence');
     var seq = new tone__WEBPACK_IMPORTED_MODULE_0___default.a.Sequence(function (time, note) {
+      console.log('note', note);
       var sequenceCellNumber = Math.floor(time * 2 % 8);
       console.log(sequenceCellNumber);
 
@@ -37043,11 +37044,18 @@ function toggleSequence() {
         allCells[i].classList.remove('active-cell');
       }
 
-      var activeCell = document.querySelector("[data-cell-number=".concat(CSS.escape(sequenceCellNumber), "]"));
-      activeCell.classList.add('active-cell');
-      console.log(activeCell);
-      synth.triggerAttackRelease(note, '8n'); //subdivisions are given as subarrays
-    }, ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"]).start(0);
+      var activeCells = document.querySelectorAll("[data-cell-number=".concat(CSS.escape(sequenceCellNumber), "]"));
+
+      for (var i = 0; i < activeCells.length; ++i) {
+        activeCells[i].classList.add('active-cell');
+
+        if (activeCells[i].className.match(/\bon-cell\b/)) {
+          var noteToPlay = activeCells[i].parentNode.getAttribute('data-row-note');
+          synth.triggerAttackRelease(noteToPlay, '8n');
+        }
+      } //subdivisions are given as subarrays
+
+    }, ["C4"]).start(0);
     playing = true;
   }
 }
