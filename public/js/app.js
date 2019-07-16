@@ -37020,34 +37020,34 @@ __webpack_require__.r(__webpack_exports__);
  // Composition Seven
 
 var synth = new tone__WEBPACK_IMPORTED_MODULE_0___default.a.Synth().toMaster();
-var button = document.getElementById("make-some-noise"); //State
+var button = document.getElementById("make-some-noise"); //DOM
+
+var allCells = document.querySelectorAll('.column'); //State
 
 var playing = false;
 
 function toggleSequence() {
   if (playing) {
-    console.log("it was playing");
+    console.log("I was playing");
     tone__WEBPACK_IMPORTED_MODULE_0___default.a.Transport.stop();
     playing = false;
   } else {
-    console.log("It was not playing");
-    tone__WEBPACK_IMPORTED_MODULE_0___default.a.Transport.clear();
+    console.log("I was not playing");
     tone__WEBPACK_IMPORTED_MODULE_0___default.a.Transport.start();
     console.log('sequence');
     var seq = new tone__WEBPACK_IMPORTED_MODULE_0___default.a.Sequence(function (time, note) {
-      var sequenceCell = Math.floor(time % 16);
-      console.log(sequenceCell);
-      var allCells = document.querySelectorAll('.column');
+      var sequenceCellNumber = Math.floor(time * 2 % 8);
+      console.log(sequenceCellNumber);
 
       for (var i = 0; i < allCells.length; ++i) {
         allCells[i].classList.remove('active-cell');
       }
 
-      var activeCell = document.querySelector("[data-cell-number=".concat(CSS.escape(sequenceCell), "]"));
+      var activeCell = document.querySelector("[data-cell-number=".concat(CSS.escape(sequenceCellNumber), "]"));
       activeCell.classList.add('active-cell');
       console.log(activeCell);
-      synth.triggerAttackRelease(note, '16n'); //subdivisions are given as subarrays
-    }, ["C4", ["E4", "D4", "E4"], "G4", ["A4", "G4"]]).start(0);
+      synth.triggerAttackRelease(note, '8n'); //subdivisions are given as subarrays
+    }, ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"]).start(0);
     playing = true;
   }
 }
@@ -37056,6 +37056,22 @@ button.addEventListener("click", function (e) {
   console.log('play');
   toggleSequence();
 }, false);
+
+for (var i = 0; i < allCells.length; ++i) {
+  console.log(allCells[i]);
+  allCells[i].addEventListener("click", function () {
+    var currentOnState = this.getAttribute('data-on');
+    console.log(currentOnState);
+
+    if (currentOnState == 'false') {
+      this.setAttribute('data-on', 'true');
+      this.classList.add('on-cell');
+    } else {
+      this.setAttribute('data-on', 'false');
+      this.classList.remove('on-cell');
+    }
+  });
+}
 
 /***/ }),
 

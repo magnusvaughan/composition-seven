@@ -32,26 +32,18 @@
 
         <div class="content">
             <div class="button-wrapper">
-                <button id="make-some-noise">Make some noise</button>
+                <button id="make-some-noise">noise</button>
             </div>
             <div class="grid-wrapper">
                 <div class="grid-row">
-                    <div class="column" data-cell-number="0"></div>
-                    <div class="column" data-cell-number="1"></div>
-                    <div class="column" data-cell-number="2"></div>
-                    <div class="column" data-cell-number="3"></div>
-                    <div class="column" data-cell-number="4"></div>
-                    <div class="column" data-cell-number="5"></div>
-                    <div class="column" data-cell-number="6"></div>
-                    <div class="column" data-cell-number="7"></div>
-                    <div class="column" data-cell-number="8"></div>
-                    <div class="column" data-cell-number="9"></div>
-                    <div class="column" data-cell-number="10"></div>
-                    <div class="column" data-cell-number="11"></div>
-                    <div class="column" data-cell-number="12"></div>
-                    <div class="column" data-cell-number="13"></div>
-                    <div class="column" data-cell-number="14"></div>
-                    <div class="column" data-cell-number="15"></div>
+                    <div class="column" data-cell-number="0" data-on="false"></div>
+                    <div class="column" data-cell-number="1" data-on="false"></div>
+                    <div class="column" data-cell-number="2" data-on="false"></div>
+                    <div class="column" data-cell-number="3" data-on="false"></div>
+                    <div class="column" data-cell-number="4" data-on="false"></div>
+                    <div class="column" data-cell-number="5" data-on="false"></div>
+                    <div class="column" data-cell-number="6" data-on="false"></div>
+                    <div class="column" data-cell-number="7" data-on="false"></div>
                 </div>
             </div>
         </div>

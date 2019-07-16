@@ -11121,24 +11121,31 @@ a.text-dark:focus {
 }
 
 .grid-row {
+  margin: 0 auto;
+  margin-top: 4rem;
   height: 3rem;
   width: 100%;
-  background-color: #002fa7;
-  border: 1px solid white;
+  background-color: white;
+  border: 1px solid grey;
   display: -webkit-box;
   display: flex;
   -webkit-box-pack: center;
           justify-content: center;
   flex-basis: auto;
+  max-width: 80%;
 }
 
 .grid-row .column {
-  border: 1px solid white;
+  border: 1px solid grey;
   -webkit-box-flex: 1;
           flex: 1 1 0;
 }
 
 .grid-row .column.active-cell {
-  background-color: orange;
+  background-color: #002fa7;
+}
+
+.grid-row .column.on-cell {
+  background-color: green;
 }
 

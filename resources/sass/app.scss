@@ -26,18 +26,24 @@
 }
 
 .grid-row {
+    margin: 0 auto;
+    margin-top: 4rem;
     height: 3rem;
     width: 100%;
-    background-color: #002fa7;
-    border: 1px solid white;
+    background-color: white;
+    border: 1px solid grey;
     display: flex;
     justify-content: center;
     flex-basis: auto;
+    max-width: 80%;
     .column {
-        border: 1px solid white;
+        border: 1px solid grey;
         flex: 1 1 0;
         &.active-cell {
-            background-color: orange;
+            background-color: #002fa7;
+        }
+        &.on-cell {
+            background-color: green;
         }
     }
 }
