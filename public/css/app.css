@@ -11123,7 +11123,6 @@ a.text-dark:focus {
 .grid-row {
   margin: 0 auto;
   background-color: white;
-  border: 1px solid grey;
   display: -webkit-box;
   display: flex;
   -webkit-box-pack: center;
@@ -11135,16 +11134,19 @@ a.text-dark:focus {
   display: flex;
   width: 60px;
   height: 60px;
-  border: 1px solid grey;
+  border-top: 1px solid #e8ecf1;
+  border-bottom: 1px solid #e8ecf1;
+  border-left: 2px solid #e8ecf1;
+  border-right: 2px solid #e8ecf1;
   -webkit-box-flex: 1;
           flex: 1 1 0;
 }
 
 .grid-row .column.active-cell {
-  background-color: #002fa7;
+  background-color: #E63946;
 }
 
 .grid-row .column.on-cell {
-  background-color: green;
+  background-color: #457B9D;
 }
 
