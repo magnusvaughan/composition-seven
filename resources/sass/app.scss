@@ -20,23 +20,20 @@
 }
 
 // Grid
-
 .grid-wrapper {
-    width: 100%;
-    margin-top: 4rem;
+    max-width: 80vw;
 }
 
 .grid-row {
     margin: 0 auto;
-    height: 3rem;
-    width: 100%;
     background-color: white;
     border: 1px solid grey;
     display: flex;
     justify-content: center;
-    flex-basis: auto;
-    max-width: 80%;
     .column {
+        display: flex;
+        width: 60px;
+        height: 60px;
         border: 1px solid grey;
         flex: 1 1 0;
         &.active-cell {

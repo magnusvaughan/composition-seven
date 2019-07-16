@@ -37037,7 +37037,7 @@ function toggleSequence() {
     console.log('sequence');
     var seq = new tone__WEBPACK_IMPORTED_MODULE_0___default.a.Sequence(function (time, note) {
       console.log('note', note);
-      var sequenceCellNumber = Math.floor(time * 2 % 8);
+      var sequenceCellNumber = Math.floor(time * 2 % 16);
       console.log(sequenceCellNumber);
 
       for (var i = 0; i < allCells.length; ++i) {
