@@ -30,7 +30,7 @@
         </div>
         @endif
 
-        <div class="content">
+        {{-- <div class="content">
             <div class="button-wrapper">
                 <button id="make-some-noise" class="btn btn-1 btn-1e">noise</button>
             </div>
@@ -180,7 +180,7 @@
                     <div class="column" data-cell-number="15" data-on="false"></div>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
     <script src="/js/app.js"> </script>
 </body>

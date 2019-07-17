@@ -17,16 +17,12 @@ class Sequencer extends Component {
     constructor () {
         super()
         this.state = {
-            projects: []
+            notes: ["C4","D4","E4","F4","G4","A4","B4","C5"]
         }
     }
 
     componentDidMount () {
-    // axios.get('/api/projects').then(response => {
-    //     this.setState({
-    //     projects: response.data
-    //     })
-    // })
+
     }
 
     toggleSequence() {
@@ -49,10 +45,10 @@ class Sequencer extends Component {
                 var activeCells = document.querySelectorAll(`[data-cell-number=${CSS.escape(sequenceCellNumber)}]`);
                 for (var i = 0; i < activeCells.length; ++i) {
                     activeCells[i].classList.add('active-cell');
-                    // if(activeCells[i].className.match(/\bon-cell\b/)) {
+                    if(activeCells[i].className.match(/\bon-cell\b/)) {
                         var noteToPlay = activeCells[i].parentNode.getAttribute('data-row-note');
                         synth.triggerAttackRelease(noteToPlay, '8n');
-                    // }
+                    }
                 }
             //subdivisions are given as subarrays
             }, ["C4"]).start(0);
@@ -60,177 +56,44 @@ class Sequencer extends Component {
         }
     }
 
-    // for (var i = 0; i < allCells.length; ++i) {
-    //     console.log(allCells[i]);
-    //     allCells[i].addEventListener("click", function() {
-    //         var currentOnState = this.getAttribute('data-on');
-    //         console.log(currentOnState);
-    //         if(currentOnState == 'false') {
-    //             this.setAttribute('data-on', 'true');
-    //             this.classList.add('on-cell');
-    //         }
-    //         else {
-    //             this.setAttribute('data-on', 'false');
-    //             this.classList.remove('on-cell');
-    //         }
-    //     });
-    // }
+    toggleOnState(e) {
+        var currentOnState = e.target.getAttribute('data-on');
+        console.log(currentOnState);
+        if(currentOnState == 'false') {
+            e.target.setAttribute('data-on', 'true');
+            e.target.classList.add('on-cell');
+        }
+        else {
+            e.target.setAttribute('data-on', 'false');
+            e.target.classList.remove('on-cell');
+        }
+    }
 
     render () {
-    // const { projects } = this.state
-    return (
-        <div className="content">
-            <div className="button-wrapper">
-                <button onClick={this.toggleSequence} id="make-some-noise" className="btn btn-1 btn-1e">noise</button>
-            </div>
-            <div className="grid-wrapper">
-                <div className="grid-row" data-row-note="C5">
-                    <div className="column" data-cell-number="0" data-on="false"></div>
-                    <div className="column" data-cell-number="1" data-on="false"></div>
-                    <div className="column" data-cell-number="2" data-on="false"></div>
-                    <div className="column" data-cell-number="3" data-on="false"></div>
-                    <div className="column" data-cell-number="4" data-on="false"></div>
-                    <div className="column" data-cell-number="5" data-on="false"></div>
-                    <div className="column" data-cell-number="6" data-on="false"></div>
-                    <div className="column" data-cell-number="7" data-on="false"></div>
-                    <div className="column" data-cell-number="8" data-on="false"></div>
-                    <div className="column" data-cell-number="9" data-on="false"></div>
-                    <div className="column" data-cell-number="10" data-on="false"></div>
-                    <div className="column" data-cell-number="11" data-on="false"></div>
-                    <div className="column" data-cell-number="12" data-on="false"></div>
-                    <div className="column" data-cell-number="13" data-on="false"></div>
-                    <div className="column" data-cell-number="14" data-on="false"></div>
-                    <div className="column" data-cell-number="15" data-on="false"></div>
+        let grid = [];
+
+        for (var i=0; i<=this.state.notes.length; i++) {
+            let cells = [];
+            for (let j = 0; j < 15; j++) {
+            cells.push(<div onClick={this.toggleOnState} className="column" data-cell-number={j} data-on="false" key={i+j}></div>);
+            }
+            grid.push(
+                <div className="grid-row" data-row-note={this.state.notes[i]} key={this.state.notes[i]}>
+                    {cells}
                 </div>
-                <div className="grid-row" data-row-note="B4">
-                    <div className="column" data-cell-number="0" data-on="false"></div>
-                    <div className="column" data-cell-number="1" data-on="false"></div>
-                    <div className="column" data-cell-number="2" data-on="false"></div>
-                    <div className="column" data-cell-number="3" data-on="false"></div>
-                    <div className="column" data-cell-number="4" data-on="false"></div>
-                    <div className="column" data-cell-number="5" data-on="false"></div>
-                    <div className="column" data-cell-number="6" data-on="false"></div>
-                    <div className="column" data-cell-number="7" data-on="false"></div>
-                    <div className="column" data-cell-number="8" data-on="false"></div>
-                    <div className="column" data-cell-number="9" data-on="false"></div>
-                    <div className="column" data-cell-number="10" data-on="false"></div>
-                    <div className="column" data-cell-number="11" data-on="false"></div>
-                    <div className="column" data-cell-number="12" data-on="false"></div>
-                    <div className="column" data-cell-number="13" data-on="false"></div>
-                    <div className="column" data-cell-number="14" data-on="false"></div>
-                    <div className="column" data-cell-number="15" data-on="false"></div>
+            )
+        }
+        
+        return (
+            <div className="content">
+                <div className="button-wrapper">
+                    <button onClick={this.toggleSequence} id="make-some-noise" className="btn btn-1 btn-1e">noise</button>
                 </div>
-                <div className="grid-row" data-row-note="A4">
-                    <div className="column" data-cell-number="0" data-on="false"></div>
-                    <div className="column" data-cell-number="1" data-on="false"></div>
-                    <div className="column" data-cell-number="2" data-on="false"></div>
-                    <div className="column" data-cell-number="3" data-on="false"></div>
-                    <div className="column" data-cell-number="4" data-on="false"></div>
-                    <div className="column" data-cell-number="5" data-on="false"></div>
-                    <div className="column" data-cell-number="6" data-on="false"></div>
-                    <div className="column" data-cell-number="7" data-on="false"></div>
-                    <div className="column" data-cell-number="8" data-on="false"></div>
-                    <div className="column" data-cell-number="9" data-on="false"></div>
-                    <div className="column" data-cell-number="10" data-on="false"></div>
-                    <div className="column" data-cell-number="11" data-on="false"></div>
-                    <div className="column" data-cell-number="12" data-on="false"></div>
-                    <div className="column" data-cell-number="13" data-on="false"></div>
-                    <div className="column" data-cell-number="14" data-on="false"></div>
-                    <div className="column" data-cell-number="15" data-on="false"></div>
-                </div>
-                <div className="grid-row" data-row-note="G4">
-                    <div className="column" data-cell-number="0" data-on="false"></div>
-                    <div className="column" data-cell-number="1" data-on="false"></div>
-                    <div className="column" data-cell-number="2" data-on="false"></div>
-                    <div className="column" data-cell-number="3" data-on="false"></div>
-                    <div className="column" data-cell-number="4" data-on="false"></div>
-                    <div className="column" data-cell-number="5" data-on="false"></div>
-                    <div className="column" data-cell-number="6" data-on="false"></div>
-                    <div className="column" data-cell-number="7" data-on="false"></div>
-                    <div className="column" data-cell-number="8" data-on="false"></div>
-                    <div className="column" data-cell-number="9" data-on="false"></div>
-                    <div className="column" data-cell-number="10" data-on="false"></div>
-                    <div className="column" data-cell-number="11" data-on="false"></div>
-                    <div className="column" data-cell-number="12" data-on="false"></div>
-                    <div className="column" data-cell-number="13" data-on="false"></div>
-                    <div className="column" data-cell-number="14" data-on="false"></div>
-                    <div className="column" data-cell-number="15" data-on="false"></div>
-                </div>
-                <div className="grid-row" data-row-note="F4">
-                    <div className="column" data-cell-number="0" data-on="false"></div>
-                    <div className="column" data-cell-number="1" data-on="false"></div>
-                    <div className="column" data-cell-number="2" data-on="false"></div>
-                    <div className="column" data-cell-number="3" data-on="false"></div>
-                    <div className="column" data-cell-number="4" data-on="false"></div>
-                    <div className="column" data-cell-number="5" data-on="false"></div>
-                    <div className="column" data-cell-number="6" data-on="false"></div>
-                    <div className="column" data-cell-number="7" data-on="false"></div>
-                    <div className="column" data-cell-number="8" data-on="false"></div>
-                    <div className="column" data-cell-number="9" data-on="false"></div>
-                    <div className="column" data-cell-number="10" data-on="false"></div>
-                    <div className="column" data-cell-number="11" data-on="false"></div>
-                    <div className="column" data-cell-number="12" data-on="false"></div>
-                    <div className="column" data-cell-number="13" data-on="false"></div>
-                    <div className="column" data-cell-number="14" data-on="false"></div>
-                    <div className="column" data-cell-number="15" data-on="false"></div>
-                </div>
-                <div className="grid-row" data-row-note="E4">
-                    <div className="column" data-cell-number="0" data-on="false"></div>
-                    <div className="column" data-cell-number="1" data-on="false"></div>
-                    <div className="column" data-cell-number="2" data-on="false"></div>
-                    <div className="column" data-cell-number="3" data-on="false"></div>
-                    <div className="column" data-cell-number="4" data-on="false"></div>
-                    <div className="column" data-cell-number="5" data-on="false"></div>
-                    <div className="column" data-cell-number="6" data-on="false"></div>
-                    <div className="column" data-cell-number="7" data-on="false"></div>
-                    <div className="column" data-cell-number="8" data-on="false"></div>
-                    <div className="column" data-cell-number="9" data-on="false"></div>
-                    <div className="column" data-cell-number="10" data-on="false"></div>
-                    <div className="column" data-cell-number="11" data-on="false"></div>
-                    <div className="column" data-cell-number="12" data-on="false"></div>
-                    <div className="column" data-cell-number="13" data-on="false"></div>
-                    <div className="column" data-cell-number="14" data-on="false"></div>
-                    <div className="column" data-cell-number="15" data-on="false"></div>
-                </div>
-                <div className="grid-row" data-row-note="D4">
-                    <div className="column" data-cell-number="0" data-on="false"></div>
-                    <div className="column" data-cell-number="1" data-on="false"></div>
-                    <div className="column" data-cell-number="2" data-on="false"></div>
-                    <div className="column" data-cell-number="3" data-on="false"></div>
-                    <div className="column" data-cell-number="4" data-on="false"></div>
-                    <div className="column" data-cell-number="5" data-on="false"></div>
-                    <div className="column" data-cell-number="6" data-on="false"></div>
-                    <div className="column" data-cell-number="7" data-on="false"></div>
-                    <div className="column" data-cell-number="8" data-on="false"></div>
-                    <div className="column" data-cell-number="9" data-on="false"></div>
-                    <div className="column" data-cell-number="10" data-on="false"></div>
-                    <div className="column" data-cell-number="11" data-on="false"></div>
-                    <div className="column" data-cell-number="12" data-on="false"></div>
-                    <div className="column" data-cell-number="13" data-on="false"></div>
-                    <div className="column" data-cell-number="14" data-on="false"></div>
-                    <div className="column" data-cell-number="15" data-on="false"></div>
-                </div>
-                <div className="grid-row" data-row-note="C4">
-                    <div className="column" data-cell-number="0" data-on="false"></div>
-                    <div className="column" data-cell-number="1" data-on="false"></div>
-                    <div className="column" data-cell-number="2" data-on="false"></div>
-                    <div className="column" data-cell-number="3" data-on="false"></div>
-                    <div className="column" data-cell-number="4" data-on="false"></div>
-                    <div className="column" data-cell-number="5" data-on="false"></div>
-                    <div className="column" data-cell-number="6" data-on="false"></div>
-                    <div className="column" data-cell-number="7" data-on="false"></div>
-                    <div className="column" data-cell-number="8" data-on="false"></div>
-                    <div className="column" data-cell-number="9" data-on="false"></div>
-                    <div className="column" data-cell-number="10" data-on="false"></div>
-                    <div className="column" data-cell-number="11" data-on="false"></div>
-                    <div className="column" data-cell-number="12" data-on="false"></div>
-                    <div className="column" data-cell-number="13" data-on="false"></div>
-                    <div className="column" data-cell-number="14" data-on="false"></div>
-                    <div className="column" data-cell-number="15" data-on="false"></div>
+                <div className="grid-wrapper">
+                    {grid}
                 </div>
             </div>
-        </div>
-    )
+        )
     }
 }
 

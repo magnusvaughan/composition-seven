@@ -60648,7 +60648,7 @@ if (false) {} else {
 /*!***************************************************************!*\
   !*** ./node_modules/react-router-dom/esm/react-router-dom.js ***!
   \***************************************************************/
-/*! exports provided: BrowserRouter, HashRouter, Link, NavLink, MemoryRouter, Prompt, Redirect, Route, Router, StaticRouter, Switch, generatePath, matchPath, withRouter, __RouterContext */
+/*! exports provided: MemoryRouter, Prompt, Redirect, Route, Router, StaticRouter, Switch, generatePath, matchPath, withRouter, __RouterContext, BrowserRouter, HashRouter, Link, NavLink */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -65753,19 +65753,14 @@ function (_Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Sequencer).call(this));
     _this.state = {
-      projects: []
+      notes: ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"]
     };
     return _this;
   }
 
   _createClass(Sequencer, [{
     key: "componentDidMount",
-    value: function componentDidMount() {// axios.get('/api/projects').then(response => {
-      //     this.setState({
-      //     projects: response.data
-      //     })
-      // })
-    }
+    value: function componentDidMount() {}
   }, {
     key: "toggleSequence",
     value: function toggleSequence() {
@@ -65789,35 +65784,57 @@ function (_Component) {
           var activeCells = document.querySelectorAll("[data-cell-number=".concat(CSS.escape(sequenceCellNumber), "]"));
 
           for (var i = 0; i < activeCells.length; ++i) {
-            activeCells[i].classList.add('active-cell'); // if(activeCells[i].className.match(/\bon-cell\b/)) {
+            activeCells[i].classList.add('active-cell');
 
-            var noteToPlay = activeCells[i].parentNode.getAttribute('data-row-note');
-            synth.triggerAttackRelease(noteToPlay, '8n'); // }
+            if (activeCells[i].className.match(/\bon-cell\b/)) {
+              var noteToPlay = activeCells[i].parentNode.getAttribute('data-row-note');
+              synth.triggerAttackRelease(noteToPlay, '8n');
+            }
           } //subdivisions are given as subarrays
 
         }, ["C4"]).start(0);
         playing = true;
       }
-    } // for (var i = 0; i < allCells.length; ++i) {
-    //     console.log(allCells[i]);
-    //     allCells[i].addEventListener("click", function() {
-    //         var currentOnState = this.getAttribute('data-on');
-    //         console.log(currentOnState);
-    //         if(currentOnState == 'false') {
-    //             this.setAttribute('data-on', 'true');
-    //             this.classList.add('on-cell');
-    //         }
-    //         else {
-    //             this.setAttribute('data-on', 'false');
-    //             this.classList.remove('on-cell');
-    //         }
-    //     });
-    // }
+    }
+  }, {
+    key: "toggleOnState",
+    value: function toggleOnState(e) {
+      var currentOnState = e.target.getAttribute('data-on');
+      console.log(currentOnState);
 
+      if (currentOnState == 'false') {
+        e.target.setAttribute('data-on', 'true');
+        e.target.classList.add('on-cell');
+      } else {
+        e.target.setAttribute('data-on', 'false');
+        e.target.classList.remove('on-cell');
+      }
+    }
   }, {
     key: "render",
     value: function render() {
-      // const { projects } = this.state
+      var grid = [];
+
+      for (var i = 0; i <= this.state.notes.length; i++) {
+        var cells = [];
+
+        for (var j = 0; j < 15; j++) {
+          cells.push(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+            onClick: this.toggleOnState,
+            className: "column",
+            "data-cell-number": j,
+            "data-on": "false",
+            key: i + j
+          }));
+        }
+
+        grid.push(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "grid-row",
+          "data-row-note": this.state.notes[i],
+          key: this.state.notes[i]
+        }, cells));
+      }
+
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "content"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -65828,543 +65845,7 @@ function (_Component) {
         className: "btn btn-1 btn-1e"
       }, "noise")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "grid-wrapper"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "grid-row",
-        "data-row-note": "C5"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "0",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "1",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "2",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "3",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "4",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "5",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "6",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "7",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "8",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "9",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "10",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "11",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "12",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "13",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "14",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "15",
-        "data-on": "false"
-      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "grid-row",
-        "data-row-note": "B4"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "0",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "1",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "2",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "3",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "4",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "5",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "6",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "7",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "8",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "9",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "10",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "11",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "12",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "13",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "14",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "15",
-        "data-on": "false"
-      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "grid-row",
-        "data-row-note": "A4"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "0",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "1",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "2",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "3",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "4",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "5",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "6",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "7",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "8",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "9",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "10",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "11",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "12",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "13",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "14",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "15",
-        "data-on": "false"
-      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "grid-row",
-        "data-row-note": "G4"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "0",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "1",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "2",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "3",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "4",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "5",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "6",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "7",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "8",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "9",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "10",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "11",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "12",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "13",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "14",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "15",
-        "data-on": "false"
-      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "grid-row",
-        "data-row-note": "F4"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "0",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "1",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "2",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "3",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "4",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "5",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "6",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "7",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "8",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "9",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "10",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "11",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "12",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "13",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "14",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "15",
-        "data-on": "false"
-      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "grid-row",
-        "data-row-note": "E4"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "0",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "1",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "2",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "3",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "4",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "5",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "6",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "7",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "8",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "9",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "10",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "11",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "12",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "13",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "14",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "15",
-        "data-on": "false"
-      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "grid-row",
-        "data-row-note": "D4"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "0",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "1",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "2",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "3",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "4",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "5",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "6",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "7",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "8",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "9",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "10",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "11",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "12",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "13",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "14",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "15",
-        "data-on": "false"
-      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "grid-row",
-        "data-row-note": "C4"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "0",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "1",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "2",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "3",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "4",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "5",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "6",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "7",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "8",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "9",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "10",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "11",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "12",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "13",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "14",
-        "data-on": "false"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "column",
-        "data-cell-number": "15",
-        "data-on": "false"
-      }))));
+      }, grid));
     }
   }]);
 
