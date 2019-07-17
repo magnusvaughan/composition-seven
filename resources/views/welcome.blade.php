@@ -32,7 +32,7 @@
 
         <div class="content">
             <div class="button-wrapper">
-                <button id="make-some-noise">noise</button>
+                <button id="make-some-noise" class="btn btn-1 btn-1e">noise</button>
             </div>
             <div class="grid-wrapper">
                 <div class="grid-row" data-row-note="C5">
