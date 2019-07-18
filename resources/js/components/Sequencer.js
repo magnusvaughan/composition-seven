@@ -19,10 +19,34 @@ class Sequencer extends Component {
         this.state = {
             notes: ["C4","D4","E4","F4","G4","A4","B4","C5"]
         }
+        console.log("This", this);
+        this.playSequence = this.playSequence.bind(this);
+        this.toggleSequence = this.toggleSequence.bind(this);
     }
 
     componentDidMount () {
 
+    }
+
+    playSequence() {
+        var seq = new Tone.Sequence(function(time, note){
+            console.log('note', note);
+            var sequenceCellNumber = Math.floor((time * 2)  % 16);
+            console.log(sequenceCellNumber);
+            for (var i = 0; i < allCells.length; ++i) {
+                allCells[i].classList.remove('active-cell');
+            }
+            var activeCells = document.querySelectorAll(`[data-cell-number=${CSS.escape(sequenceCellNumber)}]`);
+            for (var i = 0; i < activeCells.length; ++i) {
+                activeCells[i].classList.add('active-cell');
+                if(activeCells[i].className.match(/\bon-cell\b/)) {
+                    var noteToPlay = activeCells[i].parentNode.getAttribute('data-row-note');
+                    synth.triggerAttackRelease(noteToPlay, '8n');
+                }
+            }
+        //subdivisions are given as subarrays
+        }, ["C4"]);
+        seq.start(0);
     }
 
     toggleSequence() {
@@ -34,25 +58,8 @@ class Sequencer extends Component {
         else {
             console.log("I was not playing");
             Tone.Transport.start();
-            console.log('sequence');
-            var seq = new Tone.Sequence(function(time, note){
-                console.log('note', note);
-                var sequenceCellNumber = Math.floor((time * 2)  % 16);
-                console.log(sequenceCellNumber);
-                for (var i = 0; i < allCells.length; ++i) {
-                    allCells[i].classList.remove('active-cell');
-                }
-                var activeCells = document.querySelectorAll(`[data-cell-number=${CSS.escape(sequenceCellNumber)}]`);
-                for (var i = 0; i < activeCells.length; ++i) {
-                    activeCells[i].classList.add('active-cell');
-                    if(activeCells[i].className.match(/\bon-cell\b/)) {
-                        var noteToPlay = activeCells[i].parentNode.getAttribute('data-row-note');
-                        synth.triggerAttackRelease(noteToPlay, '8n');
-                    }
-                }
-            //subdivisions are given as subarrays
-            }, ["C4"]).start(0);
             playing = true;
+            this.playSequence();
         }
     }
 
@@ -71,18 +78,30 @@ class Sequencer extends Component {
 
     render () {
         let grid = [];
+        let sequencerState = [];
 
         for (var i=0; i<=this.state.notes.length; i++) {
             let cells = [];
+            let rowState = [];
             for (let j = 0; j < 15; j++) {
-            cells.push(<div onClick={this.toggleOnState} className="column" data-cell-number={j} data-on="false" key={i+j}></div>);
+                cells.push(<div onClick={this.toggleOnState} className="column" data-cell-number={j} data-on="false" key={"r"+i+"c"+j}></div>);
+                rowState.push({
+                    dataCellNumber: j,
+                    dataOn: false
+                });
             }
             grid.push(
-                <div className="grid-row" data-row-note={this.state.notes[i]} key={this.state.notes[i]}>
+                <div className="grid-row" data-row-note={this.state.notes[i]} key={"r"+this.state.notes[i]}>
                     {cells}
                 </div>
             )
+            sequencerState.push({
+                dataRowNumber: "r"+this.state.notes[i],
+                rowDataCells: rowState
+            });
         }
+
+        console.log(sequencerState);
         
         return (
             <div className="content">

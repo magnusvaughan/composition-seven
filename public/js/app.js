@@ -65721,9 +65721,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
@@ -65755,12 +65755,41 @@ function (_Component) {
     _this.state = {
       notes: ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"]
     };
+    console.log("This", _assertThisInitialized(_this));
+    _this.playSequence = _this.playSequence.bind(_assertThisInitialized(_this));
+    _this.toggleSequence = _this.toggleSequence.bind(_assertThisInitialized(_this));
     return _this;
   }
 
   _createClass(Sequencer, [{
     key: "componentDidMount",
     value: function componentDidMount() {}
+  }, {
+    key: "playSequence",
+    value: function playSequence() {
+      var seq = new tone__WEBPACK_IMPORTED_MODULE_1___default.a.Sequence(function (time, note) {
+        console.log('note', note);
+        var sequenceCellNumber = Math.floor(time * 2 % 16);
+        console.log(sequenceCellNumber);
+
+        for (var i = 0; i < allCells.length; ++i) {
+          allCells[i].classList.remove('active-cell');
+        }
+
+        var activeCells = document.querySelectorAll("[data-cell-number=".concat(CSS.escape(sequenceCellNumber), "]"));
+
+        for (var i = 0; i < activeCells.length; ++i) {
+          activeCells[i].classList.add('active-cell');
+
+          if (activeCells[i].className.match(/\bon-cell\b/)) {
+            var noteToPlay = activeCells[i].parentNode.getAttribute('data-row-note');
+            synth.triggerAttackRelease(noteToPlay, '8n');
+          }
+        } //subdivisions are given as subarrays
+
+      }, ["C4"]);
+      seq.start(0);
+    }
   }, {
     key: "toggleSequence",
     value: function toggleSequence() {
@@ -65771,29 +65800,8 @@ function (_Component) {
       } else {
         console.log("I was not playing");
         tone__WEBPACK_IMPORTED_MODULE_1___default.a.Transport.start();
-        console.log('sequence');
-        var seq = new tone__WEBPACK_IMPORTED_MODULE_1___default.a.Sequence(function (time, note) {
-          console.log('note', note);
-          var sequenceCellNumber = Math.floor(time * 2 % 16);
-          console.log(sequenceCellNumber);
-
-          for (var i = 0; i < allCells.length; ++i) {
-            allCells[i].classList.remove('active-cell');
-          }
-
-          var activeCells = document.querySelectorAll("[data-cell-number=".concat(CSS.escape(sequenceCellNumber), "]"));
-
-          for (var i = 0; i < activeCells.length; ++i) {
-            activeCells[i].classList.add('active-cell');
-
-            if (activeCells[i].className.match(/\bon-cell\b/)) {
-              var noteToPlay = activeCells[i].parentNode.getAttribute('data-row-note');
-              synth.triggerAttackRelease(noteToPlay, '8n');
-            }
-          } //subdivisions are given as subarrays
-
-        }, ["C4"]).start(0);
         playing = true;
+        this.playSequence();
       }
     }
   }, {
@@ -65814,9 +65822,11 @@ function (_Component) {
     key: "render",
     value: function render() {
       var grid = [];
+      var sequencerState = [];
 
       for (var i = 0; i <= this.state.notes.length; i++) {
         var cells = [];
+        var rowState = [];
 
         for (var j = 0; j < 15; j++) {
           cells.push(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -65824,17 +65834,26 @@ function (_Component) {
             className: "column",
             "data-cell-number": j,
             "data-on": "false",
-            key: i + j
+            key: "r" + i + "c" + j
           }));
+          rowState.push({
+            dataCellNumber: j,
+            dataOn: false
+          });
         }
 
         grid.push(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           className: "grid-row",
           "data-row-note": this.state.notes[i],
-          key: this.state.notes[i]
+          key: "r" + this.state.notes[i]
         }, cells));
+        sequencerState.push({
+          dataRowNumber: "r" + this.state.notes[i],
+          rowDataCells: rowState
+        });
       }
 
+      console.log(sequencerState);
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "content"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
