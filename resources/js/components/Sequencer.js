@@ -17,15 +17,34 @@ class Sequencer extends Component {
     constructor () {
         super()
         this.state = {
-            notes: ["C4","D4","E4","F4","G4","A4","B4","C5"]
+            notes: ["C4","D4","E4","F4","G4","A4","B4","C5"],
+            cellCount: 16,
+            sequencerState: []
         }
-        console.log("This", this);
         this.playSequence = this.playSequence.bind(this);
         this.toggleSequence = this.toggleSequence.bind(this);
+        this.toggleOnState = this.toggleOnState.bind(this);
     }
 
     componentDidMount () {
-
+        let cells = [];
+        for (var i=0; i<=this.state.notes.length; i++) {
+            let rowState = [];
+            for (let j = 0; j < this.state.cellCount-1; j++) {
+                rowState.push({
+                    dataCellNumber: j,
+                    dataCellRow: this.state.notes[i],
+                    dataOn: false
+                });
+            }
+            cells.push({
+                dataRowNumber: this.state.notes[i],
+                rowDataCells: rowState
+            });
+            this.setState({
+                sequencerState: cells
+            });
+        }
     }
 
     playSequence() {
@@ -64,44 +83,55 @@ class Sequencer extends Component {
     }
 
     toggleOnState(e) {
-        var currentOnState = e.target.getAttribute('data-on');
-        console.log(currentOnState);
-        if(currentOnState == 'false') {
-            e.target.setAttribute('data-on', 'true');
-            e.target.classList.add('on-cell');
-        }
-        else {
-            e.target.setAttribute('data-on', 'false');
-            e.target.classList.remove('on-cell');
-        }
+        // console.log(e.target);
+
+        const sequencerState = this.state.sequencerState;
+        const cellRowNumber = e.target.getAttribute('data-cell-row');
+        const rowPosition = sequencerState.map(function(row) { return row.dataRowNumber; }).indexOf(cellRowNumber);
+        // console.log("Row position", rowPosition);
+        const dataCellNumber = parseInt(e.target.getAttribute('data-cell-number'));
+        // console.log("dataCellNumber", dataCellNumber); 
+        // console.log("Row", rowPosition);
+        // console.log("HERE", sequencerState[rowPosition].rowDataCells);
+        const cellPosition = sequencerState[rowPosition].rowDataCells.map(function(cell) { return cell.dataCellNumber; }).indexOf(dataCellNumber);
+        // console.log("Cell", cellPosition);
+        const stateIndexToUpdate = {...this.state.sequencerState[rowPosition].rowDataCells[cellPosition]};
+        stateIndexToUpdate.dataOn = !stateIndexToUpdate.dataOn;
+        this.setState({
+            stateIndexToUpdate
+        });
+
+
+        // var currentOnState = e.target.getAttribute('data-on');
+        // console.log(currentOnState);
+        // if(currentOnState == 'false') {
+        //     e.target.setAttribute('data-on', 'true');
+        //     e.target.classList.add('on-cell');
+        // }
+        // else {
+        //     e.target.setAttribute('data-on', 'false');
+        //     e.target.classList.remove('on-cell');
+        // }
     }
 
     render () {
         let grid = [];
-        let sequencerState = [];
+        let sequencerState = this.state.sequencerState;
 
-        for (var i=0; i<=this.state.notes.length; i++) {
+        // console.log('sequencerState', sequencerState);
+
+        sequencerState.forEach(row => {
+            // console.log("row", row);
             let cells = [];
-            let rowState = [];
-            for (let j = 0; j < 15; j++) {
-                cells.push(<div onClick={this.toggleOnState} className="column" data-cell-number={j} data-on="false" key={"r"+i+"c"+j}></div>);
-                rowState.push({
-                    dataCellNumber: j,
-                    dataOn: false
-                });
-            }
+            row.rowDataCells.forEach(cell => { 
+                cells.push(<div onClick={this.toggleOnState} className={cell.dataOn ? 'column on-cell' : 'column'} data-cell-number={cell.dataCellNumber} data-cell-row={cell.dataCellRow} data-on={cell.dataOn} key=""></div>);
+            });
             grid.push(
-                <div className="grid-row" data-row-note={this.state.notes[i]} key={"r"+this.state.notes[i]}>
+                <div className="grid-row" data-row-note="" key="">
                     {cells}
                 </div>
             )
-            sequencerState.push({
-                dataRowNumber: "r"+this.state.notes[i],
-                rowDataCells: rowState
-            });
-        }
-
-        console.log(sequencerState);
+        });
         
         return (
             <div className="content">

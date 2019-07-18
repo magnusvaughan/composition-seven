@@ -65713,6 +65713,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var tone__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(tone__WEBPACK_IMPORTED_MODULE_1__);
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { if (i % 2) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } else { Object.defineProperties(target, Object.getOwnPropertyDescriptors(arguments[i])); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -65753,17 +65757,41 @@ function (_Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Sequencer).call(this));
     _this.state = {
-      notes: ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"]
+      notes: ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"],
+      cellCount: 16,
+      sequencerState: []
     };
-    console.log("This", _assertThisInitialized(_this));
     _this.playSequence = _this.playSequence.bind(_assertThisInitialized(_this));
     _this.toggleSequence = _this.toggleSequence.bind(_assertThisInitialized(_this));
+    _this.toggleOnState = _this.toggleOnState.bind(_assertThisInitialized(_this));
     return _this;
   }
 
   _createClass(Sequencer, [{
     key: "componentDidMount",
-    value: function componentDidMount() {}
+    value: function componentDidMount() {
+      var cells = [];
+
+      for (var i = 0; i <= this.state.notes.length; i++) {
+        var rowState = [];
+
+        for (var j = 0; j < this.state.cellCount - 1; j++) {
+          rowState.push({
+            dataCellNumber: j,
+            dataCellRow: this.state.notes[i],
+            dataOn: false
+          });
+        }
+
+        cells.push({
+          dataRowNumber: this.state.notes[i],
+          rowDataCells: rowState
+        });
+        this.setState({
+          sequencerState: cells
+        });
+      }
+    }
   }, {
     key: "playSequence",
     value: function playSequence() {
@@ -65807,53 +65835,64 @@ function (_Component) {
   }, {
     key: "toggleOnState",
     value: function toggleOnState(e) {
-      var currentOnState = e.target.getAttribute('data-on');
-      console.log(currentOnState);
+      // console.log(e.target);
+      var sequencerState = this.state.sequencerState;
+      var cellRowNumber = e.target.getAttribute('data-cell-row');
+      var rowPosition = sequencerState.map(function (row) {
+        return row.dataRowNumber;
+      }).indexOf(cellRowNumber); // console.log("Row position", rowPosition);
 
-      if (currentOnState == 'false') {
-        e.target.setAttribute('data-on', 'true');
-        e.target.classList.add('on-cell');
-      } else {
-        e.target.setAttribute('data-on', 'false');
-        e.target.classList.remove('on-cell');
-      }
+      var dataCellNumber = parseInt(e.target.getAttribute('data-cell-number')); // console.log("dataCellNumber", dataCellNumber); 
+      // console.log("Row", rowPosition);
+      // console.log("HERE", sequencerState[rowPosition].rowDataCells);
+
+      var cellPosition = sequencerState[rowPosition].rowDataCells.map(function (cell) {
+        return cell.dataCellNumber;
+      }).indexOf(dataCellNumber); // console.log("Cell", cellPosition);
+
+      var stateIndexToUpdate = _objectSpread({}, this.state.sequencerState[rowPosition].rowDataCells[cellPosition]);
+
+      stateIndexToUpdate.dataOn = !stateIndexToUpdate.dataOn;
+      this.setState({
+        stateIndexToUpdate: stateIndexToUpdate
+      }); // var currentOnState = e.target.getAttribute('data-on');
+      // console.log(currentOnState);
+      // if(currentOnState == 'false') {
+      //     e.target.setAttribute('data-on', 'true');
+      //     e.target.classList.add('on-cell');
+      // }
+      // else {
+      //     e.target.setAttribute('data-on', 'false');
+      //     e.target.classList.remove('on-cell');
+      // }
     }
   }, {
     key: "render",
     value: function render() {
+      var _this2 = this;
+
       var grid = [];
-      var sequencerState = [];
+      var sequencerState = this.state.sequencerState; // console.log('sequencerState', sequencerState);
 
-      for (var i = 0; i <= this.state.notes.length; i++) {
+      sequencerState.forEach(function (row) {
+        // console.log("row", row);
         var cells = [];
-        var rowState = [];
-
-        for (var j = 0; j < 15; j++) {
+        row.rowDataCells.forEach(function (cell) {
           cells.push(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-            onClick: this.toggleOnState,
-            className: "column",
-            "data-cell-number": j,
-            "data-on": "false",
-            key: "r" + i + "c" + j
+            onClick: _this2.toggleOnState,
+            className: cell.dataOn ? 'column on-cell' : 'column',
+            "data-cell-number": cell.dataCellNumber,
+            "data-cell-row": cell.dataCellRow,
+            "data-on": cell.dataOn,
+            key: ""
           }));
-          rowState.push({
-            dataCellNumber: j,
-            dataOn: false
-          });
-        }
-
+        });
         grid.push(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           className: "grid-row",
-          "data-row-note": this.state.notes[i],
-          key: "r" + this.state.notes[i]
+          "data-row-note": "",
+          key: ""
         }, cells));
-        sequencerState.push({
-          dataRowNumber: "r" + this.state.notes[i],
-          rowDataCells: rowState
-        });
-      }
-
-      console.log(sequencerState);
+      });
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "content"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
