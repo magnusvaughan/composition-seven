@@ -1,35 +1,37 @@
-// import axios from 'axios'
 import React, { Component } from 'react'
 import Tone from 'tone';
 import update from 'immutability-helper';
-// import { Link } from 'react-router-dom'
 
 // Composition Seven
-var synth = new Tone.Synth().toMaster();
-var button = document.getElementById("make-some-noise");
-
-//DOM
-var allCells = document.querySelectorAll('.column');
+var synth = new Tone.MonoSynth({
+	"oscillator" : {
+		"type" : "square"
+ },
+ "envelope" : {
+ 	"attack" : 0.1
+ }
+}).toMaster();
 
 //State
 var playing = false;
-
 class Sequencer extends Component {
     constructor () {
         super()
         this.state = {
-            notes: ["C4","D4","E4","F4","G4","A4","B4","C5"],
+            playing: false,
+            notes: ["C5","B4","A4","G4","F4","E4","D4","C4"],
             cellCount: 16,
             sequencerState: []
         }
         this.playSequence = this.playSequence.bind(this);
         this.toggleSequence = this.toggleSequence.bind(this);
         this.toggleOnState = this.toggleOnState.bind(this);
+        this.resetActiveState = this.resetActiveState.bind(this);
     }
 
     componentDidMount () {
         let cells = [];
-        for (var i=0; i<=this.state.notes.length; i++) {
+        for (var i = 0; i < this.state.notes.length; i++) {
             let rowState = [];
             for (let j = 0; j < this.state.cellCount; j++) {
                 rowState.push({
@@ -52,18 +54,14 @@ class Sequencer extends Component {
     playSequence() {
        
         var seq = new Tone.Sequence((time, note) => {
-            var sequenceCellNumber = Math.floor((time * 2)  % 16);
-            // console.log("sequenceCellNumber", sequenceCellNumber)
-            
+            var sequenceCellNumber = Math.floor((Tone.Transport.seconds * 2)  % 16);
             if(sequenceCellNumber === 0) {
                 var columnIndexToChange = this.state.cellCount - 1;
             }
             else {
                 var columnIndexToChange = sequenceCellNumber - 1;
             }
-
             for(var i = 0; i <= this.state.notes.length; i++) {
-                // console.log("Removing active state from row " + i +" column " + columnIndexToChange);
                 const removeActiveData = update(this.state, {
                     sequencerState:{[i]: {rowDataCells:{[columnIndexToChange]: {dataActive: {$set: false}}}}}
                 });
@@ -77,29 +75,31 @@ class Sequencer extends Component {
                     synth.triggerAttackRelease(noteToPlay, '8n');
                 }
             }
-
-            // var activeCells = document.querySelectorAll(`[data-cell-number=${CSS.escape(sequenceCellNumber)}]`);
-            // for (var i = 0; i < activeCells.length; ++i) {
-            //     activeCells[i].classList.add('active-cell');
-            //     if(activeCells[i].className.match(/\bon-cell\b/)) {
-            //         var noteToPlay = activeCells[i].parentNode.getAttribute('data-row-note');
-            //         synth.triggerAttackRelease(noteToPlay, '8n');
-            //     }
-            // }
-        //subdivisions are given as subarrays
         }, ["C4"]);
         seq.start(0);
     }
 
+    resetActiveState() {
+        let copiedState = this.state;
+        for(var i = 0; i < this.state.notes.length; i++) {
+            for(var j = 0; j < this.state.cellCount; j++) {
+                copiedState.sequencerState[i].rowDataCells[j].dataActive = false;
+            }
+        }
+        this.setState(copiedState);
+    }
+
     toggleSequence() {
-        if(playing) {
+        if(this.state.playing) {
             Tone.Transport.stop();
-            playing = false;
+            this.resetActiveState();
+            this.setState({playing : false});
         }
         else {
+            Tone.Transport.seconds = 0;
             Tone.Transport.start();
-            playing = true;
             this.playSequence();
+            this.setState({playing : true});
         }
     }
 
@@ -119,20 +119,15 @@ class Sequencer extends Component {
         let grid = [];
         let sequencerState = this.state.sequencerState;
         sequencerState.forEach((row, i) => {
-            // console.log("re-render");
             let cells = [];
             row.rowDataCells.forEach(cell => { 
-                // console.log("cell", cell);
                 var cellClasses = 'column ';
                 if(cell.dataOn) {
-                    // console.log("Data is on");
                     cellClasses+='on-cell ';
                 }
                 if(cell.dataActive) {
-                    // console.log("Cell is active");
                     cellClasses+='active-cell'
                 }
-                // console.log("cellClasses", cellClasses);
                 cells.push(
                     <div onClick={this.toggleOnState} 
                         className={cellClasses} 

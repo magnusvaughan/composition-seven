@@ -66039,16 +66039,18 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-// import axios from 'axios'
 
 
- // import { Link } from 'react-router-dom'
-// Composition Seven
+ // Composition Seven
 
-var synth = new tone__WEBPACK_IMPORTED_MODULE_1___default.a.Synth().toMaster();
-var button = document.getElementById("make-some-noise"); //DOM
-
-var allCells = document.querySelectorAll('.column'); //State
+var synth = new tone__WEBPACK_IMPORTED_MODULE_1___default.a.MonoSynth({
+  "oscillator": {
+    "type": "square"
+  },
+  "envelope": {
+    "attack": 0.1
+  }
+}).toMaster(); //State
 
 var playing = false;
 
@@ -66064,13 +66066,15 @@ function (_Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Sequencer).call(this));
     _this.state = {
-      notes: ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5"],
+      playing: false,
+      notes: ["C5", "B4", "A4", "G4", "F4", "E4", "D4", "C4"],
       cellCount: 16,
       sequencerState: []
     };
     _this.playSequence = _this.playSequence.bind(_assertThisInitialized(_this));
     _this.toggleSequence = _this.toggleSequence.bind(_assertThisInitialized(_this));
     _this.toggleOnState = _this.toggleOnState.bind(_assertThisInitialized(_this));
+    _this.resetActiveState = _this.resetActiveState.bind(_assertThisInitialized(_this));
     return _this;
   }
 
@@ -66079,7 +66083,7 @@ function (_Component) {
     value: function componentDidMount() {
       var cells = [];
 
-      for (var i = 0; i <= this.state.notes.length; i++) {
+      for (var i = 0; i < this.state.notes.length; i++) {
         var rowState = [];
 
         for (var j = 0; j < this.state.cellCount; j++) {
@@ -66106,7 +66110,7 @@ function (_Component) {
       var _this2 = this;
 
       var seq = new tone__WEBPACK_IMPORTED_MODULE_1___default.a.Sequence(function (time, note) {
-        var sequenceCellNumber = Math.floor(time * 2 % 16); // console.log("sequenceCellNumber", sequenceCellNumber)
+        var sequenceCellNumber = Math.floor(tone__WEBPACK_IMPORTED_MODULE_1___default.a.Transport.seconds * 2 % 16);
 
         if (sequenceCellNumber === 0) {
           var columnIndexToChange = _this2.state.cellCount - 1;
@@ -66115,7 +66119,6 @@ function (_Component) {
         }
 
         for (var i = 0; i <= _this2.state.notes.length; i++) {
-          // console.log("Removing active state from row " + i +" column " + columnIndexToChange);
           var removeActiveData = immutability_helper__WEBPACK_IMPORTED_MODULE_2___default()(_this2.state, {
             sequencerState: _defineProperty({}, i, {
               rowDataCells: _defineProperty({}, columnIndexToChange, {
@@ -66144,29 +66147,39 @@ function (_Component) {
             var noteToPlay = _this2.state.sequencerState[i].rowDataCells[sequenceCellNumber].dataCellRow;
             synth.triggerAttackRelease(noteToPlay, '8n');
           }
-        } // var activeCells = document.querySelectorAll(`[data-cell-number=${CSS.escape(sequenceCellNumber)}]`);
-        // for (var i = 0; i < activeCells.length; ++i) {
-        //     activeCells[i].classList.add('active-cell');
-        //     if(activeCells[i].className.match(/\bon-cell\b/)) {
-        //         var noteToPlay = activeCells[i].parentNode.getAttribute('data-row-note');
-        //         synth.triggerAttackRelease(noteToPlay, '8n');
-        //     }
-        // }
-        //subdivisions are given as subarrays
-
+        }
       }, ["C4"]);
       seq.start(0);
     }
   }, {
+    key: "resetActiveState",
+    value: function resetActiveState() {
+      var copiedState = this.state;
+
+      for (var i = 0; i < this.state.notes.length; i++) {
+        for (var j = 0; j < this.state.cellCount; j++) {
+          copiedState.sequencerState[i].rowDataCells[j].dataActive = false;
+        }
+      }
+
+      this.setState(copiedState);
+    }
+  }, {
     key: "toggleSequence",
     value: function toggleSequence() {
-      if (playing) {
+      if (this.state.playing) {
         tone__WEBPACK_IMPORTED_MODULE_1___default.a.Transport.stop();
-        playing = false;
+        this.resetActiveState();
+        this.setState({
+          playing: false
+        });
       } else {
+        tone__WEBPACK_IMPORTED_MODULE_1___default.a.Transport.seconds = 0;
         tone__WEBPACK_IMPORTED_MODULE_1___default.a.Transport.start();
-        playing = true;
         this.playSequence();
+        this.setState({
+          playing: true
+        });
       }
     }
   }, {
@@ -66200,22 +66213,17 @@ function (_Component) {
       var grid = [];
       var sequencerState = this.state.sequencerState;
       sequencerState.forEach(function (row, i) {
-        // console.log("re-render");
         var cells = [];
         row.rowDataCells.forEach(function (cell) {
-          // console.log("cell", cell);
           var cellClasses = 'column ';
 
           if (cell.dataOn) {
-            // console.log("Data is on");
             cellClasses += 'on-cell ';
           }
 
           if (cell.dataActive) {
-            // console.log("Cell is active");
             cellClasses += 'active-cell';
-          } // console.log("cellClasses", cellClasses);
-
+          }
 
           cells.push(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             onClick: _this3.toggleOnState,
