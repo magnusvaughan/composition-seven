@@ -1,6 +1,7 @@
 // import axios from 'axios'
 import React, { Component } from 'react'
 import Tone from 'tone';
+import update from 'immutability-helper';
 // import { Link } from 'react-router-dom'
 
 // Composition Seven
@@ -95,11 +96,20 @@ class Sequencer extends Component {
         // console.log("HERE", sequencerState[rowPosition].rowDataCells);
         const cellPosition = sequencerState[rowPosition].rowDataCells.map(function(cell) { return cell.dataCellNumber; }).indexOf(dataCellNumber);
         // console.log("Cell", cellPosition);
-        const stateIndexToUpdate = {...this.state.sequencerState[rowPosition].rowDataCells[cellPosition]};
-        stateIndexToUpdate.dataOn = !stateIndexToUpdate.dataOn;
-        this.setState({
-            stateIndexToUpdate
+
+        const newData = update(this.state, {
+            sequencerState:{[rowPosition]: {rowDataCells:{[cellPosition]: {dataOn: {$set: true}}}}}
         });
+
+        console.log(newData);
+
+        this.setState(newData);
+
+        // const stateIndexToUpdate = {...this.state.sequencerState[rowPosition].rowDataCells[cellPosition]};
+        // stateIndexToUpdate.dataOn = !stateIndexToUpdate.dataOn;
+        // this.setState({
+        //     stateIndexToUpdate
+        // });
 
 
         // var currentOnState = e.target.getAttribute('data-on');
