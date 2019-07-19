@@ -66082,11 +66082,12 @@ function (_Component) {
       for (var i = 0; i <= this.state.notes.length; i++) {
         var rowState = [];
 
-        for (var j = 0; j < this.state.cellCount - 1; j++) {
+        for (var j = 0; j < this.state.cellCount; j++) {
           rowState.push({
             dataCellNumber: j,
             dataCellRow: this.state.notes[i],
-            dataOn: false
+            dataOn: false,
+            dataActive: false
           });
         }
 
@@ -66102,25 +66103,56 @@ function (_Component) {
   }, {
     key: "playSequence",
     value: function playSequence() {
-      var seq = new tone__WEBPACK_IMPORTED_MODULE_1___default.a.Sequence(function (time, note) {
-        console.log('note', note);
-        var sequenceCellNumber = Math.floor(time * 2 % 16);
-        console.log(sequenceCellNumber);
+      var _this2 = this;
 
-        for (var i = 0; i < allCells.length; ++i) {
-          allCells[i].classList.remove('active-cell');
+      var seq = new tone__WEBPACK_IMPORTED_MODULE_1___default.a.Sequence(function (time, note) {
+        var sequenceCellNumber = Math.floor(time * 2 % 16); // console.log("sequenceCellNumber", sequenceCellNumber)
+
+        if (sequenceCellNumber === 0) {
+          var columnIndexToChange = _this2.state.cellCount - 1;
+        } else {
+          var columnIndexToChange = sequenceCellNumber - 1;
         }
 
-        var activeCells = document.querySelectorAll("[data-cell-number=".concat(CSS.escape(sequenceCellNumber), "]"));
+        for (var i = 0; i <= _this2.state.notes.length; i++) {
+          // console.log("Removing active state from row " + i +" column " + columnIndexToChange);
+          var removeActiveData = immutability_helper__WEBPACK_IMPORTED_MODULE_2___default()(_this2.state, {
+            sequencerState: _defineProperty({}, i, {
+              rowDataCells: _defineProperty({}, columnIndexToChange, {
+                dataActive: {
+                  $set: false
+                }
+              })
+            })
+          });
 
-        for (var i = 0; i < activeCells.length; ++i) {
-          activeCells[i].classList.add('active-cell');
+          _this2.setState(removeActiveData);
 
-          if (activeCells[i].className.match(/\bon-cell\b/)) {
-            var noteToPlay = activeCells[i].parentNode.getAttribute('data-row-note');
+          var addActiveData = immutability_helper__WEBPACK_IMPORTED_MODULE_2___default()(_this2.state, {
+            sequencerState: _defineProperty({}, i, {
+              rowDataCells: _defineProperty({}, sequenceCellNumber, {
+                dataActive: {
+                  $set: true
+                }
+              })
+            })
+          });
+
+          _this2.setState(addActiveData);
+
+          if (_this2.state.sequencerState[i].rowDataCells[sequenceCellNumber].dataOn) {
+            var noteToPlay = _this2.state.sequencerState[i].rowDataCells[sequenceCellNumber].dataCellRow;
             synth.triggerAttackRelease(noteToPlay, '8n');
           }
-        } //subdivisions are given as subarrays
+        } // var activeCells = document.querySelectorAll(`[data-cell-number=${CSS.escape(sequenceCellNumber)}]`);
+        // for (var i = 0; i < activeCells.length; ++i) {
+        //     activeCells[i].classList.add('active-cell');
+        //     if(activeCells[i].className.match(/\bon-cell\b/)) {
+        //         var noteToPlay = activeCells[i].parentNode.getAttribute('data-row-note');
+        //         synth.triggerAttackRelease(noteToPlay, '8n');
+        //     }
+        // }
+        //subdivisions are given as subarrays
 
       }, ["C4"]);
       seq.start(0);
@@ -66129,11 +66161,9 @@ function (_Component) {
     key: "toggleSequence",
     value: function toggleSequence() {
       if (playing) {
-        console.log("I was playing");
         tone__WEBPACK_IMPORTED_MODULE_1___default.a.Transport.stop();
         playing = false;
       } else {
-        console.log("I was not playing");
         tone__WEBPACK_IMPORTED_MODULE_1___default.a.Transport.start();
         playing = true;
         this.playSequence();
@@ -66142,72 +66172,65 @@ function (_Component) {
   }, {
     key: "toggleOnState",
     value: function toggleOnState(e) {
-      // console.log(e.target);
       var sequencerState = this.state.sequencerState;
       var cellRowNumber = e.target.getAttribute('data-cell-row');
       var rowPosition = sequencerState.map(function (row) {
         return row.dataRowNumber;
-      }).indexOf(cellRowNumber); // console.log("Row position", rowPosition);
-
-      var dataCellNumber = parseInt(e.target.getAttribute('data-cell-number')); // console.log("dataCellNumber", dataCellNumber); 
-      // console.log("Row", rowPosition);
-      // console.log("HERE", sequencerState[rowPosition].rowDataCells);
-
+      }).indexOf(cellRowNumber);
+      var dataCellNumber = parseInt(e.target.getAttribute('data-cell-number'));
       var cellPosition = sequencerState[rowPosition].rowDataCells.map(function (cell) {
         return cell.dataCellNumber;
-      }).indexOf(dataCellNumber); // console.log("Cell", cellPosition);
-
+      }).indexOf(dataCellNumber);
       var newData = immutability_helper__WEBPACK_IMPORTED_MODULE_2___default()(this.state, {
         sequencerState: _defineProperty({}, rowPosition, {
           rowDataCells: _defineProperty({}, cellPosition, {
             dataOn: {
-              $set: true
+              $set: !sequencerState[rowPosition].rowDataCells[cellPosition].dataOn
             }
           })
         })
       });
-      console.log(newData);
-      this.setState(newData); // const stateIndexToUpdate = {...this.state.sequencerState[rowPosition].rowDataCells[cellPosition]};
-      // stateIndexToUpdate.dataOn = !stateIndexToUpdate.dataOn;
-      // this.setState({
-      //     stateIndexToUpdate
-      // });
-      // var currentOnState = e.target.getAttribute('data-on');
-      // console.log(currentOnState);
-      // if(currentOnState == 'false') {
-      //     e.target.setAttribute('data-on', 'true');
-      //     e.target.classList.add('on-cell');
-      // }
-      // else {
-      //     e.target.setAttribute('data-on', 'false');
-      //     e.target.classList.remove('on-cell');
-      // }
+      this.setState(newData);
     }
   }, {
     key: "render",
     value: function render() {
-      var _this2 = this;
+      var _this3 = this;
 
       var grid = [];
-      var sequencerState = this.state.sequencerState; // console.log('sequencerState', sequencerState);
-
-      sequencerState.forEach(function (row) {
-        // console.log("row", row);
+      var sequencerState = this.state.sequencerState;
+      sequencerState.forEach(function (row, i) {
+        // console.log("re-render");
         var cells = [];
         row.rowDataCells.forEach(function (cell) {
+          // console.log("cell", cell);
+          var cellClasses = 'column ';
+
+          if (cell.dataOn) {
+            // console.log("Data is on");
+            cellClasses += 'on-cell ';
+          }
+
+          if (cell.dataActive) {
+            // console.log("Cell is active");
+            cellClasses += 'active-cell';
+          } // console.log("cellClasses", cellClasses);
+
+
           cells.push(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-            onClick: _this2.toggleOnState,
-            className: cell.dataOn ? 'column on-cell' : 'column',
+            onClick: _this3.toggleOnState,
+            className: cellClasses,
             "data-cell-number": cell.dataCellNumber,
             "data-cell-row": cell.dataCellRow,
             "data-on": cell.dataOn,
-            key: ""
+            "data-active": cell.dataActive,
+            key: i + parseInt(cell.dataCellNumber)
           }));
         });
         grid.push(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           className: "grid-row",
-          "data-row-note": "",
-          key: ""
+          "data-row-note": row.dataRowNumber,
+          key: row.dataRowNumber
         }, cells));
       });
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {

@@ -31,11 +31,12 @@ class Sequencer extends Component {
         let cells = [];
         for (var i=0; i<=this.state.notes.length; i++) {
             let rowState = [];
-            for (let j = 0; j < this.state.cellCount-1; j++) {
+            for (let j = 0; j < this.state.cellCount; j++) {
                 rowState.push({
                     dataCellNumber: j,
                     dataCellRow: this.state.notes[i],
-                    dataOn: false
+                    dataOn: false,
+                    dataActive: false
                 });
             }
             cells.push({
@@ -49,21 +50,42 @@ class Sequencer extends Component {
     }
 
     playSequence() {
-        var seq = new Tone.Sequence(function(time, note){
-            console.log('note', note);
+       
+        var seq = new Tone.Sequence((time, note) => {
             var sequenceCellNumber = Math.floor((time * 2)  % 16);
-            console.log(sequenceCellNumber);
-            for (var i = 0; i < allCells.length; ++i) {
-                allCells[i].classList.remove('active-cell');
+            // console.log("sequenceCellNumber", sequenceCellNumber)
+            
+            if(sequenceCellNumber === 0) {
+                var columnIndexToChange = this.state.cellCount - 1;
             }
-            var activeCells = document.querySelectorAll(`[data-cell-number=${CSS.escape(sequenceCellNumber)}]`);
-            for (var i = 0; i < activeCells.length; ++i) {
-                activeCells[i].classList.add('active-cell');
-                if(activeCells[i].className.match(/\bon-cell\b/)) {
-                    var noteToPlay = activeCells[i].parentNode.getAttribute('data-row-note');
+            else {
+                var columnIndexToChange = sequenceCellNumber - 1;
+            }
+
+            for(var i = 0; i <= this.state.notes.length; i++) {
+                // console.log("Removing active state from row " + i +" column " + columnIndexToChange);
+                const removeActiveData = update(this.state, {
+                    sequencerState:{[i]: {rowDataCells:{[columnIndexToChange]: {dataActive: {$set: false}}}}}
+                });
+                this.setState(removeActiveData);
+                const addActiveData = update(this.state, {
+                    sequencerState:{[i]: {rowDataCells:{[sequenceCellNumber]: {dataActive: {$set: true}}}}}
+                });
+                this.setState(addActiveData);
+                if(this.state.sequencerState[i].rowDataCells[sequenceCellNumber].dataOn) {
+                    var noteToPlay = this.state.sequencerState[i].rowDataCells[sequenceCellNumber].dataCellRow;
                     synth.triggerAttackRelease(noteToPlay, '8n');
                 }
             }
+
+            // var activeCells = document.querySelectorAll(`[data-cell-number=${CSS.escape(sequenceCellNumber)}]`);
+            // for (var i = 0; i < activeCells.length; ++i) {
+            //     activeCells[i].classList.add('active-cell');
+            //     if(activeCells[i].className.match(/\bon-cell\b/)) {
+            //         var noteToPlay = activeCells[i].parentNode.getAttribute('data-row-note');
+            //         synth.triggerAttackRelease(noteToPlay, '8n');
+            //     }
+            // }
         //subdivisions are given as subarrays
         }, ["C4"]);
         seq.start(0);
@@ -71,12 +93,10 @@ class Sequencer extends Component {
 
     toggleSequence() {
         if(playing) {
-            console.log("I was playing");
             Tone.Transport.stop();
             playing = false;
         }
         else {
-            console.log("I was not playing");
             Tone.Transport.start();
             playing = true;
             this.playSequence();
@@ -84,60 +104,48 @@ class Sequencer extends Component {
     }
 
     toggleOnState(e) {
-        // console.log(e.target);
-
         const sequencerState = this.state.sequencerState;
         const cellRowNumber = e.target.getAttribute('data-cell-row');
         const rowPosition = sequencerState.map(function(row) { return row.dataRowNumber; }).indexOf(cellRowNumber);
-        // console.log("Row position", rowPosition);
         const dataCellNumber = parseInt(e.target.getAttribute('data-cell-number'));
-        // console.log("dataCellNumber", dataCellNumber); 
-        // console.log("Row", rowPosition);
-        // console.log("HERE", sequencerState[rowPosition].rowDataCells);
         const cellPosition = sequencerState[rowPosition].rowDataCells.map(function(cell) { return cell.dataCellNumber; }).indexOf(dataCellNumber);
-        // console.log("Cell", cellPosition);
-
         const newData = update(this.state, {
-            sequencerState:{[rowPosition]: {rowDataCells:{[cellPosition]: {dataOn: {$set: true}}}}}
+            sequencerState:{[rowPosition]: {rowDataCells:{[cellPosition]: {dataOn: {$set: !sequencerState[rowPosition].rowDataCells[cellPosition].dataOn}}}}}
         });
-
-        console.log(newData);
-
         this.setState(newData);
-
-        // const stateIndexToUpdate = {...this.state.sequencerState[rowPosition].rowDataCells[cellPosition]};
-        // stateIndexToUpdate.dataOn = !stateIndexToUpdate.dataOn;
-        // this.setState({
-        //     stateIndexToUpdate
-        // });
-
-
-        // var currentOnState = e.target.getAttribute('data-on');
-        // console.log(currentOnState);
-        // if(currentOnState == 'false') {
-        //     e.target.setAttribute('data-on', 'true');
-        //     e.target.classList.add('on-cell');
-        // }
-        // else {
-        //     e.target.setAttribute('data-on', 'false');
-        //     e.target.classList.remove('on-cell');
-        // }
     }
 
     render () {
         let grid = [];
         let sequencerState = this.state.sequencerState;
-
-        // console.log('sequencerState', sequencerState);
-
-        sequencerState.forEach(row => {
-            // console.log("row", row);
+        sequencerState.forEach((row, i) => {
+            // console.log("re-render");
             let cells = [];
             row.rowDataCells.forEach(cell => { 
-                cells.push(<div onClick={this.toggleOnState} className={cell.dataOn ? 'column on-cell' : 'column'} data-cell-number={cell.dataCellNumber} data-cell-row={cell.dataCellRow} data-on={cell.dataOn} key=""></div>);
+                // console.log("cell", cell);
+                var cellClasses = 'column ';
+                if(cell.dataOn) {
+                    // console.log("Data is on");
+                    cellClasses+='on-cell ';
+                }
+                if(cell.dataActive) {
+                    // console.log("Cell is active");
+                    cellClasses+='active-cell'
+                }
+                // console.log("cellClasses", cellClasses);
+                cells.push(
+                    <div onClick={this.toggleOnState} 
+                        className={cellClasses} 
+                        data-cell-number={cell.dataCellNumber} 
+                        data-cell-row={cell.dataCellRow} 
+                        data-on={cell.dataOn} 
+                        data-active={cell.dataActive} 
+                        key={i + parseInt(cell.dataCellNumber)}>
+                    </div>
+                );
             });
             grid.push(
-                <div className="grid-row" data-row-note="" key="">
+                <div className="grid-row" data-row-note={row.dataRowNumber} key={row.dataRowNumber}>
                     {cells}
                 </div>
             )
