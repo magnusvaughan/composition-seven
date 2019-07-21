@@ -19,6 +19,7 @@ class Sequencer extends Component {
             playing: false,
             notes: ["C4","B3","A3","G3","F3","E3","D3","C3"],
             columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31],
+            activeColumn: 0,
             sequencerState: []
         }
         this.playSequence = this.playSequence.bind(this);
@@ -70,6 +71,7 @@ class Sequencer extends Component {
                     sequencerState:{[column]: {columnDataCells:{[i]: {dataActive: {$set: true}}}}}
                 });
                 this.setState(addActiveData);
+                this.setState({activeColumn: column});
             }
 
             var columnDataCells = this.state.sequencerState[column].columnDataCells;
@@ -85,25 +87,21 @@ class Sequencer extends Component {
     }
 
     resetActiveState() {
+        var column = this.state.activeColumn;
         let copiedState = this.state;
-        for(var i = 0; i < this.state.notes.length; i++) {
-            for(var j = 0; j < this.state.cellCount; j++) {
-                copiedState.sequencerState[i].rowDataCells[j].dataActive = false;
-            }
+        for(var j = 0; j < this.state.notes.length; j++) {
+            copiedState.sequencerState[column].columnDataCells[j].dataActive = false;
         }
         this.setState(copiedState);
     }
 
     toggleSequence() {
-        console.log("Toggling");
         if(this.state.playing) {
-            console.log("I was playing");
             Tone.Transport.stop();
             this.resetActiveState();
             this.setState({playing : false});
         }
         else {
-            console.log("I was not playing");
             Tone.Transport.seconds = 0;
             Tone.Transport.bpm.value = 120;
             Tone.Transport.start();

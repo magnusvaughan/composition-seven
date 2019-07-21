@@ -66067,6 +66067,7 @@ function (_Component) {
       playing: false,
       notes: ["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],
       columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
+      activeColumn: 0,
       sequencerState: []
     };
     _this.playSequence = _this.playSequence.bind(_assertThisInitialized(_this));
@@ -66139,6 +66140,10 @@ function (_Component) {
           });
 
           _this2.setState(addActiveData);
+
+          _this2.setState({
+            activeColumn: column
+          });
         }
 
         var columnDataCells = _this2.state.sequencerState[column].columnDataCells;
@@ -66154,12 +66159,11 @@ function (_Component) {
   }, {
     key: "resetActiveState",
     value: function resetActiveState() {
+      var column = this.state.activeColumn;
       var copiedState = this.state;
 
-      for (var i = 0; i < this.state.notes.length; i++) {
-        for (var j = 0; j < this.state.cellCount; j++) {
-          copiedState.sequencerState[i].rowDataCells[j].dataActive = false;
-        }
+      for (var j = 0; j < this.state.notes.length; j++) {
+        copiedState.sequencerState[column].columnDataCells[j].dataActive = false;
       }
 
       this.setState(copiedState);
@@ -66167,17 +66171,13 @@ function (_Component) {
   }, {
     key: "toggleSequence",
     value: function toggleSequence() {
-      console.log("Toggling");
-
       if (this.state.playing) {
-        console.log("I was playing");
         tone__WEBPACK_IMPORTED_MODULE_1___default.a.Transport.stop();
         this.resetActiveState();
         this.setState({
           playing: false
         });
       } else {
-        console.log("I was not playing");
         tone__WEBPACK_IMPORTED_MODULE_1___default.a.Transport.seconds = 0;
         tone__WEBPACK_IMPORTED_MODULE_1___default.a.Transport.bpm.value = 120;
         tone__WEBPACK_IMPORTED_MODULE_1___default.a.Transport.start();
