@@ -11115,10 +11115,7 @@ a.text-dark:focus {
   -webkit-transition: height 0.3s;
   transition: height 0.3s;
   background: #457B9D;
-}
-
-.button-wrapper {
-  margin-bottom: 3rem;
+  padding-top: 10rem;
 }
 
 /* General button style (reset) */
@@ -11191,32 +11188,35 @@ a.text-dark:focus {
 
 .grid-wrapper {
   max-width: 80vw;
+  max-height: 80vw;
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+          flex-direction: row;
 }
 
-.grid-row {
+.grid-column {
   margin: 0 auto;
   background-color: white;
-  display: -webkit-box;
-  display: flex;
-  -webkit-box-pack: center;
-          justify-content: center;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+          flex-direction: row;
 }
 
-.grid-row .column {
+.grid-column .cell {
   display: -webkit-box;
   display: flex;
-  width: 60px;
-  height: 60px;
+  width: 30px;
+  height: 30px;
   outline: 1px solid #e8ecf1;
-  -webkit-box-flex: 1;
-          flex: 1 1 0;
 }
 
-.grid-row .column.active-cell {
+.grid-column .cell.active-cell {
   background-color: rgba(230, 57, 70, 0.5);
 }
 
-.grid-row .column.on-cell {
+.grid-column .cell.on-cell {
   background-color: #457B9D;
 }
 

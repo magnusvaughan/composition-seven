@@ -66050,9 +66050,7 @@ var synth = new tone__WEBPACK_IMPORTED_MODULE_1___default.a.MonoSynth({
   "envelope": {
     "attack": 0.1
   }
-}).toMaster(); //State
-
-var playing = false;
+}).toMaster();
 
 var Sequencer =
 /*#__PURE__*/
@@ -66067,8 +66065,8 @@ function (_Component) {
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Sequencer).call(this));
     _this.state = {
       playing: false,
-      notes: ["C5", "B4", "A4", "G4", "F4", "E4", "D4", "C4"],
-      cellCount: 16,
+      notes: ["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],
+      columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
       sequencerState: []
     };
     _this.playSequence = _this.playSequence.bind(_assertThisInitialized(_this));
@@ -66083,21 +66081,21 @@ function (_Component) {
     value: function componentDidMount() {
       var cells = [];
 
-      for (var i = 0; i < this.state.notes.length; i++) {
-        var rowState = [];
+      for (var i = 0; i < this.state.columns.length; i++) {
+        var columnState = [];
 
-        for (var j = 0; j < this.state.cellCount; j++) {
-          rowState.push({
+        for (var j = 0; j < this.state.notes.length; j++) {
+          columnState.push({
             dataCellNumber: j,
-            dataCellRow: this.state.notes[i],
+            dataCellColumn: i,
             dataOn: false,
             dataActive: false
           });
         }
 
         cells.push({
-          dataRowNumber: this.state.notes[i],
-          rowDataCells: rowState
+          dataColumnNumber: i,
+          columnDataCells: columnState
         });
         this.setState({
           sequencerState: cells
@@ -66109,19 +66107,18 @@ function (_Component) {
     value: function playSequence() {
       var _this2 = this;
 
-      var seq = new tone__WEBPACK_IMPORTED_MODULE_1___default.a.Sequence(function (time, note) {
-        var sequenceCellNumber = Math.floor(tone__WEBPACK_IMPORTED_MODULE_1___default.a.Transport.seconds * 2 % 16);
-
-        if (sequenceCellNumber === 0) {
-          var columnIndexToChange = _this2.state.cellCount - 1;
+      var notes = this.state.notes;
+      var seq = new tone__WEBPACK_IMPORTED_MODULE_1___default.a.Sequence(function (time, column) {
+        if (column === 0) {
+          var columnIndexToChange = _this2.state.columns.length - 1;
         } else {
-          var columnIndexToChange = sequenceCellNumber - 1;
+          var columnIndexToChange = column - 1;
         }
 
-        for (var i = 0; i <= _this2.state.notes.length; i++) {
+        for (var i = 0; i < _this2.state.notes.length; i++) {
           var removeActiveData = immutability_helper__WEBPACK_IMPORTED_MODULE_2___default()(_this2.state, {
-            sequencerState: _defineProperty({}, i, {
-              rowDataCells: _defineProperty({}, columnIndexToChange, {
+            sequencerState: _defineProperty({}, columnIndexToChange, {
+              columnDataCells: _defineProperty({}, i, {
                 dataActive: {
                   $set: false
                 }
@@ -66132,8 +66129,8 @@ function (_Component) {
           _this2.setState(removeActiveData);
 
           var addActiveData = immutability_helper__WEBPACK_IMPORTED_MODULE_2___default()(_this2.state, {
-            sequencerState: _defineProperty({}, i, {
-              rowDataCells: _defineProperty({}, sequenceCellNumber, {
+            sequencerState: _defineProperty({}, column, {
+              columnDataCells: _defineProperty({}, i, {
                 dataActive: {
                   $set: true
                 }
@@ -66142,13 +66139,16 @@ function (_Component) {
           });
 
           _this2.setState(addActiveData);
+        }
 
-          if (_this2.state.sequencerState[i].rowDataCells[sequenceCellNumber].dataOn) {
-            var noteToPlay = _this2.state.sequencerState[i].rowDataCells[sequenceCellNumber].dataCellRow;
+        var columnDataCells = _this2.state.sequencerState[column].columnDataCells;
+        columnDataCells.forEach(function (cellState) {
+          if (cellState.dataOn) {
+            var noteToPlay = notes[cellState.dataCellNumber];
             synth.triggerAttackRelease(noteToPlay, '8n');
           }
-        }
-      }, ["C4"]);
+        });
+      }, this.state.columns);
       seq.start(0);
     }
   }, {
@@ -66167,14 +66167,19 @@ function (_Component) {
   }, {
     key: "toggleSequence",
     value: function toggleSequence() {
+      console.log("Toggling");
+
       if (this.state.playing) {
+        console.log("I was playing");
         tone__WEBPACK_IMPORTED_MODULE_1___default.a.Transport.stop();
         this.resetActiveState();
         this.setState({
           playing: false
         });
       } else {
+        console.log("I was not playing");
         tone__WEBPACK_IMPORTED_MODULE_1___default.a.Transport.seconds = 0;
+        tone__WEBPACK_IMPORTED_MODULE_1___default.a.Transport.bpm.value = 120;
         tone__WEBPACK_IMPORTED_MODULE_1___default.a.Transport.start();
         this.playSequence();
         this.setState({
@@ -66186,19 +66191,14 @@ function (_Component) {
     key: "toggleOnState",
     value: function toggleOnState(e) {
       var sequencerState = this.state.sequencerState;
-      var cellRowNumber = e.target.getAttribute('data-cell-row');
-      var rowPosition = sequencerState.map(function (row) {
-        return row.dataRowNumber;
-      }).indexOf(cellRowNumber);
+      var cellColNumber = e.target.getAttribute('data-cell-column');
       var dataCellNumber = parseInt(e.target.getAttribute('data-cell-number'));
-      var cellPosition = sequencerState[rowPosition].rowDataCells.map(function (cell) {
-        return cell.dataCellNumber;
-      }).indexOf(dataCellNumber);
+      var cellPosition = sequencerState[cellColNumber].columnDataCells[dataCellNumber];
       var newData = immutability_helper__WEBPACK_IMPORTED_MODULE_2___default()(this.state, {
-        sequencerState: _defineProperty({}, rowPosition, {
-          rowDataCells: _defineProperty({}, cellPosition, {
+        sequencerState: _defineProperty({}, cellColNumber, {
+          columnDataCells: _defineProperty({}, dataCellNumber, {
             dataOn: {
-              $set: !sequencerState[rowPosition].rowDataCells[cellPosition].dataOn
+              $set: !sequencerState[cellColNumber].columnDataCells[dataCellNumber].dataOn
             }
           })
         })
@@ -66212,10 +66212,10 @@ function (_Component) {
 
       var grid = [];
       var sequencerState = this.state.sequencerState;
-      sequencerState.forEach(function (row, i) {
+      sequencerState.forEach(function (column, i) {
         var cells = [];
-        row.rowDataCells.forEach(function (cell) {
-          var cellClasses = 'column ';
+        column.columnDataCells.forEach(function (cell) {
+          var cellClasses = 'cell ';
 
           if (cell.dataOn) {
             cellClasses += 'on-cell ';
@@ -66229,16 +66229,16 @@ function (_Component) {
             onClick: _this3.toggleOnState,
             className: cellClasses,
             "data-cell-number": cell.dataCellNumber,
-            "data-cell-row": cell.dataCellRow,
+            "data-cell-column": cell.dataCellColumn,
             "data-on": cell.dataOn,
             "data-active": cell.dataActive,
             key: i + parseInt(cell.dataCellNumber)
           }));
         });
         grid.push(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-          className: "grid-row",
-          "data-row-note": row.dataRowNumber,
-          key: row.dataRowNumber
+          className: "grid-column",
+          "data-column-note": column.dataColumnNumber,
+          key: column.dataColumnNumber
         }, cells));
       });
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {

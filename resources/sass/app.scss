@@ -17,12 +17,13 @@
     align-items: center;
     justify-content: center;
     transition: height 0.3s;
-    background:  #457B9D
+	background:  #457B9D;
+	padding-top: 10rem;
 }
 
 // Button
 .button-wrapper {
-    margin-bottom: 3rem;
+    // margin-bottom: 3rem;
 }
 
 /* General button style (reset) */
@@ -97,20 +98,24 @@
 
 // Grid
 .grid-wrapper {
-    max-width: 80vw;
+	max-width: 80vw;
+	max-height: 80vw;
+	display: flex;
+	flex-direction: row;
+	// flex: 1 1 0;
 }
 
-.grid-row {
+.grid-column {
     margin: 0 auto;
     background-color: white;
-    display: flex;
-    justify-content: center;
-    .column {
+	// justify-content: center;
+	// // align-items: center;
+	flex-direction: row;
+    .cell {
         display: flex;
-        width: 60px;
-        height: 60px;
+        width: 30px;
+        height: 30px;
         outline: 1px solid rgba(232, 236, 241, 1);
-        flex: 1 1 0;
         &.active-cell {
             background-color: rgba(230, 57, 70, 0.5);
         }
