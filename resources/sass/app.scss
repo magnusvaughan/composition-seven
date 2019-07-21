@@ -8,7 +8,6 @@
 @import '~bootstrap/scss/bootstrap';
 
 
-
 .content {
     height: 100vh;
     width: 100vw;
@@ -23,7 +22,7 @@
 
 // Button
 .button-wrapper {
-    // margin-bottom: 3rem;
+    margin-bottom: 3rem;
 }
 
 /* General button style (reset) */
@@ -62,39 +61,16 @@
 	color: #fff;
 }
 
-/* Button 1e */
+/* Button 1c */
 .btn-1e {
-	overflow: hidden;
-}
-
-.btn-1e:after {
-	width: 100%;
-	height: 0;
-	top: 50%;
-	left: 50%;
-	background: #fff;
-	opacity: 0;
-	-webkit-transform: translateX(-50%) translateY(-50%) rotate(45deg);
-	-moz-transform: translateX(-50%) translateY(-50%) rotate(45deg);
-	-ms-transform: translateX(-50%) translateY(-50%) rotate(45deg);
-	transform: translateX(-50%) translateY(-50%) rotate(45deg);
+	transition: 0.3s transform;
 }
 
 .btn-1e:hover,
 .btn-1e:active {
-	color: #0e83cd;
+	transform: scale(1.025);
+	color: #fff;
 }
-
-.btn-1e:hover:after {
-	height: 260%;
-	opacity: 1;
-}
-
-.btn-1e:active:after {
-	height: 400%;
-	opacity: 1;
-}
-
 
 // Grid
 .grid-wrapper {
@@ -115,12 +91,18 @@
         display: flex;
         width: 30px;
         height: 30px;
-        outline: 1px solid rgba(232, 236, 241, 1);
+		outline: 1px solid rgba(232, 236, 241, 1);
+		transition: 0.3s transform;
         &.active-cell {
-            background-color: rgba(230, 57, 70, 0.5);
+			background-color: rgba(230, 57, 70, 0.5);
+			transform: scale(1.1);
         }
         &.on-cell {
-            background-color: #457B9D;
-        }
+			background-color: #457B9D;
+			&.active-cell {
+				background-color: purple;
+				transform: scale(1.2);
+			}
+		}
     }
 }

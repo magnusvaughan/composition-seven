@@ -11118,6 +11118,10 @@ a.text-dark:focus {
   padding-top: 10rem;
 }
 
+.button-wrapper {
+  margin-bottom: 3rem;
+}
+
 /* General button style (reset) */
 
 .btn {
@@ -11154,36 +11158,20 @@ a.text-dark:focus {
   color: #fff;
 }
 
-/* Button 1e */
+/* Button 1c */
 
 .btn-1e {
-  overflow: hidden;
-}
-
-.btn-1e:after {
-  width: 100%;
-  height: 0;
-  top: 50%;
-  left: 50%;
-  background: #fff;
-  opacity: 0;
-  -webkit-transform: translateX(-50%) translateY(-50%) rotate(45deg);
-  transform: translateX(-50%) translateY(-50%) rotate(45deg);
+  -webkit-transition: 0.3s -webkit-transform;
+  transition: 0.3s -webkit-transform;
+  transition: 0.3s transform;
+  transition: 0.3s transform, 0.3s -webkit-transform;
 }
 
 .btn-1e:hover,
 .btn-1e:active {
-  color: #0e83cd;
-}
-
-.btn-1e:hover:after {
-  height: 260%;
-  opacity: 1;
-}
-
-.btn-1e:active:after {
-  height: 400%;
-  opacity: 1;
+  -webkit-transform: scale(1.025);
+          transform: scale(1.025);
+  color: #fff;
 }
 
 .grid-wrapper {
@@ -11210,13 +11198,25 @@ a.text-dark:focus {
   width: 30px;
   height: 30px;
   outline: 1px solid #e8ecf1;
+  -webkit-transition: 0.3s -webkit-transform;
+  transition: 0.3s -webkit-transform;
+  transition: 0.3s transform;
+  transition: 0.3s transform, 0.3s -webkit-transform;
 }
 
 .grid-column .cell.active-cell {
   background-color: rgba(230, 57, 70, 0.5);
+  -webkit-transform: scale(1.1);
+          transform: scale(1.1);
 }
 
 .grid-column .cell.on-cell {
   background-color: #457B9D;
+}
+
+.grid-column .cell.on-cell.active-cell {
+  background-color: purple;
+  -webkit-transform: scale(1.2);
+          transform: scale(1.2);
 }
 
