@@ -66060,29 +66060,30 @@ function (_Component) {
       columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
       activeColumn: 0,
       sequencerState: [],
-      synth: {}
+      bpm: 120,
+      synth: new tone__WEBPACK_IMPORTED_MODULE_1___default.a.MonoSynth({
+        "oscillator": {
+          "type": "square"
+        },
+        "envelope": {
+          "attack": 0.5,
+          "release": 0.1
+        }
+      }).toMaster()
     };
     _this.playSequence = _this.playSequence.bind(_assertThisInitialized(_this));
     _this.toggleSequence = _this.toggleSequence.bind(_assertThisInitialized(_this));
     _this.toggleOnState = _this.toggleOnState.bind(_assertThisInitialized(_this));
     _this.resetActiveState = _this.resetActiveState.bind(_assertThisInitialized(_this));
     _this.changeSynth = _this.changeSynth.bind(_assertThisInitialized(_this));
+    _this.changeRelease = _this.changeRelease.bind(_assertThisInitialized(_this));
+    _this.changeBpm = _this.changeBpm.bind(_assertThisInitialized(_this));
     return _this;
   }
 
   _createClass(Sequencer, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      this.setState({
-        synth: new tone__WEBPACK_IMPORTED_MODULE_1___default.a.MonoSynth({
-          "oscillator": {
-            "type": "square"
-          },
-          "envelope": {
-            "attack": 0.1
-          }
-        }).toMaster()
-      });
       var cells = [];
 
       for (var i = 0; i < this.state.columns.length; i++) {
@@ -66189,7 +66190,7 @@ function (_Component) {
         });
       } else {
         tone__WEBPACK_IMPORTED_MODULE_1___default.a.Transport.seconds = 0;
-        tone__WEBPACK_IMPORTED_MODULE_1___default.a.Transport.bpm.value = 120;
+        tone__WEBPACK_IMPORTED_MODULE_1___default.a.Transport.bpm.value = this.state.bpm;
         tone__WEBPACK_IMPORTED_MODULE_1___default.a.Transport.start();
         this.playSequence();
         this.setState({
@@ -66214,6 +66215,32 @@ function (_Component) {
         })
       });
       this.setState(newData);
+    }
+  }, {
+    key: "changeRelease",
+    value: function changeRelease(e) {
+      console.log(e.target.value);
+      var changeRelease = immutability_helper__WEBPACK_IMPORTED_MODULE_2___default()(this.state, {
+        synth: {
+          envelope: {
+            release: {
+              $set: parseFloat(event.target.value)
+            }
+          }
+        }
+      });
+      this.setState(changeRelease);
+    }
+  }, {
+    key: "changeBpm",
+    value: function changeBpm(e) {
+      console.log(e.target.value);
+      var changeBpm = immutability_helper__WEBPACK_IMPORTED_MODULE_2___default()(this.state, {
+        bpm: {
+          $set: parseFloat(event.target.value)
+        }
+      });
+      this.setState(changeBpm);
     }
   }, {
     key: "render",
@@ -66259,9 +66286,29 @@ function (_Component) {
         onClick: this.toggleSequence,
         id: "make-some-noise",
         className: "btn btn-1 btn-1e"
-      }, "noise")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-        onClick: this.changeSynth
-      }, "Click me"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, "noise")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        "for": "bpm"
+      }, "BPM - ", this.state.bpm), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        onChange: this.changeBpm,
+        type: "range",
+        min: "0",
+        max: "400",
+        value: this.state.bpm,
+        step: "1",
+        className: "slider",
+        id: "bpm"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        "for": "release"
+      }, "Release - ", this.state.synth.envelope.release), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        onChange: this.changeRelease,
+        type: "range",
+        min: "0",
+        max: "3",
+        value: this.state.synth.envelope.release,
+        step: "0.01",
+        className: "slider",
+        id: "release"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "grid-wrapper"
       }, grid));
     }

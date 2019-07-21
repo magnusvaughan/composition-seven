@@ -11174,6 +11174,14 @@ a.text-dark:focus {
   color: #fff;
 }
 
+label {
+  color: white;
+}
+
+input {
+  margin-bottom: 2rem;
+}
+
 .grid-wrapper {
   max-width: 80vw;
   max-height: 80vw;
