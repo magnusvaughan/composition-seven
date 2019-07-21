@@ -3,15 +3,6 @@ import Tone from 'tone';
 import update from 'immutability-helper';
 
 // Composition Seven
-var synth = new Tone.MonoSynth({
-	"oscillator" : {
-		"type" : "square"
- },
- "envelope" : {
- 	"attack" : 0.1
- }
-}).toMaster();
-
 class Sequencer extends Component {
     constructor () {
         super()
@@ -20,7 +11,8 @@ class Sequencer extends Component {
             notes: ["C4","B3","A3","G3","F3","E3","D3","C3"],
             columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31],
             activeColumn: 0,
-            sequencerState: []
+            sequencerState: [],
+            synth: {}
         }
         this.playSequence = this.playSequence.bind(this);
         this.toggleSequence = this.toggleSequence.bind(this);
@@ -29,6 +21,16 @@ class Sequencer extends Component {
     }
 
     componentDidMount () {
+
+        this.setState({synth : new Tone.MonoSynth({
+            "oscillator" : {
+                "type" : "square"
+         },
+         "envelope" : {
+             "attack" : 0.1
+         }
+        }).toMaster()});
+
         let cells = [];
         for (var i = 0; i < this.state.columns.length; i++) {
             let columnState = [];
@@ -51,9 +53,8 @@ class Sequencer extends Component {
     }
 
     playSequence() {
-
         var notes = this.state.notes;
-       
+    
         var seq = new Tone.Sequence((time, column) => {
             if(column === 0) {
                 var columnIndexToChange = this.state.columns.length - 1;
@@ -66,22 +67,19 @@ class Sequencer extends Component {
                     sequencerState:{[columnIndexToChange]: {columnDataCells:{[i]: {dataActive: {$set: false}}}}}
                 });
                 this.setState(removeActiveData);
-
                 const addActiveData = update(this.state, {
                     sequencerState:{[column]: {columnDataCells:{[i]: {dataActive: {$set: true}}}}}
                 });
                 this.setState(addActiveData);
                 this.setState({activeColumn: column});
             }
-
             var columnDataCells = this.state.sequencerState[column].columnDataCells;
             columnDataCells.forEach(function(cellState){
                 if(cellState.dataOn) {
                     var noteToPlay = notes[cellState.dataCellNumber];
-                    synth.triggerAttackRelease(noteToPlay, '8n');
+                    this.state.synth.triggerAttackRelease(noteToPlay, '8n');
                 }
-            });
-
+            }.bind(this));
         }, this.state.columns);
         seq.start(0);
     }

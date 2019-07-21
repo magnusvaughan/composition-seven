@@ -66043,15 +66043,6 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
  // Composition Seven
 
-var synth = new tone__WEBPACK_IMPORTED_MODULE_1___default.a.MonoSynth({
-  "oscillator": {
-    "type": "square"
-  },
-  "envelope": {
-    "attack": 0.1
-  }
-}).toMaster();
-
 var Sequencer =
 /*#__PURE__*/
 function (_Component) {
@@ -66068,7 +66059,8 @@ function (_Component) {
       notes: ["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],
       columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
       activeColumn: 0,
-      sequencerState: []
+      sequencerState: [],
+      synth: {}
     };
     _this.playSequence = _this.playSequence.bind(_assertThisInitialized(_this));
     _this.toggleSequence = _this.toggleSequence.bind(_assertThisInitialized(_this));
@@ -66080,6 +66072,16 @@ function (_Component) {
   _createClass(Sequencer, [{
     key: "componentDidMount",
     value: function componentDidMount() {
+      this.setState({
+        synth: new tone__WEBPACK_IMPORTED_MODULE_1___default.a.MonoSynth({
+          "oscillator": {
+            "type": "square"
+          },
+          "envelope": {
+            "attack": 0.1
+          }
+        }).toMaster()
+      });
       var cells = [];
 
       for (var i = 0; i < this.state.columns.length; i++) {
@@ -66150,9 +66152,9 @@ function (_Component) {
         columnDataCells.forEach(function (cellState) {
           if (cellState.dataOn) {
             var noteToPlay = notes[cellState.dataCellNumber];
-            synth.triggerAttackRelease(noteToPlay, '8n');
+            this.state.synth.triggerAttackRelease(noteToPlay, '8n');
           }
-        });
+        }.bind(_this2));
       }, this.state.columns);
       seq.start(0);
     }
