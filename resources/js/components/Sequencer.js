@@ -18,18 +18,19 @@ class Sequencer extends Component {
         this.toggleSequence = this.toggleSequence.bind(this);
         this.toggleOnState = this.toggleOnState.bind(this);
         this.resetActiveState = this.resetActiveState.bind(this);
+        this.changeSynth = this.changeSynth.bind(this);
     }
 
     componentDidMount () {
 
-        this.setState({synth : new Tone.MonoSynth({
+        this.setState({synth: new Tone.MonoSynth({
             "oscillator" : {
                 "type" : "square"
          },
          "envelope" : {
              "attack" : 0.1
          }
-        }).toMaster()});
+        }).toMaster()})
 
         let cells = [];
         for (var i = 0; i < this.state.columns.length; i++) {
@@ -50,6 +51,12 @@ class Sequencer extends Component {
                 sequencerState: cells
             });
         }
+    }
+
+    changeSynth() {
+        this.setState({
+            synth: new Tone.FMSynth().toMaster()
+        })
     }
 
     playSequence() {
@@ -155,6 +162,7 @@ class Sequencer extends Component {
                 <div className="button-wrapper">
                     <button onClick={this.toggleSequence} id="make-some-noise" className="btn btn-1 btn-1e">noise</button>
                 </div>
+                <button onClick={this.changeSynth}>Click me</button>
                 <div className="grid-wrapper">
                     {grid}
                 </div>

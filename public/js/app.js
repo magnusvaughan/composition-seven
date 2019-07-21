@@ -66066,6 +66066,7 @@ function (_Component) {
     _this.toggleSequence = _this.toggleSequence.bind(_assertThisInitialized(_this));
     _this.toggleOnState = _this.toggleOnState.bind(_assertThisInitialized(_this));
     _this.resetActiveState = _this.resetActiveState.bind(_assertThisInitialized(_this));
+    _this.changeSynth = _this.changeSynth.bind(_assertThisInitialized(_this));
     return _this;
   }
 
@@ -66104,6 +66105,13 @@ function (_Component) {
           sequencerState: cells
         });
       }
+    }
+  }, {
+    key: "changeSynth",
+    value: function changeSynth() {
+      this.setState({
+        synth: new tone__WEBPACK_IMPORTED_MODULE_1___default.a.FMSynth().toMaster()
+      });
     }
   }, {
     key: "playSequence",
@@ -66251,7 +66259,9 @@ function (_Component) {
         onClick: this.toggleSequence,
         id: "make-some-noise",
         className: "btn btn-1 btn-1e"
-      }, "noise")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, "noise")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        onClick: this.changeSynth
+      }, "Click me"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "grid-wrapper"
       }, grid));
     }
