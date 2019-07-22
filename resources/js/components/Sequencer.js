@@ -9,7 +9,7 @@ class Sequencer extends Component {
         this.state = {
             playing: false,
             notes: ["C4","B3","A3","G3","F3","E3","D3","C3"],
-            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30],
             activeColumn: 0,
             sequencerState: [],
             bpm: 120,
@@ -19,8 +19,7 @@ class Sequencer extends Component {
                         "type" : "square"
                  },
                  "envelope" : {
-                     "attack" : 0.5,
-                     "release": 0.1
+                     "attack" : 0.1
                  }
                 }).toMaster()
         }
@@ -81,7 +80,7 @@ class Sequencer extends Component {
             columnDataCells.forEach(function(cellState){
                 if(cellState.dataOn) {
                     var noteToPlay = notes[cellState.dataCellNumber];
-                    this.state.synth.triggerAttackRelease(noteToPlay, '8n');
+                    this.state.synth.triggerAttackRelease(noteToPlay, '8n', '+0.05');
                 }
             }.bind(this));
         }, this.state.columns);
@@ -124,8 +123,6 @@ class Sequencer extends Component {
     }
 
     changeSynthType(e) {
-        console.log(event.target.value);
-
         switch(event.target.value) {
             case 'Monosynth':
                 this.setState({synth: new Tone.MonoSynth({
@@ -133,8 +130,7 @@ class Sequencer extends Component {
                         "type" : "square"
                  },
                  "envelope" : {
-                     "attack" : 0.5,
-                     "release": 0.1
+                     "attack" : 0.1
                  }
                 }).toMaster()});
             break;
@@ -166,7 +162,6 @@ class Sequencer extends Component {
     }
 
     changeRelease(e) {
-        console.log(e.target.value);
         const changeRelease = update(this.state, {
             synth:{envelope: {release:{$set: parseFloat(event.target.value)}}}
         });
@@ -174,11 +169,11 @@ class Sequencer extends Component {
     }
 
     changeBpm(e) {
-        console.log(e.target.value);
         const changeBpm = update(this.state, {
             bpm: {$set: parseFloat(event.target.value)}
         });
         this.setState(changeBpm);
+        Tone.Transport.bpm.value = this.state.bpm;
     }
 
     render () {
@@ -228,7 +223,7 @@ class Sequencer extends Component {
                 <div className="button-wrapper">
                     <button onClick={this.toggleSequence} id="make-some-noise" className="btn btn-1 btn-1e">noise</button>
                 </div>
-                <label for="bpm">BPM - {this.state.bpm}</label>
+                <label htmlFor="bpm">BPM - {this.state.bpm}</label>
                 <input onChange={this.changeBpm} type="range" min="0" max="400" value={this.state.bpm} step="1" className="slider" id="bpm" />
                 {/* <label for="release">Release - {this.state.synth.envelope.release}</label>
                 <input onChange={this.changeRelease} type="range" min="0" max="3" value={this.state.synth.envelope.release} step="0.01" className="slider" id="release" /> */}
