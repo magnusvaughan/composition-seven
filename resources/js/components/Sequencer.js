@@ -206,6 +206,8 @@ class Sequencer extends Component {
                 </div>
             )
         });
+
+        var buttonLabel = this.state.playing ? 'stop' : 'noise';
         
         return (
             <div className="content">
@@ -221,7 +223,7 @@ class Sequencer extends Component {
                     <p>{this.state.value}</p>
                 </div>
                 <div className="button-wrapper">
-                    <button onClick={this.toggleSequence} id="make-some-noise" className="btn btn-1 btn-1e">noise</button>
+                    <button onClick={this.toggleSequence} id="make-some-noise" className="btn btn-1 btn-1e">{buttonLabel}</button>
                 </div>
                 <label htmlFor="bpm">BPM - {this.state.bpm}</label>
                 <input onChange={this.changeBpm} type="range" min="0" max="400" value={this.state.bpm} step="1" className="slider" id="bpm" />
