@@ -9,7 +9,7 @@ class Sequencer extends Component {
         this.state = {
             playing: false,
             notes: ["C4","B3","A3","G3","F3","E3","D3","C3"],
-            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31],
+            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
             activeColumn: 0,
             sequencerState: [],
             bpm: 120,
@@ -28,7 +28,7 @@ class Sequencer extends Component {
         this.toggleSequence = this.toggleSequence.bind(this);
         this.toggleOnState = this.toggleOnState.bind(this);
         this.resetActiveState = this.resetActiveState.bind(this);
-        this.changeSynth = this.changeSynth.bind(this);
+        this.changeSynthType = this.changeSynthType.bind(this);
         this.changeRelease = this.changeRelease.bind(this);
         this.changeBpm = this.changeBpm.bind(this);
     }
@@ -54,12 +54,6 @@ class Sequencer extends Component {
                 sequencerState: cells
             });
         }
-    }
-
-    changeSynth() {
-        this.setState({
-            synth: new Tone.FMSynth().toMaster()
-        })
     }
 
     playSequence() {
@@ -129,6 +123,48 @@ class Sequencer extends Component {
         this.setState(newData);
     }
 
+    changeSynthType(e) {
+        console.log(event.target.value);
+
+        switch(event.target.value) {
+            case 'Monosynth':
+                this.setState({synth: new Tone.MonoSynth({
+                    "oscillator" : {
+                        "type" : "square"
+                 },
+                 "envelope" : {
+                     "attack" : 0.5,
+                     "release": 0.1
+                 }
+                }).toMaster()});
+            break;
+            case 'FM':
+                this.setState({
+                    synth: new Tone.FMSynth().toMaster()
+                });
+            break;
+            case 'Noise':
+                this.setState({synth: new Tone.NoiseSynth().toMaster()});
+              break;
+            case 'Pluck':
+                this.setState({
+                    synth: new Tone.PluckSynth().toMaster()
+                });
+            break;
+            case 'Noise':
+                this.setState({synth: new Tone.NoiseSynth().toMaster()});
+              break;
+            case 'Metal':
+                this.setState({synth: new Tone.MetalSynth().toMaster()});
+              break;
+            default:
+              // code block
+          }
+
+
+
+    }
+
     changeRelease(e) {
         console.log(e.target.value);
         const changeRelease = update(this.state, {
@@ -178,13 +214,24 @@ class Sequencer extends Component {
         
         return (
             <div className="content">
+                <div>
+                    <select id="lang" onChange={this.changeSynthType} value={this.state.type}>
+                        <option value="Monosynth">Monosynth</option>
+                        <option value="FM">FM</option>
+                        <option value="Noise">Noise</option>
+                        <option value="Pluck">Pluck</option>
+                        <option value="Metal">Metal</option>
+                    </select>
+                    <p></p>
+                    <p>{this.state.value}</p>
+                </div>
                 <div className="button-wrapper">
                     <button onClick={this.toggleSequence} id="make-some-noise" className="btn btn-1 btn-1e">noise</button>
                 </div>
                 <label for="bpm">BPM - {this.state.bpm}</label>
                 <input onChange={this.changeBpm} type="range" min="0" max="400" value={this.state.bpm} step="1" className="slider" id="bpm" />
-                <label for="release">Release - {this.state.synth.envelope.release}</label>
-                <input onChange={this.changeRelease} type="range" min="0" max="3" value={this.state.synth.envelope.release} step="0.01" className="slider" id="release" />
+                {/* <label for="release">Release - {this.state.synth.envelope.release}</label>
+                <input onChange={this.changeRelease} type="range" min="0" max="3" value={this.state.synth.envelope.release} step="0.01" className="slider" id="release" /> */}
                 <div className="grid-wrapper">
                     {grid}
                 </div>
