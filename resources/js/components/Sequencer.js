@@ -8,11 +8,12 @@ class Sequencer extends Component {
         super()
         this.state = {
             playing: false,
-            notes: ["C4","B3","A3","G3","F3","E3","D3","C3"],
+            notes: ["C4","B3","A#3","A3","G#3","G3","F#3","F3","E3","D#3","D3","C#3","C3"],
             columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30],
             activeColumn: 0,
             sequencerState: [],
             bpm: 120,
+            delay: false,
             synth: new Tone.MonoSynth(
                 {
                     "oscillator" : {
@@ -30,6 +31,7 @@ class Sequencer extends Component {
         this.changeSynthType = this.changeSynthType.bind(this);
         this.changeRelease = this.changeRelease.bind(this);
         this.changeBpm = this.changeBpm.bind(this);
+        this.toggleDelay = this.toggleDelay.bind(this);
     }
 
     componentDidMount () {
@@ -83,7 +85,7 @@ class Sequencer extends Component {
                     this.state.synth.triggerAttackRelease(noteToPlay, '8n', '+0.05');
                 }
             }.bind(this));
-        }, this.state.columns);
+        }, this.state.columns, "8n");
         seq.start(0);
     }
 
@@ -154,11 +156,15 @@ class Sequencer extends Component {
                 this.setState({synth: new Tone.MetalSynth().toMaster()});
               break;
             default:
-              // code block
+                this.setState({synth: new Tone.MonoSynth({
+                    "oscillator" : {
+                        "type" : "square"
+                 },
+                 "envelope" : {
+                     "attack" : 0.1
+                 }
+                }).toMaster()});
           }
-
-
-
     }
 
     changeRelease(e) {
@@ -176,13 +182,27 @@ class Sequencer extends Component {
         Tone.Transport.bpm.value = this.state.bpm;
     }
 
+    toggleDelay() {
+        if(!this.state.delay) {
+            var synth = this.state.synth;
+            console.log(synth);
+            var split = synth.split('.toMaster()})');
+            console.log(split);
+        }
+    }
+
     render () {
         let grid = [];
         let sequencerState = this.state.sequencerState;
+        let notes = this.state.notes;
         sequencerState.forEach((column, i) => {
             let cells = [];
             column.columnDataCells.forEach(cell => { 
+                console.log();
                 var cellClasses = 'cell ';
+                if(notes[cell.dataCellNumber].indexOf('#') > -1) {
+                    cellClasses+='black-note '
+                }
                 if(cell.dataOn) {
                     cellClasses+='on-cell ';
                 }
@@ -225,8 +245,9 @@ class Sequencer extends Component {
                 <div className="button-wrapper">
                     <button onClick={this.toggleSequence} id="make-some-noise" className="btn btn-1 btn-1e">{buttonLabel}</button>
                 </div>
+                {/* <button onClick={this.toggleDelay}>Delay</button> */}
                 <label htmlFor="bpm">BPM - {this.state.bpm}</label>
-                <input onChange={this.changeBpm} type="range" min="0" max="400" value={this.state.bpm} step="1" className="slider" id="bpm" />
+                <input onChange={this.changeBpm} type="range" min="0" max="180" value={this.state.bpm} step="1" className="slider" id="bpm" />
                 {/* <label for="release">Release - {this.state.synth.envelope.release}</label>
                 <input onChange={this.changeRelease} type="range" min="0" max="3" value={this.state.synth.envelope.release} step="0.01" className="slider" id="release" /> */}
                 <div className="grid-wrapper">
