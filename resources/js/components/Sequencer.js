@@ -35,7 +35,7 @@ class Sequencer extends Component {
     }
 
     componentDidMount () {
-
+        var notes = this.state.notes;
         let cells = [];
         for (var i = 0; i < this.state.columns.length; i++) {
             let columnState = [];
@@ -44,7 +44,8 @@ class Sequencer extends Component {
                     dataCellNumber: j,
                     dataCellColumn: i,
                     dataOn: false,
-                    dataActive: false
+                    dataActive: false,
+                    note: notes[j]
                 });
             }
             cells.push({
@@ -81,8 +82,8 @@ class Sequencer extends Component {
             var columnDataCells = this.state.sequencerState[column].columnDataCells;
             columnDataCells.forEach(function(cellState){
                 if(cellState.dataOn) {
-                    var noteToPlay = notes[cellState.dataCellNumber];
-                    this.state.synth.triggerAttackRelease(noteToPlay, '8n', '+0.05');
+                    
+                    this.state.synth.triggerAttackRelease(cellState.note, '8n', '+0.05');
                 }
             }.bind(this));
         }, this.state.columns, "8n");
