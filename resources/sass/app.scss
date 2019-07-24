@@ -102,13 +102,21 @@ input {
 		outline: 1px solid rgba(232, 236, 241, 1);
 		transition: 0.3s transform;
 		&.active-cell {
-			background-color: rgba(230, 57, 70, 0.5);
+			outline: none;
+			border-left: 2px solid rgba(230, 57, 70, 0.5);
+			border-right: 2px solid rgba(230, 57, 70, 0.5);
+			border-top: none;
+			border-bottom: none;
 			transform: scale(1.1);
         }
 		&.black-note {
 			background-color: darken($color: #ffffff, $amount: 20%);
 			&.active-cell {
-				background-color: rgba(230, 57, 70, 0.5);
+				outline: none;
+				border-left: 2px solid rgba(230, 57, 70, 0.5);
+				border-right: 2px solid rgba(230, 57, 70, 0.5);
+				border-top: none;
+				border-bottom: none;
 				transform: scale(1.1);
 			}
 			&.on-cell {
@@ -120,6 +128,11 @@ input {
         &.on-cell {
 			background-color: #457B9D;
 			&.active-cell {
+				outline: none;
+				border-left: 2px solid rgba(230, 57, 70, 0.5);
+				border-right: 2px solid rgba(230, 57, 70, 0.5);
+				border-top: none;
+				border-bottom: none;
 				background-color: #FFE600;
 				transform: scale(1.15);
 			}

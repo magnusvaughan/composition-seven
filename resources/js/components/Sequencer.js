@@ -141,8 +141,8 @@ class Sequencer extends Component {
                     synth: new Tone.FMSynth().toMaster()
                 });
             break;
-            case 'Noise':
-                this.setState({synth: new Tone.NoiseSynth().toMaster()});
+            case 'Poly':
+                this.setState({synth: new Tone.PolySynth(6, Tone.Synth).toMaster()});
               break;
             case 'Pluck':
                 this.setState({
@@ -235,7 +235,7 @@ class Sequencer extends Component {
                     <select id="lang" onChange={this.changeSynthType} value={this.state.type}>
                         <option value="Monosynth">Monosynth</option>
                         <option value="FM">FM</option>
-                        <option value="Noise">Noise</option>
+                        <option value="Poly">Poly</option>
                         <option value="Pluck">Pluck</option>
                         <option value="Metal">Metal</option>
                     </select>
