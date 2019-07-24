@@ -127,7 +127,6 @@ class Sequencer extends Component {
             columnDrumDataCells.forEach(function(cellState){
 
                 if(cellState.dataOn) { 
-                    console.log("I should be playing");
                     const player = new Tone.Player(`/files/${cellState.drumSound}.wav`).toMaster();
                     player.autostart = true;
                     Tone.Buffer.on('load', () => {
