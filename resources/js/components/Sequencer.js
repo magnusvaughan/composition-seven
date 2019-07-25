@@ -16,18 +16,7 @@ class Sequencer extends Component {
             drumState: [],
             bpm: 120,
             delay: false,
-            synth: new Tone.MonoSynth(
-                {
-                    "oscillator" : {
-                        "type" : "square"
-                 },
-                 "envelope" : {
-                     "attack" : 0.1
-                 }
-                }).toMaster(),
-            sampler: new Tone.Sampler({
-                "D3" : "/files/kick.wav"
-            }).toMaster()
+            synth: new Tone.PolySynth(6, Tone.Synth).toMaster()
         }
         this.playSequence = this.playSequence.bind(this);
         this.toggleSequence = this.toggleSequence.bind(this);
