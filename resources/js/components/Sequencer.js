@@ -218,14 +218,7 @@ class Sequencer extends Component {
                 this.setState({synth: new Tone.MetalSynth().toMaster()});
               break;
             default:
-                this.setState({synth: new Tone.MonoSynth({
-                    "oscillator" : {
-                        "type" : "square"
-                 },
-                 "envelope" : {
-                     "attack" : 0.1
-                 }
-                }).toMaster()});
+                this.setState({synth: new Tone.PolySynth(6, Tone.Synth).toMaster()});
           }
     }
 
@@ -252,14 +245,21 @@ class Sequencer extends Component {
     }
 
     loadSong() {
-        var song = JSON.parse(localStorage.getItem('songState'));
-        console.log(song);
-        this.setState({drumState:song});
+        var drumState = JSON.parse(localStorage.getItem('drumState'));
+        var synthState = JSON.parse(localStorage.getItem('synthState'));
+        console.log(drumState);
+        console.log(synthState);
+        this.setState({
+            drumState: drumState,
+            sequencerState: synthState
+        });
     }
 
     saveSong() {
-        var stateString = JSON.stringify(this.state.drumState)
-        localStorage.setItem('songState', stateString);
+        var drumStateString = JSON.stringify(this.state.drumState);
+        var synthStateString = JSON.stringify(this.state.sequencerState);
+        localStorage.setItem('drumState', drumStateString);
+        localStorage.setItem('synthState', synthStateString);
     }
 
     render () {
