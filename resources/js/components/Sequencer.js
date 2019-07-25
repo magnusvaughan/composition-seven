@@ -125,7 +125,7 @@ class Sequencer extends Component {
                     })
                 }
             }.bind(this));
-        }, this.state.columns, "8n");
+        }, this.state.columns, "16n");
         seq.start(0);
     }
 
