@@ -8,7 +8,7 @@ class Sequencer extends Component {
         super()
         this.state = {
             playing: false,
-            notes: ["C4","B3","A#3","A3","G#3","G3","F#3","F3","E3","D#3","D3","C#3","C3"],
+            notes: ["C5","B4","A#4","A4","G#4","G4","F#4","F4","E4","D#4","D4","C#4","C4"],
             drumSounds: ['openhat','closedhat','snare','kick'],
             columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
             activeColumn: 0,
