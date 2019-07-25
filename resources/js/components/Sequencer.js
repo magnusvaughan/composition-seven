@@ -10,7 +10,7 @@ class Sequencer extends Component {
             playing: false,
             notes: ["C4","B3","A#3","A3","G#3","G3","F#3","F3","E3","D#3","D3","C#3","C3"],
             drumSounds: ['openhat','closedhat','snare','kick'],
-            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31],
+            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
             activeColumn: 0,
             sequencerState: [],
             drumState: [],
@@ -38,6 +38,8 @@ class Sequencer extends Component {
         this.changeRelease = this.changeRelease.bind(this);
         this.changeBpm = this.changeBpm.bind(this);
         this.toggleDelay = this.toggleDelay.bind(this);
+        this.loadSong = this.loadSong.bind(this);
+        this.saveSong = this.saveSong.bind(this);
     }
 
     componentDidMount () {
@@ -249,6 +251,17 @@ class Sequencer extends Component {
         }
     }
 
+    loadSong() {
+        var song = JSON.parse(localStorage.getItem('songState'));
+        console.log(song);
+        this.setState({drumState:song});
+    }
+
+    saveSong() {
+        var stateString = JSON.stringify(this.state.drumState)
+        localStorage.setItem('songState', stateString);
+    }
+
     render () {
         // Synth
         let grid = [];
@@ -324,10 +337,12 @@ class Sequencer extends Component {
         return (
             <div className="content">
                 <div>
+                    <button onClick={this.loadSong}>Load</button>
+                    <button onClick={this.saveSong}>Save</button>
                     <select id="lang" onChange={this.changeSynthType} value={this.state.type}>
+                        <option value="Poly">Polysynth</option>
                         <option value="Monosynth">Monosynth</option>
                         <option value="FM">FM</option>
-                        <option value="Poly">Poly</option>
                         <option value="Pluck">Pluck</option>
                         <option value="Metal">Metal</option>
                     </select>
