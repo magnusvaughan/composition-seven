@@ -135,6 +135,9 @@ class Sequencer extends Component {
         for(var j = 0; j < this.state.notes.length; j++) {
             copiedState.sequencerState[column].columnDataCells[j].dataActive = false;
         }
+        for(var k = 0; k < this.state.drumSounds.length; k++) {
+            copiedState.drumState[column].columnDrumDataCells[k].dataActive = false;
+        }
         this.setState(copiedState);
     }
 
@@ -236,8 +239,6 @@ class Sequencer extends Component {
     loadSong() {
         var drumState = JSON.parse(localStorage.getItem('drumState'));
         var synthState = JSON.parse(localStorage.getItem('synthState'));
-        console.log(drumState);
-        console.log(synthState);
         this.setState({
             drumState: drumState,
             sequencerState: synthState
