@@ -75,7 +75,6 @@ class Sequencer extends Component {
     }
 
     playSequence() {
-        var notes = this.state.notes;
     
         var seq = new Tone.Sequence((time, column) => {
             if(column === 0) {
@@ -99,7 +98,7 @@ class Sequencer extends Component {
             var columnDataCells = this.state.sequencerState[column].columnDataCells;
             columnDataCells.forEach(function(cellState){
                 if(cellState.dataOn) {  
-                    this.state.synth.triggerAttackRelease(cellState.note, '8n', '+0.05');
+                    this.state.synth.triggerAttackRelease(cellState.note, '8n', '+0.1');
                 }
             }.bind(this));
             // Drums
@@ -121,7 +120,7 @@ class Sequencer extends Component {
                     const player = new Tone.Player(`/files/${cellState.drumSound}.wav`).toMaster();
                     player.autostart = true;
                     Tone.Buffer.on('load', () => {
-                        xplayer.start();
+                        xplayer.start('+0.1');
                     })
                 }
             }.bind(this));
