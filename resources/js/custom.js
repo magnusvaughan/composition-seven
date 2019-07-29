@@ -69,6 +69,9 @@ function playSequence() {
 
         for (var j = 0; j < activeCells.length; j++) {
             activeCells[j].classList.add('active-cell');
+            if(activeCells[j].getAttribute('data-on') === 'true') {
+                state.synth.triggerAttackRelease(activeCells[j].getAttribute('data-note'), '8n', '+0.1');
+            }
         }
 
     }, state.columns, "16n");
@@ -83,17 +86,38 @@ function resetActiveState() {
 }
 
 function toggleTransport() {
+    var transportToggleButton = document.getElementById('toggleTransport');
     if(state.playing) {
+        transportToggleButton.innerHTML = 'Play'
         Tone.Transport.stop();
         resetActiveState();
         state.playing = false;
     }
     else {
+        transportToggleButton.innerHTML = 'Stop'
         Tone.Transport.seconds = 0;
         Tone.Transport.bpm.value = state.bpm;
         Tone.Transport.start();
         playSequence();
         state.playing = true;
+    }
+}
+
+function toggleCellOn(e) {
+    const cell = e.target;
+    const onState = cell.getAttribute('data-on');
+    const cellColumn = cell.getAttribute('data-cell-column');
+    const cellNumber = cell.getAttribute('data-cell-number');
+
+    if(onState === "true") {
+        cell.classList.remove('on-cell');
+        cell.setAttribute('data-on', "false");
+        state.sequencerState[cellColumn].columnDataCells[cellNumber].dataOn = false;
+    }
+    else {
+        cell.classList.add('on-cell');
+        cell.setAttribute('data-on', "true");
+        state.sequencerState[cellColumn].columnDataCells[cellNumber].dataOn = true;
     }
 }
     //     if(column === 0) {
@@ -148,6 +172,8 @@ function toggleTransport() {
 // }
 
 // Create DOM from looping over state
+let content = document.createElement('div');
+content.setAttribute('class', 'content');
 
 // Synth
 let grid = document.createElement('div');
@@ -170,6 +196,7 @@ state.sequencerState.forEach((synthColumn, i) => {
         synthCellDom.setAttribute('data-cell-column', synthCell.dataCellColumn);
         synthCellDom.setAttribute('data-note', synthCell.note);
         synthCellDom.setAttribute('class', cellClasses); 
+        synthCellDom.addEventListener('click', toggleCellOn)
         synthColumnDom.appendChild(synthCellDom);
     });
     grid.appendChild(synthColumnDom);
@@ -200,13 +227,15 @@ drumGrid.appendChild(drumColumnDom);
 });
 
 let togglePlay = document.createElement('button');
-togglePlay.innerHTML = "Toggle play";
+togglePlay.innerHTML = "Play";
+togglePlay.setAttribute('id', 'toggleTransport'); 
 togglePlay.addEventListener('click', toggleTransport)
 
 let sequencer = document.getElementById('sequencer');
-sequencer.appendChild(grid);
-sequencer.appendChild(drumGrid);
-sequencer.appendChild(togglePlay);
+sequencer.appendChild(content);
+content.appendChild(grid);
+content.appendChild(drumGrid);
+content.appendChild(togglePlay);
 
 
 //todo - Add toggle play button
