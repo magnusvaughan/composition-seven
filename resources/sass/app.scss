@@ -95,7 +95,7 @@ input {
 	max-height: 80vw;
 	display: flex;
 	flex-direction: row;
-	margin-bottom: 3rem;
+	margin-bottom: 1rem;
 	// flex: 1 1 0;
 }
 
@@ -107,8 +107,8 @@ input {
 	flex-direction: row;
     .cell {
         display: flex;
-        width: 30px;
-        height: 30px;
+        width: 25px;
+        height: 25px;
 		outline: 1px solid rgba(232, 236, 241, 1);
 		transition: 0.3s transform;
 		&.active-cell {
