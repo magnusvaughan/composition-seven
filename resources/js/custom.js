@@ -98,7 +98,7 @@ function playSequence() {
                     const player = new Tone.Player(`/files/${activeCells[j].getAttribute('data-drum-sound')}.wav`).toMaster();
                     player.autostart = true;
                     Tone.Buffer.on('load', () => {
-                        xplayer.start('+0.1');
+                        xplayer.start('0');
                     })
                 }
             }
