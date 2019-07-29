@@ -19372,21 +19372,40 @@ state.sequencerState = cells;
 state.drumState = drumCells;
 
 function playSequence() {
+  var allCells = document.getElementsByClassName('cell');
   var seq = new tone__WEBPACK_IMPORTED_MODULE_0___default.a.Sequence(function (time, column) {
-    console.log(time, column);
+    for (var i = 0; i < allCells.length; i++) {
+      allCells[i].classList.remove('active-cell');
+    }
+
+    var activeCells = document.querySelectorAll("[data-cell-column=".concat(CSS.escape(column), "]"));
+
+    for (var j = 0; j < activeCells.length; j++) {
+      activeCells[j].classList.add('active-cell');
+    }
   }, state.columns, "16n");
   seq.start(0);
 }
 
+function resetActiveState() {
+  var allCells = document.getElementsByClassName('cell');
+
+  for (var i = 0; i < allCells.length; i++) {
+    allCells[i].classList.remove('active-cell');
+  }
+}
+
 function toggleTransport() {
-  if (this.state.playing) {
+  if (state.playing) {
     tone__WEBPACK_IMPORTED_MODULE_0___default.a.Transport.stop();
-    resetActiveState(); // this.setState({playing : false});
+    resetActiveState();
+    state.playing = false;
   } else {
     tone__WEBPACK_IMPORTED_MODULE_0___default.a.Transport.seconds = 0;
     tone__WEBPACK_IMPORTED_MODULE_0___default.a.Transport.bpm.value = state.bpm;
     tone__WEBPACK_IMPORTED_MODULE_0___default.a.Transport.start();
-    playSequence(); // this.setState({playing : true});
+    playSequence();
+    state.playing = true;
   }
 } //     if(column === 0) {
 //         var columnIndexToChange = this.state.columns.length - 1;
