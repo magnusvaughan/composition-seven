@@ -13,9 +13,56 @@ let state = {
     drumState: [],
     bpm: 120,
     delay: false,
-    synth: new Tone.PolySynth(6, Tone.Synth,
-        {"portamento":0,"oscillator":{"type":"square4"},"envelope":{"attack":2,"decay":1,"sustain":0.2,"release":2}}
-    ).toMaster()
+    synth: new Tone.PolySynth(6, Tone.FMSynth,
+        {
+            "harmonicity":8,
+            "modulationIndex": 2,
+            "oscillator" : {
+                "type": "sine"
+            },
+            "envelope": {
+                "attack": 0.001,
+                "decay": 2,
+                "sustain": 0.1,
+                "release": 2
+            },
+            "modulation" : {
+                "type" : "square"
+            },
+            "modulationEnvelope" : {
+                "attack": 0.002,
+                "decay": 0.2,
+                "sustain": 0,
+                "release": 0.2
+            }
+        }
+    ).toMaster(),
+    bassSynth: new Tone.MonoSynth(
+        {
+            "portamento": 0.08,
+            "oscillator": {
+                "partials": [2, 1, 3, 2, 0.4]
+            },
+            "filter": {
+                "Q": 4,
+                "type": "lowpass",
+                "rolloff": -48
+            },
+            "envelope": {
+                "attack": 0.04,
+                "decay": 0.06,
+                "sustain": 0.4,
+                "release": 1
+            },
+            "filterEnvelope": {
+                "attack": 0.01,
+                "decay": 0.1,
+                "sustain": 0.6,
+                "release": 1.5,
+                "baseFrequency": 50,
+                "octaves": 3.4
+            }
+        }).toMaster()
 } 
 
 //todo - Load state from localStorage
@@ -94,13 +141,18 @@ function playSequence() {
             activeCells[j].classList.add('active-cell');
             if(activeCells[j].getAttribute('data-on') === 'true') {
                 if(activeCells[j].getAttribute('data-note') !== null) {
-                    state.synth.triggerAttackRelease(activeCells[j].getAttribute('data-note'), '8n', '+0.1');
+                    if(activeCells[j].getAttribute('data-type') == 'synth') {
+                        state.synth.triggerAttackRelease(activeCells[j].getAttribute('data-note'), '8n', '+0.1');
+                    }
+                    if(activeCells[j].getAttribute('data-type') == 'bass') {
+                        state.bassSynth.triggerAttackRelease(activeCells[j].getAttribute('data-note'), '8n', '+0.1');
+                    }
                 }
                 if(activeCells[j].getAttribute('data-drum-sound') !== null) {
                     const player = new Tone.Player(`/files/${activeCells[j].getAttribute('data-drum-sound')}.wav`).toMaster();
                     player.autostart = true;
                     Tone.Buffer.on('load', () => {
-                        xplayer.start('0');
+                        player.start('0');
                     })
                 }
             }
@@ -231,6 +283,7 @@ function renderState() {
             synthCellDom.setAttribute('data-active', synthCell.dataActive);
             synthCellDom.setAttribute('data-cell-column', synthCell.dataCellColumn);
             synthCellDom.setAttribute('data-note', synthCell.note);
+            synthCellDom.setAttribute('data-type', 'synth');
             synthCellDom.setAttribute('class', cellClasses); 
             synthCellDom.addEventListener("click", function(e){
                 toggleCellOn(e, "synth");
@@ -265,6 +318,8 @@ function renderState() {
             bassCellDom.setAttribute('data-active', bassCell.dataActive);
             bassCellDom.setAttribute('data-cell-column', bassCell.dataBassCellColumn);
             bassCellDom.setAttribute('data-note', bassCell.note);
+            bassCellDom.setAttribute('data-type', 'bass');
+
             bassCellDom.setAttribute('class', bassCellClasses); 
             bassCellDom.addEventListener("click", function(e){
                 toggleCellOn(e, "bass");
@@ -333,12 +388,9 @@ loadState();
 renderState();
 
 
-// [{
-//     "portamento":0,
-//     "oscillator":{"type":"fatsine4","spread":60,"count":10},
-//     "envelope":{"attack":0.4,"decay":0.01,"sustain":1,"attackCurve":"sine","releaseCurve":"sine","release":0.4}}
+// {"portamento":0,"oscillator":{"type":"fatsine4","spread":60,"count":10},"envelope":{"attack":0.4,"decay":0.01,"sustain":1,"attackCurve":"sine","releaseCurve":"sine","release":0.4}}
 
-//     {"portamento":0,"oscillator":{"type":"square4"},"envelope":{"attack":2,"decay":1,"sustain":0.2,"release":2}},
+//     {"portamento":0,"oscillator":{"type":"square4"},"envelope":{"attack":2,"decay":1,"sustain":0.2,"release":2}}
 //     {"portamento":0,"oscillator":{"type":"pulse","width":0.8},"envelope":{"attack":0.01,"decay":0.05,"sustain":0.2,"releaseCurve":"bounce","release":0.4}},
 //     {"portamento":0.2,"oscillator":{"type":"sawtooth"},"envelope":{"attack":0.03,"decay":0.1,"sustain":0.2,"release":0.02}},
 //     {"portamento":0.2,"oscillator":{"partials":[1,0,2,0,3]},"envelope":{"attack":0.001,"decay":1.2,"sustain":0,"release":1.2}},{"portamento":0.2,"oscillator":{"type":"fatcustom","partials":[0.2,1,0,0.5,0.1],"spread":40,"count":3},"envelope":{"attack":0.001,"decay":1.6,"sustain":0,"release":1.6}},
