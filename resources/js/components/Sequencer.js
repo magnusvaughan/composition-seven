@@ -152,8 +152,6 @@ class Sequencer extends Component {
 
             let activeCells = document.querySelectorAll(`[data-cell-column=${CSS.escape(column)}]`);
 
-            console.log(activeCells);
-
             //All instrument active states
             for (var j = 0; j < activeCells.length; j++) {
                 activeCells[j].classList.add('active-cell');
