@@ -107,8 +107,8 @@ input {
 	flex-direction: row;
     .cell {
         display: flex;
-        width: 25px;
-        height: 25px;
+        width: 20px;
+        height: 20px;
 		outline: 1px solid rgba(232, 236, 241, 1);
 		transition: 0.3s transform;
 		&.active-cell {

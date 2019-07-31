@@ -8,19 +8,71 @@ class Sequencer extends Component {
         super()
         this.state = {
             playing: false,
-            notes: ["C5","B4","A#4","A4","G#4","G4","F#4","F4","E4","D#4","D4","C#4","C4"],
+            synthNotes: ["C5","B4","A#4","A4","G#4","G4","F#4","F4","E4","D#4","D4","C#4","C4"],
+            bassNotes: ["C3","B2","A#2","A2","G#2","G2","F#2","F2","E2","D#2","D2","C#2","C2"],
             drumSounds: ['openhat','closedhat','snare','kick'],
             columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
             activeColumn: 0,
-            sequencerState: [],
+            synthState: [],
+            bassState: [],
             drumState: [],
             bpm: 120,
             delay: false,
-            synth: new Tone.PolySynth(6, Tone.Synth).toMaster()
+            synth: new Tone.PolySynth(6, Tone.FMSynth,
+                {
+                    "harmonicity":8,
+                    "modulationIndex": 2,
+                    "oscillator" : {
+                        "type": "sine"
+                    },
+                    "envelope": {
+                        "attack": 0.001,
+                        "decay": 2,
+                        "sustain": 0.1,
+                        "release": 2
+                    },
+                    "modulation" : {
+                        "type" : "square"
+                    },
+                    "modulationEnvelope" : {
+                        "attack": 0.002,
+                        "decay": 0.2,
+                        "sustain": 0,
+                        "release": 0.2
+                    }
+                }
+            ).toMaster(),
+            bassSynth: new Tone.MonoSynth(
+                {
+                    "portamento": 0.08,
+                    "oscillator": {
+                        "partials": [2, 1, 3, 2, 0.4]
+                    },
+                    "filter": {
+                        "Q": 4,
+                        "type": "lowpass",
+                        "rolloff": -48
+                    },
+                    "envelope": {
+                        "attack": 0.04,
+                        "decay": 0.06,
+                        "sustain": 0.4,
+                        "release": 1
+                    },
+                    "filterEnvelope": {
+                        "attack": 0.01,
+                        "decay": 0.1,
+                        "sustain": 0.6,
+                        "release": 1.5,
+                        "baseFrequency": 50,
+                        "octaves": 3.4
+                    }
+                }).toMaster()
         }
         this.playSequence = this.playSequence.bind(this);
         this.toggleSequence = this.toggleSequence.bind(this);
-        this.toggleOnState = this.toggleOnState.bind(this);
+        this.toggleSynthOnState = this.toggleSynthOnState.bind(this);
+        this.toggleBassOnState = this.toggleBassOnState.bind(this);
         this.toggleDrumOnState = this.toggleDrumOnState.bind(this);
         this.resetActiveState = this.resetActiveState.bind(this);
         this.changeSynthType = this.changeSynthType.bind(this);
@@ -32,90 +84,114 @@ class Sequencer extends Component {
     }
 
     componentDidMount () {
-        var notes = this.state.notes;
+        var synthNotes = this.state.synthNotes;
+        var bassNotes = this.state.bassNotes;
         var drumSounds = this.state.drumSounds;
-        let cells = [];
+        let synthCells = [];
+        let bassCells = [];
         let drumCells = [];
         for (var i = 0; i < this.state.columns.length; i++) {
-            let columnState = [];
+            let synthColumnState = [];
+            let bassColumnState = [];
             let drumColumnState = [];
             //Synth
-            for (var j = 0; j < this.state.notes.length; j++) {
-                columnState.push({
-                    dataCellNumber: j,
-                    dataCellColumn: i,
+            for (var j = 0; j < this.state.synthNotes.length; j++) {
+                synthColumnState.push({
+                    dataSynthCellNumber: j,
+                    dataSynthCellColumn: i,
                     dataOn: false,
-                    dataActive: false,
-                    note: notes[j]
+                    note: synthNotes[j]
+                });
+            }
+            //Bass
+            for (var k = 0; k < this.state.bassNotes.length; k++) {
+                bassColumnState.push({
+                    dataBassCellNumber: k,
+                    dataBassCellColumn: i,
+                    dataOn: false,
+                    note: bassNotes[k]
                 });
             }
             //Drums
-            for (var k = 0; k < this.state.drumSounds.length; k++) {
+            for (var l = 0; l < this.state.drumSounds.length; l++) {
                 drumColumnState.push({
-                    dataDrumCellNumber: k,
+                    dataDrumCellNumber: l,
                     dataDrumCellColumn: i,
                     dataOn: false,
-                    dataActive: false,
-                    drumSound: drumSounds[k]
+                    drumSound: drumSounds[l]
                 });
             }
-            cells.push({
-                dataColumnNumber: i,
-                columnDataCells: columnState
+            synthCells.push({
+                dataSynthColumnNumber: i,
+                columnSynthDataCells: synthColumnState
+            });
+            bassCells.push({
+                dataBassColumnNumber: i,
+                columnBassDataCells: bassColumnState
             });
             drumCells.push({
                 dataDrumColumnNumber: i,
                 columnDrumDataCells: drumColumnState
             })
             this.setState({
-                sequencerState: cells,
+                synthState: synthCells,
+                bassState: bassCells,
                 drumState: drumCells
             });
         }
     }
 
     playSequence() {
+        let allCells = document.getElementsByClassName('cell');
     
         var seq = new Tone.Sequence((time, column) => {
-            if(column === 0) {
-                var columnIndexToChange = this.state.columns.length - 1;
+
+            for (var i = 0; i < allCells.length; i++) {
+                allCells[i].classList.remove('active-cell');
             }
-            else {
-                var columnIndexToChange = column - 1;
+
+            let activeCells = document.querySelectorAll(`[data-cell-column=${CSS.escape(column)}]`);
+
+            console.log(activeCells);
+
+            //All instrument active states
+            for (var j = 0; j < activeCells.length; j++) {
+                activeCells[j].classList.add('active-cell');
+                if(activeCells[j].getAttribute('data-on') === 'true') {
+                    if(activeCells[j].getAttribute('data-note') !== null) {
+                        if(activeCells[j].getAttribute('data-type') == 'synth') {
+                            state.synth.triggerAttackRelease(activeCells[j].getAttribute('data-note'), '8n', '+0.1');
+                        }
+                        if(activeCells[j].getAttribute('data-type') == 'bass') {
+                            state.bassSynth.triggerAttackRelease(activeCells[j].getAttribute('data-note'), '8n', '+0.1');
+                        }
+                    }
+                    if(activeCells[j].getAttribute('data-drum-sound') !== null) {
+                        const player = new Tone.Player(`/files/${activeCells[j].getAttribute('data-drum-sound')}.wav`).toMaster();
+                        player.autostart = true;
+                        Tone.Buffer.on('load', () => {
+                            player.start('0');
+                        })
+                    }
+                }
             }
             //Synth
-            for(var i = 0; i < this.state.notes.length; i++) {
-                const removeActiveData = update(this.state, {
-                    sequencerState:{[columnIndexToChange]: {columnDataCells:{[i]: {dataActive: {$set: false}}}}}
-                });
-                this.setState(removeActiveData);
-                const addActiveData = update(this.state, {
-                    sequencerState:{[column]: {columnDataCells:{[i]: {dataActive: {$set: true}}}}}
-                });
-                this.setState(addActiveData);
-                this.setState({activeColumn: column});
-            }
-            var columnDataCells = this.state.sequencerState[column].columnDataCells;
-            columnDataCells.forEach(function(cellState){
+            var columnSynthDataCells = this.state.synthState[column].columnSynthDataCells;
+            columnSynthDataCells.forEach(function(cellState){
+                if(cellState.dataOn) {  
+                    this.state.synth.triggerAttackRelease(cellState.note, '8n', '+0.1');
+                }
+            }.bind(this));
+            //Bass
+            var columnBassDataCells = this.state.bassState[column].columnBassDataCells;
+            columnBassDataCells.forEach(function(cellState){
                 if(cellState.dataOn) {  
                     this.state.synth.triggerAttackRelease(cellState.note, '8n', '+0.1');
                 }
             }.bind(this));
             // Drums
-            for(var i = 0; i < this.state.drumSounds.length; i++) {
-                const removeActiveData = update(this.state, {
-                    drumState:{[columnIndexToChange]: {columnDrumDataCells:{[i]: {dataActive: {$set: false}}}}}
-                });
-                this.setState(removeActiveData);
-                const addActiveData = update(this.state, {
-                    drumState:{[column]: {columnDrumDataCells:{[i]: {dataActive: {$set: true}}}}}
-                });
-                this.setState(addActiveData);
-                this.setState({activeColumn: column});
-            }
             var columnDrumDataCells = this.state.drumState[column].columnDrumDataCells;
             columnDrumDataCells.forEach(function(cellState){
-
                 if(cellState.dataOn) { 
                     const player = new Tone.Player(`/files/${cellState.drumSound}.wav`).toMaster();
                     player.autostart = true;
@@ -129,19 +205,13 @@ class Sequencer extends Component {
     }
 
     resetActiveState() {
-        var column = this.state.activeColumn;
-        let copiedState = this.state;
-        for(var j = 0; j < this.state.notes.length; j++) {
-            copiedState.sequencerState[column].columnDataCells[j].dataActive = false;
+        let allCells = document.getElementsByClassName('cell');
+        for (var i = 0; i < allCells.length; i++) {
+            allCells[i].classList.remove('active-cell');
         }
-        for(var k = 0; k < this.state.drumSounds.length; k++) {
-            copiedState.drumState[column].columnDrumDataCells[k].dataActive = false;
-        }
-        this.setState(copiedState);
     }
 
     toggleSequence() {
-        console.log("Toggling sequence");
         if(this.state.playing) {
             Tone.Transport.stop();
             this.resetActiveState();
@@ -156,13 +226,22 @@ class Sequencer extends Component {
         }
     }
 
-    toggleOnState(e) {
-        const sequencerState = this.state.sequencerState;
+    toggleSynthOnState(e) {
+        const synthState = this.state.synthState;
         const cellColNumber = e.target.getAttribute('data-cell-column');
         const dataCellNumber = parseInt(e.target.getAttribute('data-cell-number'));
-        const cellPosition = sequencerState[cellColNumber].columnDataCells[dataCellNumber];
         const newData = update(this.state, {
-            sequencerState:{[cellColNumber]: {columnDataCells:{[dataCellNumber]: {dataOn: {$set: !sequencerState[cellColNumber].columnDataCells[dataCellNumber].dataOn}}}}}
+            synthState:{[cellColNumber]: {columnSynthDataCells:{[dataCellNumber]: {dataOn: {$set: !synthState[cellColNumber].columnSynthDataCells[dataCellNumber].dataOn}}}}}
+        });
+        this.setState(newData);
+    }
+
+    toggleBassOnState(e) {
+        const bassState = this.state.bassState;
+        const cellColNumber = e.target.getAttribute('data-cell-column');
+        const dataCellNumber = parseInt(e.target.getAttribute('data-cell-number'));
+        const newData = update(this.state, {
+            bassState:{[cellColNumber]: {columnBassDataCells:{[dataCellNumber]: {dataOn: {$set: !bassState[cellColNumber].columnBassDataCells[dataCellNumber].dataOn}}}}}
         });
         this.setState(newData);
     }
@@ -237,31 +316,35 @@ class Sequencer extends Component {
     }
 
     loadSong() {
-        var drumState = JSON.parse(localStorage.getItem('drumState'));
         var synthState = JSON.parse(localStorage.getItem('synthState'));
+        var bassState = JSON.parse(localStorage.getItem('bassState'));
+        var drumState = JSON.parse(localStorage.getItem('drumState'));
         this.setState({
-            drumState: drumState,
-            sequencerState: synthState
+            synthState: synthState,
+            bassState: bassState,
+            drumState: drumState
         });
     }
 
     saveSong() {
+        var synthStateString = JSON.stringify(this.state.synthState);
+        var bassStateString = JSON.stringify(this.state.bassState);
         var drumStateString = JSON.stringify(this.state.drumState);
-        var synthStateString = JSON.stringify(this.state.sequencerState);
-        localStorage.setItem('drumState', drumStateString);
         localStorage.setItem('synthState', synthStateString);
+        localStorage.setItem('bassState', bassStateString);
+        localStorage.setItem('drumState', drumStateString);
     }
 
     render () {
         // Synth
-        let grid = [];
-        let sequencerState = this.state.sequencerState;
-        let notes = this.state.notes;
-        sequencerState.forEach((column, i) => {
+        let synthGrid = [];
+        let synthState = this.state.synthState;
+        let synthNotes = this.state.synthNotes;
+        synthState.forEach((column, i) => {
             let cells = [];
-            column.columnDataCells.forEach(cell => { 
+            column.columnSynthDataCells.forEach(cell => { 
                 var cellClasses = 'cell ';
-                if(notes[cell.dataCellNumber].indexOf('#') > -1) {
+                if(synthNotes[cell.dataSynthCellNumber].indexOf('#') > -1) {
                     cellClasses+='black-note '
                 }
                 if(cell.dataOn) {
@@ -271,18 +354,53 @@ class Sequencer extends Component {
                     cellClasses+='active-cell'
                 }
                 cells.push(
-                    <div onClick={this.toggleOnState} 
+                    <div onClick={this.toggleSynthOnState} 
                         className={cellClasses} 
-                        data-cell-number={cell.dataCellNumber} 
-                        data-cell-column={cell.dataCellColumn} 
+                        data-cell-number={cell.dataSynthCellNumber} 
+                        data-cell-column={cell.dataSynthCellColumn} 
                         data-on={cell.dataOn} 
-                        data-active={cell.dataActive} 
-                        key={cell.dataCellNumber}>
+                        data-type="bass"
+                        key={cell.dataSynthCellNumber}>
                     </div>
                 );
             });
-            grid.push(
-                <div className="grid-column" data-column-note={column.dataColumnNumber} key={column.dataColumnNumber}>
+            synthGrid.push(
+                <div className="grid-column" data-column-note={column.dataSynthColumnNumber} key={column.dataSynthColumnNumber}>
+                    {cells}
+                </div>
+            )
+        });
+
+        // Bass
+        let bassGrid = [];
+        let bassState = this.state.bassState;
+        let bassNotes = this.state.bassNotes;
+        bassState.forEach((column, i) => {
+            let cells = [];
+            column.columnBassDataCells.forEach(cell => { 
+                var cellClasses = 'cell ';
+                if(bassNotes[cell.dataBassCellNumber].indexOf('#') > -1) {
+                    cellClasses+='black-note '
+                }
+                if(cell.dataOn) {
+                    cellClasses+='on-cell ';
+                }
+                if(cell.dataActive) {
+                    cellClasses+='active-cell'
+                }
+                cells.push(
+                    <div onClick={this.toggleBassOnState} 
+                        className={cellClasses} 
+                        data-cell-number={cell.dataBassCellNumber} 
+                        data-cell-column={cell.dataBassCellColumn} 
+                        data-on={cell.dataOn}
+                        data-type="bass" 
+                        key={cell.dataBassCellNumber}>
+                    </div>
+                );
+            });
+            bassGrid.push(
+                <div className="grid-column" data-column-note={column.dataBassColumnNumber} key={column.dataBassColumnNumber}>
                     {cells}
                 </div>
             )
@@ -291,7 +409,6 @@ class Sequencer extends Component {
         // Drums
         let drumGrid = [];
         let drumState = this.state.drumState;
-        let drumSounds = this.state.drumSounds;
         drumState.forEach((column, i) => {
             let drumCells = [];
             column.columnDrumDataCells.forEach(cell => { 
@@ -308,7 +425,7 @@ class Sequencer extends Component {
                         data-cell-number={cell.dataDrumCellNumber} 
                         data-cell-column={cell.dataDrumCellColumn} 
                         data-on={cell.dataOn} 
-                        data-active={cell.dataActive} 
+                        data-type="drums"
                         key={cell.dataCellNumber}>
                     </div>
                 );
@@ -345,7 +462,10 @@ class Sequencer extends Component {
                 <label htmlFor="bpm">BPM - {this.state.bpm}</label>
                 <input onChange={this.changeBpm} type="range" min="0" max="180" value={this.state.bpm} step="1" className="slider" id="bpm" />
                 <div className="grid-wrapper">
-                    {grid}
+                    {synthGrid}
+                </div>
+                <div className="grid-wrapper">
+                    {bassGrid}
                 </div>
                 <div className="grid-wrapper">
                     {drumGrid}

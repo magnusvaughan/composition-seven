@@ -5,9 +5,7 @@ import Sequencer from './Sequencer'
 export default class App extends Component {
     render() {
         return (
-            <div className="container">
-                <Sequencer />
-            </div>
+            <Sequencer />
         );
     }
 }
