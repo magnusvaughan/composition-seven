@@ -165,7 +165,10 @@ class Sequencer extends Component {
                         }
                     }
                     if(activeCells[j].getAttribute('data-drum-sound') !== null) {
-                        const player = new Tone.Player(`/files/${activeCells[j].getAttribute('data-drum-sound')}.wav`).toMaster();
+                        const player = new Tone.Player({
+                            "url": `/files/${activeCells[j].getAttribute('data-drum-sound')}.wav`,
+                            "autostart": true
+                        }).toMaster();
                         player.autostart = true;
                         Tone.Buffer.on('load', () => {
                             player.start('0');
