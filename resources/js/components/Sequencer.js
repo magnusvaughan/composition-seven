@@ -143,15 +143,11 @@ class Sequencer extends Component {
 
     playSequence() {
         let allCells = document.getElementsByClassName('cell');
-    
         var seq = new Tone.Sequence((time, column) => {
-
             for (var i = 0; i < allCells.length; i++) {
                 allCells[i].classList.remove('active-cell');
             }
-
             let activeCells = document.querySelectorAll(`[data-cell-column=${CSS.escape(column)}]`);
-
             //All instrument active states
             for (var j = 0; j < activeCells.length; j++) {
                 activeCells[j].classList.add('active-cell');
