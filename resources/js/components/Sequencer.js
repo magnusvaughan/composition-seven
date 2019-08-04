@@ -5,6 +5,7 @@ import update from 'immutability-helper';
 // Composition Seven
 class Sequencer extends Component {
     constructor () {
+        console.log("working");
         super()
         this.state = {
             playing: false,

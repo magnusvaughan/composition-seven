@@ -10,6 +10,6 @@ export default class App extends Component {
     }
 }
 
-if (document.getElementById('app')) {
-    ReactDOM.render(<App />, document.getElementById('app'));
+if (document.getElementById('sequencer')) {
+    ReactDOM.render(<App />, document.getElementById('sequencer'));
 }
