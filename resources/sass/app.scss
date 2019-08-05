@@ -7,16 +7,6 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
-// Fonts
-@import url('https://fonts.googleapis.com/css?family=Nunito');
-
-// Variables
-@import 'variables';
-
-// Bootstrap
-@import '~bootstrap/scss/bootstrap';
-
-
 .content {
     height: 100vh;
     width: 100vw;
@@ -35,7 +25,7 @@
 }
 
 /* General button style (reset) */
-.btn {
+.btn-sequencer {
 	border: none;
 	font-family: inherit;
 	font-size: inherit;
@@ -82,7 +72,7 @@
 }
 
 label {
-	color: white;
+	// color: white;
 }
 
 input {
