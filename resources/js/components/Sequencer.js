@@ -441,7 +441,7 @@ class Sequencer extends Component {
         
         return (
             <div className="content">
-                <div>
+                <div class="control-wrapper">
                     <button onClick={this.loadSong}>Load</button>
                     <button onClick={this.saveSong}>Save</button>
                     <select id="lang" onChange={this.changeSynthType} value={this.state.type}>
@@ -454,19 +454,21 @@ class Sequencer extends Component {
                     <p></p>
                     <p>{this.state.value}</p>
                 </div>
-                <div className="button-wrapper">
-                    <button onClick={this.toggleSequence} id="make-some-noise" className="btn-sequencer btn-1 btn-1e">{buttonLabel}</button>
-                </div>
-                <label htmlFor="bpm">BPM - {this.state.bpm}</label>
-                <input onChange={this.changeBpm} type="range" min="0" max="180" value={this.state.bpm} step="1" className="slider" id="bpm" />
-                <div className="grid-wrapper">
-                    {synthGrid}
-                </div>
-                <div className="grid-wrapper">
-                    {bassGrid}
-                </div>
-                <div className="grid-wrapper">
-                    {drumGrid}
+                <div className="main-grid-wrapper">
+                    <div className="button-wrapper">
+                        <button onClick={this.toggleSequence} id="make-some-noise" className="btn-sequencer btn-1 btn-1e">{buttonLabel}</button>
+                    </div>
+                    <label htmlFor="bpm">BPM - {this.state.bpm}</label>
+                    <input onChange={this.changeBpm} type="range" min="0" max="180" value={this.state.bpm} step="1" className="slider" id="bpm" />
+                    <div className="grid-wrapper">
+                        {synthGrid}
+                    </div>
+                    <div className="grid-wrapper">
+                        {bassGrid}
+                    </div>
+                    <div className="grid-wrapper">
+                        {drumGrid}
+                    </div>
                 </div>
             </div>
         )
