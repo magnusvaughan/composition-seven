@@ -155,10 +155,10 @@ class Sequencer extends Component {
                 if(activeCells[j].getAttribute('data-on') === 'true') {
                     if(activeCells[j].getAttribute('data-note') !== null) {
                         if(activeCells[j].getAttribute('data-type') == 'synth') {
-                            state.synth.triggerAttackRelease(activeCells[j].getAttribute('data-note'), '8n', '+0.1');
+                            state.synth.triggerAttackRelease(activeCells[j].getAttribute('data-note'), '8n', '0');
                         }
                         if(activeCells[j].getAttribute('data-type') == 'bass') {
-                            state.bassSynth.triggerAttackRelease(activeCells[j].getAttribute('data-note'), '8n', '+0.1');
+                            state.bassSynth.triggerAttackRelease(activeCells[j].getAttribute('data-note'), '8n', '0');
                         }
                     }
                     if(activeCells[j].getAttribute('data-drum-sound') !== null) {
@@ -453,13 +453,13 @@ class Sequencer extends Component {
                     </select>
                     <p></p>
                     <p>{this.state.value}</p>
-                </div>
-                <div className="main-grid-wrapper">
                     <div className="button-wrapper">
                         <button onClick={this.toggleSequence} id="make-some-noise" className="btn-sequencer btn-1 btn-1e">{buttonLabel}</button>
                     </div>
                     <label htmlFor="bpm">BPM - {this.state.bpm}</label>
                     <input onChange={this.changeBpm} type="range" min="0" max="180" value={this.state.bpm} step="1" className="slider" id="bpm" />
+                </div>
+                <div className="main-grid-wrapper">
                     <div className="grid-wrapper">
                         {synthGrid}
                     </div>

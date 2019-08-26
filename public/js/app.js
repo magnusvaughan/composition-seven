@@ -44574,11 +44574,11 @@ function (_Component) {
           if (activeCells[j].getAttribute('data-on') === 'true') {
             if (activeCells[j].getAttribute('data-note') !== null) {
               if (activeCells[j].getAttribute('data-type') == 'synth') {
-                state.synth.triggerAttackRelease(activeCells[j].getAttribute('data-note'), '8n', '+0.1');
+                state.synth.triggerAttackRelease(activeCells[j].getAttribute('data-note'), '8n', '0');
               }
 
               if (activeCells[j].getAttribute('data-type') == 'bass') {
-                state.bassSynth.triggerAttackRelease(activeCells[j].getAttribute('data-note'), '8n', '+0.1');
+                state.bassSynth.triggerAttackRelease(activeCells[j].getAttribute('data-note'), '8n', '0');
               }
             }
 
@@ -44947,9 +44947,7 @@ function (_Component) {
         value: "Pluck"
       }, "Pluck"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
         value: "Metal"
-      }, "Metal")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, this.state.value)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "main-grid-wrapper"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, "Metal")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, this.state.value), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "button-wrapper"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
         onClick: this.toggleSequence,
@@ -44966,7 +44964,9 @@ function (_Component) {
         step: "1",
         className: "slider",
         id: "bpm"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "main-grid-wrapper"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "grid-wrapper"
       }, synthGrid), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "grid-wrapper"
