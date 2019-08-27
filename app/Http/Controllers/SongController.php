@@ -14,7 +14,9 @@ class SongController extends Controller
      */
     public function index()
     {
-        //
+        $songs = Song::orderBy('created_at', 'desc')->get();
+
+        return $songs->toJson();
     }
 
     /**
