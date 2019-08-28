@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Tone from 'tone';
 import update from 'immutability-helper';
+import Axios from 'axios';
 
 // Composition Seven
 class Sequencer extends Component {
@@ -85,6 +86,16 @@ class Sequencer extends Component {
     }
 
     componentDidMount () {
+
+        axios.get('/api/songs').then(response => {
+            var songState = JSON.parse(response.data[0].songJson);
+            this.setState({
+                synthState: JSON.parse(songState.synth),
+                bassState: JSON.parse(songState.bass),
+                drumState: JSON.parse(songState.drums),
+            });
+          })
+
         var synthNotes = this.state.synthNotes;
         var bassNotes = this.state.bassNotes;
         var drumSounds = this.state.drumSounds;
@@ -314,13 +325,11 @@ class Sequencer extends Component {
     }
 
     loadSong() {
-        var synthState = JSON.parse(localStorage.getItem('synthState'));
-        var bassState = JSON.parse(localStorage.getItem('bassState'));
-        var drumState = JSON.parse(localStorage.getItem('drumState'));
+        var songState = JSON.parse(localStorage.getItem('songStateStringObject'));
         this.setState({
-            synthState: synthState,
-            bassState: bassState,
-            drumState: drumState
+            synthState: JSON.parse(songState.synth),
+            bassState: JSON.parse(songState.bass),
+            drumState: JSON.parse(songState.drums),
         });
     }
 
@@ -328,9 +337,14 @@ class Sequencer extends Component {
         var synthStateString = JSON.stringify(this.state.synthState);
         var bassStateString = JSON.stringify(this.state.bassState);
         var drumStateString = JSON.stringify(this.state.drumState);
-        localStorage.setItem('synthState', synthStateString);
-        localStorage.setItem('bassState', bassStateString);
-        localStorage.setItem('drumState', drumStateString);
+        var songStateObject = {
+            synth: synthStateString,
+            bass: bassStateString,
+            drums: drumStateString
+        }
+        var songStateStringObject = JSON.stringify(songStateObject);
+
+        localStorage.setItem('songStateStringObject', songStateStringObject);
     }
 
     render () {
