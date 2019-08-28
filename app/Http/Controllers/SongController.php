@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Song;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SongController extends Controller
 {
@@ -14,8 +15,7 @@ class SongController extends Controller
      */
     public function index()
     {
-        $songs = Song::all();
-
+        $songs = Song::where('user_id', 1)->get();
         return $songs->toJson();
     }
 
@@ -46,9 +46,10 @@ class SongController extends Controller
      * @param  \App\Song  $song
      * @return \Illuminate\Http\Response
      */
-    public function show(Song $song)
+    public function show($id)
     {
-        //
+        $song = Song::where('id', $id)->get();
+        return $song->toJson();
     }
 
     /**

@@ -6,7 +6,6 @@ import Axios from 'axios';
 // Composition Seven
 class Sequencer extends Component {
     constructor () {
-        console.log("working");
         super()
         this.state = {
             playing: false,
@@ -15,6 +14,7 @@ class Sequencer extends Component {
             drumSounds: ['openhat','closedhat','snare','kick'],
             columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
             activeColumn: 0,
+            songState: [],
             synthState: [],
             bassState: [],
             drumState: [],
@@ -83,11 +83,15 @@ class Sequencer extends Component {
         this.toggleDelay = this.toggleDelay.bind(this);
         this.loadSong = this.loadSong.bind(this);
         this.saveSong = this.saveSong.bind(this);
+        this.changeSong = this.changeSong.bind(this);
     }
 
     componentDidMount () {
 
         axios.get('/api/songs').then(response => {
+            this.setState({
+                songState: response.data
+            });
             var songState = JSON.parse(response.data[0].songJson);
             this.setState({
                 synthState: JSON.parse(songState.synth),
@@ -266,6 +270,17 @@ class Sequencer extends Component {
         this.setState(newData);
     }
 
+    changeSong(e) {
+        axios.get('/api/songs/' + event.target.value).then(response => {
+            var songState = JSON.parse(response.data[0].songJson);
+            this.setState({
+                synthState: JSON.parse(songState.synth),
+                bassState: JSON.parse(songState.bass),
+                drumState: JSON.parse(songState.drums),
+            });
+        })
+    }
+
     changeSynthType(e) {
         switch(event.target.value) {
             case 'Monosynth':
@@ -344,10 +359,24 @@ class Sequencer extends Component {
         }
         var songStateStringObject = JSON.stringify(songStateObject);
 
+        // todo - write to db instead of localstorage
         localStorage.setItem('songStateStringObject', songStateStringObject);
     }
 
     render () {
+
+        // Song menu
+        let songList = this.state.songState;
+        let songOptions = [];
+        songList.forEach((song) => {
+            songOptions.push(<option value={song.id}>{song.name}</option>);
+        });
+        let songSelect = (
+            <select id="song" onChange={this.changeSong} value={this.state.type}>
+                {songOptions}
+            </select>
+        );
+
         // Synth
         let synthGrid = [];
         let synthState = this.state.synthState;
@@ -455,7 +484,7 @@ class Sequencer extends Component {
         
         return (
             <div className="content">
-                <div class="control-wrapper">
+                <div className="control-wrapper">
                     <button onClick={this.loadSong}>Load</button>
                     <button onClick={this.saveSong}>Save</button>
                     <select id="lang" onChange={this.changeSynthType} value={this.state.type}>
@@ -465,6 +494,9 @@ class Sequencer extends Component {
                         <option value="Pluck">Pluck</option>
                         <option value="Metal">Metal</option>
                     </select>
+
+                    {songSelect}
+
                     <p></p>
                     <p>{this.state.value}</p>
                     <div className="button-wrapper">
