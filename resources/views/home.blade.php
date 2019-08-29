@@ -5,7 +5,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Composition Seven</title>
+        <title>Composition Sevenbillion</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
@@ -29,18 +29,13 @@
                 @endauth
             </div>
             @endif
-
-            {{-- <div class="content">
-                <div class="title m-b-md">
-                    Composition Seven
-                </div>
-
-                <div class="links">
-                    <a href="#">Coming soon</a>
-                </div>
-            </div> --}}
         </div>
-        <div id="sequencer"></div>
+
+        @section('content')
+            <div id="sequencer"></div>
+        @endsection
+
+
         <script src="/js/app.js"></script>
     </body>
 

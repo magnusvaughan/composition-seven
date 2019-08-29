@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{{-- <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}">
 
 <head>
@@ -18,4 +18,10 @@
     <script src="{{ asset('js/app.js') }}"></script>
 </body>
 
-</html>
+</html> --}}
+
+@extends('layouts.app')
+
+@section('content')
+    <div id="sequencer"></div>
+@endsection

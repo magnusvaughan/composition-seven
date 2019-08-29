@@ -15,7 +15,8 @@ class SongController extends Controller
      */
     public function index()
     {
-        $songs = Song::where('user_id', 1)->get();
+        $id = Auth::id();
+        $songs = Song::where('user_id', $id)->get();
         return $songs->toJson();
     }
 
