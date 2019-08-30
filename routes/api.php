@@ -18,7 +18,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
-Route::get('songs', 'SongController@index');
+Route::get('songs/user/{user_id}', 'SongController@index');
 Route::post('songs', 'SongController@store');
 Route::get('songs/{id}', 'SongController@show');
 Route::put('songs/{song}', 'SongController@markAsCompleted');
