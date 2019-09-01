@@ -15,6 +15,7 @@ class Sequencer extends Component {
             columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
             activeColumn: 0,
             songState: [],
+            activeSong: "",
             synthState: [],
             bassState: [],
             drumState: [],
@@ -84,22 +85,12 @@ class Sequencer extends Component {
         this.loadSong = this.loadSong.bind(this);
         this.saveSong = this.saveSong.bind(this);
         this.changeSong = this.changeSong.bind(this);
+        this.getUserSongs = this.getUserSongs.bind(this);
     }
 
     componentDidMount () {
-        console.log(user_id);
 
-        axios.get('/api/songs/user/'+user_id).then(response => {
-            this.setState({
-                songState: response.data
-            });
-            var songState = JSON.parse(response.data[0].songJson);
-            this.setState({
-                synthState: JSON.parse(songState.synth),
-                bassState: JSON.parse(songState.bass),
-                drumState: JSON.parse(songState.drums),
-            });
-          })
+        this.getUserSongs();
 
         var synthNotes = this.state.synthNotes;
         var bassNotes = this.state.bassNotes;
@@ -156,6 +147,21 @@ class Sequencer extends Component {
                 drumState: drumCells
             });
         }
+    }
+
+    getUserSongs() {
+        axios.get('/api/songs/user/'+user_id).then(response => {
+            this.setState({
+                songState: response.data,
+                currentSong: response.data[0].id
+            });
+            var songState = JSON.parse(response.data[0].songJson);
+            this.setState({
+                synthState: songState.synthState,
+                bassState: songState.bassState,
+                drumState: songState.drumState,
+            });
+          })
     }
 
     playSequence() {
@@ -275,9 +281,9 @@ class Sequencer extends Component {
         axios.get('/api/songs/' + event.target.value).then(response => {
             var songState = JSON.parse(response.data[0].songJson);
             this.setState({
-                synthState: JSON.parse(songState.synth),
-                bassState: JSON.parse(songState.bass),
-                drumState: JSON.parse(songState.drums),
+                synthState: songState.synthState,
+                bassState: songState.bassState,
+                drumState: songState.drumState,
             });
         })
     }
@@ -350,18 +356,24 @@ class Sequencer extends Component {
     }
 
     saveSong() {
-        var synthStateString = JSON.stringify(this.state.synthState);
-        var bassStateString = JSON.stringify(this.state.bassState);
-        var drumStateString = JSON.stringify(this.state.drumState);
-        var songStateObject = {
-            synth: synthStateString,
-            bass: bassStateString,
-            drums: drumStateString
+        var currentSongId = this.state.currentSong;
+        var currentSongObject = {
+            synthState: this.state.synthState,
+            bassState: this.state.bassState,
+            drumState: this.state.drumState
         }
-        var songStateStringObject = JSON.stringify(songStateObject);
-
-        // todo - write to db instead of localstorage
-        localStorage.setItem('songStateStringObject', songStateStringObject);
+        var currentSongString = JSON.stringify(currentSongObject);
+        axios.post('/api/songs/'+ currentSongId, currentSongString).then(response => {
+            // this.setState({
+            //     songState: response.data
+            // });
+            // var songState = JSON.parse(response.data[0].songJson);
+            // this.setState({
+            //     synthState: JSON.parse(songState.synth),
+            //     bassState: JSON.parse(songState.bass),
+            //     drumState: JSON.parse(songState.drums),
+            // });
+          })
     }
 
     render () {

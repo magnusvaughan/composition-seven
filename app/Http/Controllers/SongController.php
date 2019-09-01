@@ -15,7 +15,7 @@ class SongController extends Controller
      */
     public function index($id = null)
     {
-        $songs = Song::where('user_id', $id)->get();
+        $songs = Song::select('id', 'name', 'created_at', 'updated_at', 'songJson')->where('user_id', $id)->get();
         return $songs->toJson();
     }
 
@@ -35,9 +35,11 @@ class SongController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $id)
     {
-        //
+        $song = Song::find($id);
+        $song->songJson = $request->getContent();
+        $song->save();
     }
 
     /**
