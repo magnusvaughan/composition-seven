@@ -515,8 +515,10 @@ class Sequencer extends Component {
                     <div className="button-wrapper">
                         <button onClick={this.toggleSequence} id="make-some-noise" className="btn-sequencer btn-1 btn-1e">{buttonLabel}</button>
                     </div>
-                    <label htmlFor="bpm">BPM - {this.state.bpm}</label>
-                    <input onChange={this.changeBpm} type="range" min="0" max="180" value={this.state.bpm} step="1" className="slider" id="bpm" />
+                    <div className="tweak-wrapper">
+                        <label htmlFor="bpm">BPM - {this.state.bpm}</label>
+                        <input onChange={this.changeBpm} type="range" min="0" max="180" value={this.state.bpm} step="1" className="slider" id="bpm" />
+                    </div>
                 </div>
                 <div className="main-grid-wrapper">
                     <div className="grid-wrapper">

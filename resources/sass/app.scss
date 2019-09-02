@@ -7,6 +7,19 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
+.navbar {
+	background-color: $app_background; 
+}
+
+.navbar-light .navbar-brand, .navbar-light .navbar-nav .nav-link,
+.navbar-light .navbar-brand:hover, .navbar-light .navbar-nav .nav-link:hover {
+	color: white;
+}
+
+main {
+	background-color: $app_background;
+}
+
 .content {
     max-height: 100vh;
     width: 100vw;
@@ -15,9 +28,20 @@
     align-items: center;
     justify-content: center;
     transition: height 0.3s;
-	background:  #063A51;
-	padding-top: 1rem;
+	background:  $app_background;
+	padding-top: 0;
 	padding-bottom: 1rem;
+}
+
+.control-wrapper {
+	.tweak-wrapper {
+		display: flex;
+		color: $primary_text_color;
+		justify-content: center;
+		input#bpm {
+			margin-left: 1rem;
+		}
+	}
 }
 
 // Button
@@ -75,8 +99,8 @@
 	color: #fff;
 }
 
-label {
-	// color: white;
+button:focus, :focus {
+	outline: none!important;
 }
 
 input {
