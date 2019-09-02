@@ -131,8 +131,8 @@ input {
 		transition: 0.3s transform;
 		&.active-cell {
 			outline: none;
-			border-left: 2px solid $playhead_border;
-			border-right: 2px solid $playhead_border;
+			border-left: 1px solid $playhead_border;
+			border-right: 1px solid $playhead_border;
 			border-top: none;
 			border-bottom: none;
 			transform: scale(1.1);
@@ -141,8 +141,8 @@ input {
 			background-color: #8B9EA8;
 			&.active-cell {
 				outline: none;
-				border-left: 2px solid $playhead_border;
-				border-right: 2px solid $playhead_border;
+				border-left: 1px solid $playhead_border;
+				border-right: 1px solid $playhead_border;
 				border-top: none;
 				border-bottom: none;
 				transform: scale(1.1);
@@ -157,8 +157,8 @@ input {
 			background-color: #EA4393;
 			&.active-cell {
 				outline: none;
-				border-left: 2px solid $playhead_border;
-				border-right: 2px solid $playhead_border;
+				border-left: 1px solid $playhead_border;
+				border-right: 1px solid $playhead_border;
 				border-top: none;
 				border-bottom: none;
 				background-color: #FFE600;
