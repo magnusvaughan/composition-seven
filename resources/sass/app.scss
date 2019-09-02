@@ -15,14 +15,17 @@
     align-items: center;
     justify-content: center;
     transition: height 0.3s;
-	background:  #A0A0A0;
+	background:  #063A51;
 	padding-top: 1rem;
 	padding-bottom: 1rem;
 }
 
 // Button
 .button-wrapper {
-    margin-bottom: 1rem;
+	margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* General button style (reset) */
@@ -92,7 +95,7 @@ input {
 
 .grid-column {
     margin: 0 auto;
-    background-color: white;
+    background-color: lightgrey;
 	// justify-content: center;
 	// // align-items: center;
 	flex-direction: row;
@@ -104,34 +107,34 @@ input {
 		transition: 0.3s transform;
 		&.active-cell {
 			outline: none;
-			border-left: 2px solid rgba(230, 57, 70, 0.5);
-			border-right: 2px solid rgba(230, 57, 70, 0.5);
+			border-left: 2px solid $playhead_border;
+			border-right: 2px solid $playhead_border;
 			border-top: none;
 			border-bottom: none;
 			transform: scale(1.1);
         }
 		&.black-note {
-			background-color: darken($color: #ffffff, $amount: 20%);
+			background-color: #8B9EA8;
 			&.active-cell {
 				outline: none;
-				border-left: 2px solid rgba(230, 57, 70, 0.5);
-				border-right: 2px solid rgba(230, 57, 70, 0.5);
+				border-left: 2px solid $playhead_border;
+				border-right: 2px solid $playhead_border;
 				border-top: none;
 				border-bottom: none;
 				transform: scale(1.1);
 			}
 			&.on-cell {
-				background-color: #457B9D;
+				background-color: #EA4393 ;
 			}
 
 		}
 
         &.on-cell {
-			background-color: #457B9D;
+			background-color: #EA4393;
 			&.active-cell {
 				outline: none;
-				border-left: 2px solid rgba(230, 57, 70, 0.5);
-				border-right: 2px solid rgba(230, 57, 70, 0.5);
+				border-left: 2px solid $playhead_border;
+				border-right: 2px solid $playhead_border;
 				border-top: none;
 				border-bottom: none;
 				background-color: #FFE600;
