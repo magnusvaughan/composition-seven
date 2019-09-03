@@ -171,3 +171,18 @@ input {
 .drumGrid-column {
 	display: block;
 }
+
+// Modal
+
+.new-song-modal {
+	display: flex;
+	justify-content: center;
+}
+
+.modal-footer {
+	display:flex;
+	align-items: center;
+	input {
+		margin-bottom: 0;
+	}
+}

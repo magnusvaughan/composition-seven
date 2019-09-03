@@ -26,7 +26,9 @@ class SongController extends Controller
      */
     public function create()
     {
-        //
+        $song = new Song();
+        $song->name = $request->getContent();
+        $song->save();
     }
 
     /**

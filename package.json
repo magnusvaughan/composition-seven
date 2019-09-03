@@ -28,6 +28,7 @@
         "immutability-helper": "^3.0.1",
         "immutable": "^4.0.0-rc.12",
         "react-router-dom": "^5.0.1",
+        "reactstrap": "^8.0.1",
         "tailwindcss": "^1.0.5",
         "tone": "^13.4.9"
     }
