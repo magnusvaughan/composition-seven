@@ -73,6 +73,17 @@ main {
 	transition: all 0.3s;
 }
 
+.btn-primary {
+	background: $playhead_border;
+	&:hover {
+		background: lighten($playhead_border, 5%);
+	}
+}
+
+.btn-control {
+	margin-left: 0.5rem;
+}
+
 .btn:after {
 	content: '';
 	position: absolute;
@@ -175,7 +186,8 @@ input {
 // Modal
 
 .new-song-modal {
-	display: flex;
+	display: inline-flex;
+	margin-left: 0.5rem;
 	justify-content: center;
 }
 

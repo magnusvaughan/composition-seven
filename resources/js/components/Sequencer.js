@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Tone from 'tone';
 import update from 'immutability-helper';
 import Axios from 'axios';
+import ModalComponent from './ModalComponent'
 
 // Composition Seven
 class Sequencer extends Component {
@@ -153,7 +154,7 @@ class Sequencer extends Component {
         axios.get('/api/songs/user/'+user_id).then(response => {
             this.setState({
                 songState: response.data,
-                currentSong: response.data[0].id
+                activeSong: response.data[0].id
             });
             var songState = JSON.parse(response.data[0].songJson);
             this.setState({
@@ -278,8 +279,12 @@ class Sequencer extends Component {
     }
 
     changeSong(e) {
-        axios.get('/api/songs/' + event.target.value).then(response => {
+        let {name, value} = e.target;
+        axios.get('/api/songs/' + value).then(response => {
             var songState = JSON.parse(response.data[0].songJson);
+            this.setState({
+                activeSong: value
+            }) 
             this.setState({
                 synthState: songState.synthState,
                 bassState: songState.bassState,
@@ -356,7 +361,7 @@ class Sequencer extends Component {
     }
 
     saveSong() {
-        var currentSongId = this.state.currentSong;
+        var currentSongId = this.state.activeSong;
         var currentSongObject = {
             synthState: this.state.synthState,
             bassState: this.state.bassState,
@@ -385,7 +390,7 @@ class Sequencer extends Component {
             songOptions.push(<option value={song.id}>{song.name}</option>);
         });
         let songSelect = (
-            <select id="song" onChange={this.changeSong} value={this.state.type}>
+            <select id="song" onChange={this.changeSong} value={this.state.activeSong}>
                 {songOptions}
             </select>
         );
@@ -498,8 +503,6 @@ class Sequencer extends Component {
         return (
             <div className="content">
                 <div className="control-wrapper">
-                    <button onClick={this.loadSong}>Load</button>
-                    <button onClick={this.saveSong}>Save</button>
                     <select id="lang" onChange={this.changeSynthType} value={this.state.type}>
                         <option value="Poly">Polysynth</option>
                         <option value="Monosynth">Monosynth</option>
@@ -510,7 +513,8 @@ class Sequencer extends Component {
 
                     {songSelect}
 
-                    <p></p>
+                    <button className="btn btn-primary btn-control" onClick={this.saveSong}>Save</button>
+                    <ModalComponent /> 
                     <p>{this.state.value}</p>
                     <div className="button-wrapper">
                         <button onClick={this.toggleSequence} id="make-some-noise" className="btn-sequencer btn-1 btn-1e">{buttonLabel}</button>

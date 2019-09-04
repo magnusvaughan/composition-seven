@@ -11,8 +11,6 @@ export default class ModalComponent extends React.Component {
 
         this.toggle = this.toggle.bind(this);
         this.handleChangeName = this.handleChangeName.bind(this);
-        this.handleChangeTeam = this.handleChangeTeam.bind(this);
-        this.handleChangeCountry = this.handleChangeCountry.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
@@ -24,19 +22,11 @@ export default class ModalComponent extends React.Component {
     handleChangeName(event) {
         this.setState({ name: event.target.value });
     }
-    handleChangeTeam(event) {
-        this.setState({ team: event.target.value });
-    }
-    handleChangeCountry(event) {
-        this.setState({ country: event.target.value });
-    }
 
     handleSubmit(event) {
         event.preventDefault();
-        const form = {
-            name: this.state.name,
-        };
-        let uri = "/api/formmodal";
+        const form  = this.state.name;
+        let uri = "/api/songs/create/"+user_id;
         axios.post(uri, form).then(response => {
             this.setState({
                 modal: !this.state.modal
@@ -46,8 +36,8 @@ export default class ModalComponent extends React.Component {
 
     render() {
         return (
-            <div class="new-song-modal">
-                <Button color="success" onClick={this.toggle}>
+            <div className="new-song-modal">
+                <Button className="btn btn-primary" onClick={this.toggle}>
                     Create a new song
                 </Button>
                 <Modal isOpen={this.state.modal}>

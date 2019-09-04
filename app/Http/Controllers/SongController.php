@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Song;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class SongController extends Controller
 {
@@ -15,8 +16,8 @@ class SongController extends Controller
      */
     public function index($id = null)
     {
-        $songs = Song::select('id', 'name', 'created_at', 'updated_at', 'songJson')->where('user_id', $id)->get();
-        return $songs->toJson();
+        $user_songs = Song::select('id', 'name', 'created_at', 'updated_at', 'songJson')->where('user_id', $id)->get();
+        return $user_songs->toJson();
     }
 
     /**
@@ -24,11 +25,16 @@ class SongController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request, $id)
     {
         $song = new Song();
         $song->name = $request->getContent();
+        $song->user_id = $id;
+        $empty_song = Storage::disk('local')->get('emptySong.json');
+        $song->songJson = $empty_song;
         $song->save();
+        $user_songs = Song::select('id', 'name', 'created_at', 'updated_at', 'songJson')->where('user_id', $id)->get();
+        return $user_songs->toJson();
     }
 
     /**
