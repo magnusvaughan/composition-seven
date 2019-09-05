@@ -166,6 +166,8 @@ class Sequencer extends Component {
     }
 
     playSequence() {
+        // Tone.context.latencyHint = 'balanced'
+        Tone.immediate();
         let allCells = document.getElementsByClassName('cell');
         var seq = new Tone.Sequence((time, column) => {
             for (var i = 0; i < allCells.length; i++) {
@@ -178,10 +180,10 @@ class Sequencer extends Component {
                 if(activeCells[j].getAttribute('data-on') === 'true') {
                     if(activeCells[j].getAttribute('data-note') !== null) {
                         if(activeCells[j].getAttribute('data-type') == 'synth') {
-                            state.synth.triggerAttackRelease(activeCells[j].getAttribute('data-note'), '8n', '0');
+                            state.synth.triggerAttackRelease(activeCells[j].getAttribute('data-note'), '8n', '+0.05');
                         }
                         if(activeCells[j].getAttribute('data-type') == 'bass') {
-                            state.bassSynth.triggerAttackRelease(activeCells[j].getAttribute('data-note'), '8n', '0');
+                            state.bassSynth.triggerAttackRelease(activeCells[j].getAttribute('data-note'), '8n', '+0.05');
                         }
                     }
                     if(activeCells[j].getAttribute('data-drum-sound') !== null) {
