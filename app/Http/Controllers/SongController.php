@@ -33,8 +33,9 @@ class SongController extends Controller
         $empty_song = Storage::disk('local')->get('emptySong.json');
         $song->songJson = $empty_song;
         $song->save();
+        $new_song_id = $song->id;
         $user_songs = Song::select('id', 'name', 'created_at', 'updated_at', 'songJson')->where('user_id', $id)->get();
-        return $user_songs->toJson();
+        return ['songs' => $user_songs->toJson(), 'new_song_id' => $new_song_id];
     }
 
     /**

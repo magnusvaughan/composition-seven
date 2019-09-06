@@ -87,6 +87,7 @@ class Sequencer extends Component {
         this.saveSong = this.saveSong.bind(this);
         this.changeSong = this.changeSong.bind(this);
         this.getUserSongs = this.getUserSongs.bind(this);
+        this.handleNewSongSubmit = this.handleNewSongSubmit.bind(this);
     }
 
     componentDidMount () {
@@ -383,6 +384,18 @@ class Sequencer extends Component {
           })
     }
 
+    handleNewSongSubmit(e, name) {
+        const form  = name;
+        let uri = "/api/songs/create/"+user_id;
+        axios.post(uri, form).then(response => {
+            console.log(response);
+            this.setState({
+                songState: response.data.songs,
+                activeSong: response.data.new_song_id
+            });
+        });
+    }
+
     render () {
 
         // Song menu
@@ -516,7 +529,7 @@ class Sequencer extends Component {
                     {songSelect}
 
                     <button className="btn btn-primary btn-control" onClick={this.saveSong}>Save</button>
-                    <ModalComponent /> 
+                    <ModalComponent onNewSongSubmit={this.handleNewSongSubmit} /> 
                     <p>{this.state.value}</p>
                     <div className="button-wrapper">
                         <button onClick={this.toggleSequence} id="make-some-noise" className="btn-sequencer btn-1 btn-1e">{buttonLabel}</button>

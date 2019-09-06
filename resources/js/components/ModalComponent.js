@@ -1,12 +1,10 @@
-//ModalComponent.js
-
 import React from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import axios from "axios";
 
 export default class ModalComponent extends React.Component {
     constructor(props) {
         super(props);
+        console.log(props);
         this.state = { modal: false, name: "", team: "", country: "" };
 
         this.toggle = this.toggle.bind(this);
@@ -23,14 +21,11 @@ export default class ModalComponent extends React.Component {
         this.setState({ name: event.target.value });
     }
 
-    handleSubmit(event) {
-        event.preventDefault();
-        const form  = this.state.name;
-        let uri = "/api/songs/create/"+user_id;
-        axios.post(uri, form).then(response => {
-            this.setState({
-                modal: !this.state.modal
-            });
+    handleSubmit(e) {
+        e.preventDefault();
+        this.props.onNewSongSubmit(e, this.state.name);
+        this.setState({
+            modal: !this.state.modal
         });
     }
 
