@@ -4,7 +4,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 export default class ModalComponent extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { modal: false, name: "", team: "", country: "" };
+        this.state = { modal: false, name: "" };
 
         this.toggle = this.toggle.bind(this);
         this.handleChangeName = this.handleChangeName.bind(this);
@@ -24,7 +24,8 @@ export default class ModalComponent extends React.Component {
         e.preventDefault();
         this.props.onNewSongSubmit(e, this.state.name);
         this.setState({
-            modal: !this.state.modal
+            modal: !this.state.modal,
+            name: ''
         });
     }
 

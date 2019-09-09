@@ -167,7 +167,34 @@ class Sequencer extends Component {
     }
 
     playSequence() {
-        // Tone.context.latencyHint = 'balanced'
+
+        let kick_player = new Tone.Player({
+            "url": `/files/kick.wav`,
+            "autostart": true
+        }).toMaster(); 
+
+        let snare_player = new Tone.Player({
+            "url": `/files/snare.wav`,
+            "autostart": true
+        }).toMaster(); 
+
+        let closedhat_player = new Tone.Player({
+            "url": `/files/closedhat.wav`,
+            "autostart": true
+        }).toMaster(); 
+
+        let openhat_player = new Tone.Player({
+            "url": `/files/openhat.wav`,
+            "autostart": true
+        }).toMaster(); 
+
+        // this.state.drumsounds.array.forEach(drumsound => {
+        //     let `player_${drumsound}` = new Tone.Player({
+        //         "url": `/files/${drumsound}.wav`,
+        //         "autostart": true
+        //     }).toMaster(); 
+        // }); 
+        
         Tone.immediate();
         let allCells = document.getElementsByClassName('cell');
         var seq = new Tone.Sequence((time, column) => {
@@ -188,14 +215,15 @@ class Sequencer extends Component {
                         }
                     }
                     if(activeCells[j].getAttribute('data-drum-sound') !== null) {
-                        const player = new Tone.Player({
-                            "url": `/files/${activeCells[j].getAttribute('data-drum-sound')}.wav`,
-                            "autostart": true
-                        }).toMaster();
-                        player.autostart = true;
-                        Tone.Buffer.on('load', () => {
-                            player.start('0');
-                        })
+                        `${activeCells[j].getAttribute('data-drum-sound')}_player.start(0)`;
+                        // const player = new Tone.Player({
+                        //     "url": `/files/${activeCells[j].getAttribute('data-drum-sound')}.wav`,
+                        //     "autostart": true
+                        // }).toMaster();
+                        // player.autostart = true;
+                        // Tone.Buffer.on('load', () => {
+                        //     player.start('0');
+                        // })
                     }
                 }
             }
