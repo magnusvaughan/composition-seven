@@ -4,7 +4,6 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 export default class ModalComponent extends React.Component {
     constructor(props) {
         super(props);
-        console.log(props);
         this.state = { modal: false, name: "", team: "", country: "" };
 
         this.toggle = this.toggle.bind(this);

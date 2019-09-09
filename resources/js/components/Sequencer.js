@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import Tone from 'tone';
 import update from 'immutability-helper';
 import Axios from 'axios';
@@ -388,10 +388,18 @@ class Sequencer extends Component {
         const form  = name;
         let uri = "/api/songs/create/"+user_id;
         axios.post(uri, form).then(response => {
-            console.log(response);
+            var songs = JSON.parse(response.data.songs);
+            var newSongId = response.data.new_song_id
             this.setState({
-                songState: response.data.songs,
-                activeSong: response.data.new_song_id
+                songState: songs,
+                activeSong: newSongId
+            });
+            var newSongIndex = songs.map(function(x) {return x.id; }).indexOf(newSongId);
+            var newSongState = JSON.parse(songs[newSongIndex].songJson);
+            this.setState({
+                synthState: newSongState.synthState,
+                bassState: newSongState.bassState,
+                drumState: newSongState.drumState,
             });
         });
     }
