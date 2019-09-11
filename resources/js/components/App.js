@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Sequencer from './Sequencer'
 
+console.log("here");
+
 export default class App extends Component {
     render() {
         return (

@@ -152,6 +152,9 @@ class Sequencer extends Component {
     }
 
     getUserSongs() {
+
+        var user_id = user_id || 1;
+
         axios.get('/api/songs/user/'+user_id).then(response => {
             this.setState({
                 songState: response.data,
@@ -216,14 +219,6 @@ class Sequencer extends Component {
                     }
                     if(activeCells[j].getAttribute('data-drum-sound') !== null) {
                         `${activeCells[j].getAttribute('data-drum-sound')}_player.start(0)`;
-                        // const player = new Tone.Player({
-                        //     "url": `/files/${activeCells[j].getAttribute('data-drum-sound')}.wav`,
-                        //     "autostart": true
-                        // }).toMaster();
-                        // player.autostart = true;
-                        // Tone.Buffer.on('load', () => {
-                        //     player.start('0');
-                        // })
                     }
                 }
             }
@@ -231,14 +226,14 @@ class Sequencer extends Component {
             var columnSynthDataCells = this.state.synthState[column].columnSynthDataCells;
             columnSynthDataCells.forEach(function(cellState){
                 if(cellState.dataOn) {  
-                    this.state.synth.triggerAttackRelease(cellState.note, '8n', '+0.1');
+                    this.state.synth.triggerAttackRelease(cellState.note, '8n', '+0.05');
                 }
             }.bind(this));
             //Bass
             var columnBassDataCells = this.state.bassState[column].columnBassDataCells;
             columnBassDataCells.forEach(function(cellState){
                 if(cellState.dataOn) {  
-                    this.state.synth.triggerAttackRelease(cellState.note, '8n', '+0.1');
+                    this.state.synth.triggerAttackRelease(cellState.note, '8n', '+0.05');
                 }
             }.bind(this));
             // Drums
@@ -400,16 +395,8 @@ class Sequencer extends Component {
         }
         var currentSongString = JSON.stringify(currentSongObject);
         axios.post('/api/songs/'+ currentSongId, currentSongString).then(response => {
-            // this.setState({
-            //     songState: response.data
-            // });
-            // var songState = JSON.parse(response.data[0].songJson);
-            // this.setState({
-            //     synthState: JSON.parse(songState.synth),
-            //     bassState: JSON.parse(songState.bass),
-            //     drumState: JSON.parse(songState.drums),
-            // });
-          })
+        // todo
+        })
     }
 
     handleNewSongSubmit(e, name) {
