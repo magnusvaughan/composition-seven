@@ -11,6 +11,8 @@
 |
 */
 
-Route::get('/', function () {
-    return view('app');
-});
+Route::get('/{path?}', [
+    'uses' => 'HomeController@show',
+    'as' => 'home',
+    'where' => ['path' => '.*']
+]);

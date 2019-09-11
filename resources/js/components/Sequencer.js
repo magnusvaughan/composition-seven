@@ -153,7 +153,7 @@ class Sequencer extends Component {
 
     getUserSongs() {
 
-        var user_id = user_id || 1;
+        var user_id = user_id;
 
         axios.get('/api/songs/user/'+user_id).then(response => {
             this.setState({

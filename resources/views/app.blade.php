@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" type="text/css" href="/css/app.css" media="screen" />
-        <title>Laravel</title>
+        <title>Composition Seven</title>
     </head>
     <body>
         <div class="flex-center position-ref full-height">
