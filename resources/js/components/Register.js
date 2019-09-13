@@ -1,95 +1,112 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
+import Nav from './navbar'
+import axios from 'axios'
 
-const Register = ({ history, registerUser = f => f }) => {
-  let _email, _password, _name;
+class Register extends Component {
 
-  console.log("Redirect to register working");
+    constructor(props){
+        super(props);
+        this.state = {
+            name: '',
+            email : '',
+            password: '',
+            password_confirmation: '',
+        }
+     }
 
-  const handleLogin = e => {
-    e.preventDefault();
+    onSubmit(e){
+        e.preventDefault();
+        const {name, email, password, password_confirmation} = this.state ;
+        axios.post('api/register', {
+            name,
+            email,
+            password,
+            password_confirmation
+          })
+          .then(response=> {
+           this.setState({err: false});
+           this.props.history.push("home") ;
+          })
+          .catch(error=> {
+            this.refs.name.value="";
+            this.refs.password.value="";
+            this.refs.email.value="";
+            this.refs.confirm.value="";
+            this.setState({err: true});
+          });
+     }
 
-    registerUser(_name.value, _email.value, _password.value);
-  };
-  return (
-    <div id="main">
-      <form id="login-form" action="" onSubmit={handleLogin} method="post">
-        <h3 style={{ padding: 15 }}>Register Form</h3>
-        <input
-          ref={input => (_name = input)}
-          style={styles.input}
-          autoComplete="off"
-          id="email-input"
-          name="email"
-          type="text"
-          className="center-block"
-          placeholder="Name"
-        />
-        <input
-          ref={input => (_email = input)}
-          style={styles.input}
-          autoComplete="off"
-          id="email-input"
-          name="email"
-          type="text"
-          className="center-block"
-          placeholder="email"
-        />
-        <input
-          ref={input => (_password = input)}
-          style={styles.input}
-          autoComplete="off"
-          id="password-input"
-          name="password"
-          type="password"
-          className="center-block"
-          placeholder="password"
-        />
-        <button
-          type="submit"
-          style={styles.button}
-          className="landing-page-btn center-block text-center"
-          id="email-login-btn"
-          href="#facebook"
-        >
-          Register
-        </button>
+     onChange(e){
+        const {name, value} = e.target ;
+        this.setState({[name]: value});
+     }
 
-        <Link style={styles.link} to="/login">
-          Login
-        </Link>
-      </form>
-    </div>
-  );
-};
-const styles = {
-  input: {
-    backgroundColor: "white",
-    border: "1px solid #cccccc",
-    padding: 15,
-    float: "left",
-    clear: "right",
-    width: "80%",
-    margin: 15
-  },
-  button: {
-    height: 44,
-    boxShadow: "0px 8px 15px rgba(0, 0, 0, 0.1)",
-    border: "none",
-    backgroundColor: "red",
-    margin: 15,
-    float: "left",
-    clear: "both",
-    width: "85%",
-    color: "white",
-    padding: 15
-  },
-  link: {
-    width: "100%",
-    float: "left",
-    clear: "both",
-    textAlign: "center"
-  }
-};
+    render() {
+        let error = this.state.err ;
+        let msg = (!error) ? 'Registered Successfully' : 'Oops! , Something went wrong.' ;
+        let name = (!error) ? 'alert alert-success' : 'alert alert-danger' ;
+        return (   
+             <div>   
+                <Nav />
+                <div className="container">
+                    <div className="row">
+                        <div className="col-md-8 col-md-offset-2">
+                            <div className="panel panel-default">
+                                <div className="panel-heading">Register</div>
+                                <div className="panel-body">
+                                    <div className="col-md-offset-2 col-md-8 col-md-offset-2">
+                                        {error != undefined && <div className={name} role="alert">{msg}</div>}
+                                    </div>   
+                                    <form className="form-horizontal" role="form" method="POST" onSubmit= {this.onSubmit.bind(this)}>
+                                        <div className="form-group">
+                                            <label for="name" className="col-md-4 control-label">Name</label>
 
-export default Register;
+                                            <div className="col-md-6">
+                                                <input id="name" type="text" className="form-control" ref="name" name="name" onChange={this.onChange.bind(this)} required autofocus />
+                                            </div>
+                                        </div>
+
+                                        <div className="form-group">
+                                            <label for="email" className="col-md-4 control-label">E-Mail Address</label>
+
+                                            <div className="col-md-6">
+                                                <input id="email" type="email" className="form-control" ref="email" name="email" onChange={this.onChange.bind(this)} required />
+                                            </div>
+                                        </div>
+
+                                        <div className="form-group">
+                                            <label for="password" className="col-md-4 control-label">Password</label>
+
+                                            <div className="col-md-6">
+                                                <input id="password" type="password" className="form-control"  ref="password" name="password" onChange={this.onChange.bind(this)} required/>
+                                            </div>
+                                        </div>
+
+                                        <div className="form-group">
+                                            <label for="password-confirm" className="col-md-4 control-label">Confirm Password</label>
+
+                                            <div className="col-md-6">
+                                                <input id="password-confirm" type="password" className="form-control" ref="confirm" name="password_confirmation" onChange={this.onChange.bind(this)} required/>
+                                            </div>
+                                        </div>
+
+                                        <div className="form-group">
+                                            <div className="col-md-6 col-md-offset-4">
+                                                <button type="submit" className="btn btn-primary">
+                                                    Register
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>    
+        )
+      }
+}
+
+export default Register

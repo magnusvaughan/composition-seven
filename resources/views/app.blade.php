@@ -9,7 +9,8 @@
     <body>
         <div class="flex-center position-ref full-height">
             <div class="content">
-                <div id="sequencer"></div>
+                <h2>Composition Seven</h2>
+                <div id="app"></div>
             </div>
         </div>
         <script src="/js/app.js"></script>
