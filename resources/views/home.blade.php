@@ -1,42 +1,23 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+@extends('layouts.app')
 
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+@section('content')
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">Dashboard</div>
 
-        <title>Composition Sevenbillion</title>
+                <div class="card-body">
+                    @if (session('status'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('status') }}
+                        </div>
+                    @endif
 
-        <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
-        <link href="/css/app.css" rel="stylesheet">
-
-
-    </head>
-
-    <body>
-        <div class="flex-center position-ref full-height">
-            @if (Route::has('login'))
-            <div class="top-right links">
-                @auth
-                <a href="{{ url('/home') }}">Home</a>
-                @else
-                <a href="{{ route('login') }}">Login</a>
-
-                @if (Route::has('register'))
-                <a href="{{ route('register') }}">Register Me</a>
-                @endif
-                @endauth
+                    You are logged in!
+                </div>
             </div>
-            @endif
         </div>
-
-        @section('content')
-            <div id="sequencer"></div>
-        @endsection
-
-
-        <script src="/js/app.js"></script>
-    </body>
-
-</html>
+    </div>
+</div>
+@endsection
