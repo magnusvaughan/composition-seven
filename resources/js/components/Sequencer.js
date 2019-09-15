@@ -152,10 +152,14 @@ class Sequencer extends Component {
     }
 
     getUserSongs() {
-        axios.get('/api/songs/user/'+user_id).then(response => {
+        axios.get('/songs/user/'+user_id).then(response => {
+            console.log(response);
             this.setState({
                 songState: response.data,
                 activeSong: response.data[0].id
+            })
+            .catch(error => {
+                console.log(error.response)
             });
             var songState = JSON.parse(response.data[0].songJson);
             this.setState({
@@ -311,7 +315,7 @@ class Sequencer extends Component {
 
     changeSong(e) {
         let {name, value} = e.target;
-        axios.get('/api/songs/' + value).then(response => {
+        axios.get('/songs/' + value).then(response => {
             var songState = JSON.parse(response.data[0].songJson);
             this.setState({
                 activeSong: value
@@ -399,7 +403,7 @@ class Sequencer extends Component {
             drumState: this.state.drumState
         }
         var currentSongString = JSON.stringify(currentSongObject);
-        axios.post('/api/songs/'+ currentSongId, currentSongString).then(response => {
+        axios.post('/songs/'+ currentSongId, currentSongString).then(response => {
             // this.setState({
             //     songState: response.data
             // });
@@ -414,7 +418,7 @@ class Sequencer extends Component {
 
     handleNewSongSubmit(e, name) {
         const form  = name;
-        let uri = "/api/songs/create/"+user_id;
+        let uri = "/songs/create/"+user_id;
         axios.post(uri, form).then(response => {
             var songs = JSON.parse(response.data.songs);
             var newSongId = response.data.new_song_id

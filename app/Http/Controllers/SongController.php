@@ -14,8 +14,9 @@ class SongController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($id = null)
+    public function index(Request $request)
     {
+        $id = \Auth::id();;
         $user_songs = Song::select('id', 'name', 'created_at', 'updated_at', 'songJson')->where('user_id', $id)->get();
         return $user_songs->toJson();
     }
