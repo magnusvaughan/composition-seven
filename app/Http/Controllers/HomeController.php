@@ -8,15 +8,15 @@ use JavaScript;
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
+    // /**
+    //  * Create a new controller instance.
+    //  *
+    //  * @return void
+    //  */
+    // public function __construct()
+    // {
+    //     $this->middleware('auth');
+    // }
 
     /**
      * Show the application dashboard.
@@ -25,10 +25,21 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $user_id = Auth::id();
-        JavaScript::put([
-            'user_id' => $user_id
-        ]);
+        // $user_id = Auth::id();
+        // JavaScript::put([
+        //     'user_id' => $user_id
+        // ]);
         return view('app');
     }
+
+        /**
+     * Show the application dashboard.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function unauthenticated()
+    {
+        return view('unauthenticated');
+    }
+
 }

@@ -12,13 +12,13 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function isUserLoggedIn()
+    public function isUserAuthenticated()
     {
-        if (Auth::check()) {
-           return true;
+        if (\Auth::check()) {
+           return json_encode(true);
         }
         else {
-            return false;
+            return json_encode(false);
         }
     }
 

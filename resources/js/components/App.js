@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Sequencer from './Sequencer'
+import SequencerRead from './SequencerRead'
 import axios from 'axios';
 
 export default class App extends Component {
@@ -18,7 +19,7 @@ export default class App extends Component {
     }
 
     isUserAuthenticated() {
-        axios.get('/songs/user/checkAuth').then(response => {
+        axios.get('/songs/user/isUserAuthenticated').then(response => {
             if(response.data == true) {
                 this.setState({
                     "authenticated": true
@@ -28,11 +29,23 @@ export default class App extends Component {
     }
 
     render() {
-        return (
-            <div>
-            <Sequencer />
-            </div>
-        );
+        var activeView;
+        if(this.state.authenticated) {
+            activeView = (
+                <div>
+                <Sequencer />
+                </div>
+            );
+        }
+        else {
+            activeView = (
+                <div>
+                <SequencerRead />
+                </div>
+            );
+        }
+
+        return activeView;
     }
 }
 

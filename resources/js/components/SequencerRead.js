@@ -5,7 +5,7 @@ import Axios from 'axios';
 import ModalComponent from './ModalComponent'
 
 // Composition Seven
-class Sequencer extends Component {
+class SequencerRead extends Component {
     constructor () {
         super()
         this.state = {
@@ -157,6 +157,9 @@ class Sequencer extends Component {
             this.setState({
                 songState: response.data,
                 activeSong: response.data[0].id
+            })
+            .catch(error => {
+                console.log(error.response)
             });
             var songState = JSON.parse(response.data[0].songJson);
             this.setState({
@@ -171,22 +174,22 @@ class Sequencer extends Component {
 
         let kick_player = new Tone.Player({
             "url": `/files/kick.wav`,
-            "autostart": false
+            "autostart": true
         }).toMaster(); 
 
         let snare_player = new Tone.Player({
             "url": `/files/snare.wav`,
-            "autostart": false
+            "autostart": true
         }).toMaster(); 
 
         let closedhat_player = new Tone.Player({
             "url": `/files/closedhat.wav`,
-            "autostart": false
+            "autostart": true
         }).toMaster(); 
 
         let openhat_player = new Tone.Player({
             "url": `/files/openhat.wav`,
-            "autostart": false
+            "autostart": true
         }).toMaster(); 
 
         // this.state.drumsounds.array.forEach(drumsound => {
@@ -247,9 +250,9 @@ class Sequencer extends Component {
             columnDrumDataCells.forEach(function(cellState){
                 if(cellState.dataOn) { 
                     const player = new Tone.Player(`/files/${cellState.drumSound}.wav`).toMaster();
-                    player.autostart = false;
+                    player.autostart = true;
                     Tone.Buffer.on('load', () => {
-                        player.start('+0.1');
+                        xplayer.start('+0.1');
                     })
                 }
             }.bind(this));
@@ -555,19 +558,6 @@ class Sequencer extends Component {
         return (
             <div className="content">
                 <div className="control-wrapper">
-                    <select id="lang" onChange={this.changeSynthType} value={this.state.type}>
-                        <option value="Poly">Polysynth</option>
-                        <option value="Monosynth">Monosynth</option>
-                        <option value="FM">FM</option>
-                        <option value="Pluck">Pluck</option>
-                        <option value="Metal">Metal</option>
-                    </select>
-
-                    {songSelect}
-
-                    <button className="btn btn-primary btn-control" onClick={this.saveSong}>Save</button>
-                    <ModalComponent onNewSongSubmit={this.handleNewSongSubmit} /> 
-                    <p>{this.state.value}</p>
                     <div className="button-wrapper">
                         <button onClick={this.toggleSequence} id="make-some-noise" className="btn-sequencer btn-1 btn-1e">{buttonLabel}</button>
                     </div>
@@ -592,4 +582,4 @@ class Sequencer extends Component {
     }
 }
 
-export default Sequencer
+export default SequencerRead
