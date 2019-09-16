@@ -152,7 +152,7 @@ class Sequencer extends Component {
     }
 
     getUserSongs() {
-        axios.get('/songs/user/'+user_id).then(response => {
+        axios.get('/songs/user/'+this.state.user_id).then(response => {
             console.log(response);
             this.setState({
                 songState: response.data,

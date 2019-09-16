@@ -13,10 +13,13 @@
 
 Auth::routes();
 
-Route::get('/', 'HomeController@index');
+Route::group(['middleware' => ['auth']], function () {
+    Route::get('/', 'HomeController@index');
+    Route::get('songs/user/{user_id}', 'SongController@index');
+    Route::post('songs/{song_id}', 'SongController@store');
+    Route::post('songs/create/{user_id}', 'SongController@create');
+    Route::get('songs/{id}', 'SongController@show');
+    Route::put('songs/{song}', 'SongController@markAsCompleted');
+});
 
-Route::get('songs/user/{user_id}', 'SongController@index');
-Route::post('songs/{song_id}', 'SongController@store');
-Route::post('songs/create/{user_id}', 'SongController@create');
-Route::get('songs/{id}', 'SongController@show');
-Route::put('songs/{song}', 'SongController@markAsCompleted');
+
