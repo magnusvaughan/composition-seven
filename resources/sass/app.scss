@@ -7,6 +7,10 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
+html, body, #app {
+	height: 100%;
+}
+
 .navbar {
 	background-color: $app_background; 
 }
@@ -17,7 +21,10 @@
 }
 
 main {
+	display: flex;
+	align-items: center;
 	background-color: $app_background;
+	height: 100%;
 }
 
 .content {
