@@ -75,24 +75,14 @@ class SequencerRead extends Component {
         }
         this.playSequence = this.playSequence.bind(this);
         this.toggleSequence = this.toggleSequence.bind(this);
-        this.toggleSynthOnState = this.toggleSynthOnState.bind(this);
-        this.toggleBassOnState = this.toggleBassOnState.bind(this);
-        this.toggleDrumOnState = this.toggleDrumOnState.bind(this);
         this.resetActiveState = this.resetActiveState.bind(this);
-        this.changeSynthType = this.changeSynthType.bind(this);
-        this.changeRelease = this.changeRelease.bind(this);
-        this.changeBpm = this.changeBpm.bind(this);
-        this.toggleDelay = this.toggleDelay.bind(this);
         this.loadSong = this.loadSong.bind(this);
-        this.saveSong = this.saveSong.bind(this);
-        this.changeSong = this.changeSong.bind(this);
-        this.getUserSongs = this.getUserSongs.bind(this);
-        this.handleNewSongSubmit = this.handleNewSongSubmit.bind(this);
+        this.getRouteSong = this.getRouteSong.bind(this);
     }
 
     componentDidMount () {
 
-        this.getUserSongs();
+        this.getRouteSong();
 
         var synthNotes = this.state.synthNotes;
         var bassNotes = this.state.bassNotes;
@@ -151,15 +141,15 @@ class SequencerRead extends Component {
         }
     }
 
-    getUserSongs() {
-        axios.get('/songs/user/'+this.state.user_id).then(response => {
+    getRouteSong() {
+        console.log('getRouteSong');
+        const songId = this.props.match.params.id
+        console.log(songId);
+        axios.get(`/songs/show/${songId}`).then(response => {
             console.log(response);
             this.setState({
-                songState: response.data,
+                songState: [response.data[0]],
                 activeSong: response.data[0].id
-            })
-            .catch(error => {
-                console.log(error.response)
             });
             var songState = JSON.parse(response.data[0].songJson);
             this.setState({
@@ -168,37 +158,47 @@ class SequencerRead extends Component {
                 drumState: songState.drumState,
             });
           })
+
+    }
+
+    getUserSongs() {
+        axios.get('/songs/user/'+this.state.user_id).then(response => {
+            console.log(response);
+            this.setState({
+                songState: response.data,
+                activeSong: response.data[0].id
+            });
+            var songState = JSON.parse(response.data[0].songJson);
+            this.setState({
+                synthState: songState.synthState,
+                bassState: songState.bassState,
+                drumState: songState.drumState,
+            });
+        })
     }
 
     playSequence() {
 
         let kick_player = new Tone.Player({
             "url": `/files/kick.wav`,
-            "autostart": true
+            "autostart": false
         }).toMaster(); 
 
         let snare_player = new Tone.Player({
             "url": `/files/snare.wav`,
-            "autostart": true
+            "autostart": false
         }).toMaster(); 
 
         let closedhat_player = new Tone.Player({
             "url": `/files/closedhat.wav`,
-            "autostart": true
+            "autostart": false
         }).toMaster(); 
 
         let openhat_player = new Tone.Player({
             "url": `/files/openhat.wav`,
-            "autostart": true
+            "autostart": false
         }).toMaster(); 
 
-        // this.state.drumsounds.array.forEach(drumsound => {
-        //     let `player_${drumsound}` = new Tone.Player({
-        //         "url": `/files/${drumsound}.wav`,
-        //         "autostart": true
-        //     }).toMaster(); 
-        // }); 
-        
         Tone.immediate();
         let allCells = document.getElementsByClassName('cell');
         var seq = new Tone.Sequence((time, column) => {
@@ -220,14 +220,6 @@ class SequencerRead extends Component {
                     }
                     if(activeCells[j].getAttribute('data-drum-sound') !== null) {
                         `${activeCells[j].getAttribute('data-drum-sound')}_player.start(0)`;
-                        // const player = new Tone.Player({
-                        //     "url": `/files/${activeCells[j].getAttribute('data-drum-sound')}.wav`,
-                        //     "autostart": true
-                        // }).toMaster();
-                        // player.autostart = true;
-                        // Tone.Buffer.on('load', () => {
-                        //     player.start('0');
-                        // })
                     }
                 }
             }
@@ -282,37 +274,6 @@ class SequencerRead extends Component {
         }
     }
 
-    toggleSynthOnState(e) {
-        const synthState = this.state.synthState;
-        const cellColNumber = e.target.getAttribute('data-cell-column');
-        const dataCellNumber = parseInt(e.target.getAttribute('data-cell-number'));
-        const newData = update(this.state, {
-            synthState:{[cellColNumber]: {columnSynthDataCells:{[dataCellNumber]: {dataOn: {$set: !synthState[cellColNumber].columnSynthDataCells[dataCellNumber].dataOn}}}}}
-        });
-        this.setState(newData);
-    }
-
-    toggleBassOnState(e) {
-        const bassState = this.state.bassState;
-        const cellColNumber = e.target.getAttribute('data-cell-column');
-        const dataCellNumber = parseInt(e.target.getAttribute('data-cell-number'));
-        const newData = update(this.state, {
-            bassState:{[cellColNumber]: {columnBassDataCells:{[dataCellNumber]: {dataOn: {$set: !bassState[cellColNumber].columnBassDataCells[dataCellNumber].dataOn}}}}}
-        });
-        this.setState(newData);
-    }
-
-    toggleDrumOnState(e) {
-        const drumState = this.state.drumState;
-        const cellDrumColNumber = e.target.getAttribute('data-cell-column');
-        const dataDrumCellNumber = parseInt(e.target.getAttribute('data-cell-number'));
-        const cellPosition = drumState[cellDrumColNumber].columnDrumDataCells[dataDrumCellNumber];
-        const newData = update(this.state, {
-            drumState:{[cellDrumColNumber]: {columnDrumDataCells:{[dataDrumCellNumber]: {dataOn: {$set: !drumState[cellDrumColNumber].columnDrumDataCells[dataDrumCellNumber].dataOn}}}}}
-        });
-        this.setState(newData);
-    }
-
     changeSong(e) {
         let {name, value} = e.target;
         axios.get('/songs/' + value).then(response => {
@@ -328,64 +289,6 @@ class SequencerRead extends Component {
         })
     }
 
-    changeSynthType(e) {
-        switch(event.target.value) {
-            case 'Monosynth':
-                this.setState({synth: new Tone.MonoSynth({
-                    "oscillator" : {
-                        "type" : "square"
-                 },
-                 "envelope" : {
-                     "attack" : 0.1
-                 }
-                }).toMaster()});
-            break;
-            case 'FM':
-                this.setState({
-                    synth: new Tone.FMSynth().toMaster()
-                });
-            break;
-            case 'Poly':
-                this.setState({synth: new Tone.PolySynth(6, Tone.Synth).toMaster()});
-              break;
-            case 'Pluck':
-                this.setState({
-                    synth: new Tone.PluckSynth().toMaster()
-                });
-            break;
-            case 'Noise':
-                this.setState({synth: new Tone.NoiseSynth().toMaster()});
-              break;
-            case 'Metal':
-                this.setState({synth: new Tone.MetalSynth().toMaster()});
-              break;
-            default:
-                this.setState({synth: new Tone.PolySynth(6, Tone.Synth).toMaster()});
-          }
-    }
-
-    changeRelease(e) {
-        const changeRelease = update(this.state, {
-            synth:{envelope: {release:{$set: parseFloat(event.target.value)}}}
-        });
-        this.setState(changeRelease);
-    }
-
-    changeBpm(e) {
-        const changeBpm = update(this.state, {
-            bpm: {$set: parseFloat(event.target.value)}
-        });
-        this.setState(changeBpm);
-        Tone.Transport.bpm.value = this.state.bpm;
-    }
-
-    toggleDelay() {
-        if(!this.state.delay) {
-            var synth = this.state.synth;
-            var split = synth.split('.toMaster()})');
-        }
-    }
-
     loadSong() {
         var songState = JSON.parse(localStorage.getItem('songStateStringObject'));
         this.setState({
@@ -395,51 +298,12 @@ class SequencerRead extends Component {
         });
     }
 
-    saveSong() {
-        var currentSongId = this.state.activeSong;
-        var currentSongObject = {
-            synthState: this.state.synthState,
-            bassState: this.state.bassState,
-            drumState: this.state.drumState
-        }
-        var currentSongString = JSON.stringify(currentSongObject);
-        axios.post('/songs/'+ currentSongId, currentSongString).then(response => {
-            // this.setState({
-            //     songState: response.data
-            // });
-            // var songState = JSON.parse(response.data[0].songJson);
-            // this.setState({
-            //     synthState: JSON.parse(songState.synth),
-            //     bassState: JSON.parse(songState.bass),
-            //     drumState: JSON.parse(songState.drums),
-            // });
-          })
-    }
-
-    handleNewSongSubmit(e, name) {
-        const form  = name;
-        let uri = "/songs/create/"+user_id;
-        axios.post(uri, form).then(response => {
-            var songs = JSON.parse(response.data.songs);
-            var newSongId = response.data.new_song_id
-            this.setState({
-                songState: songs,
-                activeSong: newSongId
-            });
-            var newSongIndex = songs.map(function(x) {return x.id; }).indexOf(newSongId);
-            var newSongState = JSON.parse(songs[newSongIndex].songJson);
-            this.setState({
-                synthState: newSongState.synthState,
-                bassState: newSongState.bassState,
-                drumState: newSongState.drumState,
-            });
-        });
-    }
 
     render () {
 
         // Song menu
         let songList = this.state.songState;
+        console.log(this.state.songState);
         let songOptions = [];
         songList.forEach((song) => {
             songOptions.push(<option value={song.id}>{song.name}</option>);
@@ -550,7 +414,6 @@ class SequencerRead extends Component {
                 </div>
             )
 
-
         });
 
         var buttonLabel = this.state.playing ? 'stop' : 'noise';
@@ -560,10 +423,6 @@ class SequencerRead extends Component {
                 <div className="control-wrapper">
                     <div className="button-wrapper">
                         <button onClick={this.toggleSequence} id="make-some-noise" className="btn-sequencer btn-1 btn-1e">{buttonLabel}</button>
-                    </div>
-                    <div className="tweak-wrapper">
-                        <label htmlFor="bpm">BPM - {this.state.bpm}</label>
-                        <input onChange={this.changeBpm} type="range" min="0" max="180" value={this.state.bpm} step="1" className="slider" id="bpm" />
                     </div>
                 </div>
                 <div className="main-grid-wrapper">

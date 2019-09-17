@@ -6,9 +6,11 @@ import ModalComponent from './ModalComponent'
 
 // Composition Seven
 class Sequencer extends Component {
-    constructor () {
-        super()
+    constructor (props) {
+        super(props)
+        console.log(props);
         this.state = {
+            user_id: this.props.user_id,
             playing: false,
             synthNotes: ["C5","B4","A#4","A4","G#4","G4","F#4","F4","E4","D#4","D4","C#4","C4"],
             bassNotes: ["C3","B2","A#2","A2","G#2","G2","F#2","F2","E2","D#2","D2","C#2","C2"],
@@ -153,6 +155,7 @@ class Sequencer extends Component {
 
     getUserSongs() {
         axios.get('/songs/user/'+this.state.user_id).then(response => {
+            console.log('getUserSongs');
             console.log(response);
             this.setState({
                 songState: response.data,
@@ -312,7 +315,8 @@ class Sequencer extends Component {
 
     changeSong(e) {
         let {name, value} = e.target;
-        axios.get('/songs/' + value).then(response => {
+        axios.get('/songs/show/' + value).then(response => {
+            console.log(response);
             var songState = JSON.parse(response.data[0].songJson);
             this.setState({
                 activeSong: value
@@ -415,7 +419,7 @@ class Sequencer extends Component {
 
     handleNewSongSubmit(e, name) {
         const form  = name;
-        let uri = "/songs/create/"+user_id;
+        let uri = "/songs/create/"+this.state.user_id;
         axios.post(uri, form).then(response => {
             var songs = JSON.parse(response.data.songs);
             var newSongId = response.data.new_song_id

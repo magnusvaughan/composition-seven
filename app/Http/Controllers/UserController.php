@@ -15,10 +15,17 @@ class UserController extends Controller
     public function isUserAuthenticated()
     {
         if (\Auth::check()) {
-           return json_encode(true);
+           $id = \Auth::id();
+           return json_encode([
+               "user_id" => $id,
+               "authenticated" => true
+           ]);
         }
         else {
-            return json_encode(false);
+            return json_encode([
+                "user_id" => null,
+                "authenticated" => false
+            ]);
         }
     }
 
