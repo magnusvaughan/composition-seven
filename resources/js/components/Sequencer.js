@@ -191,13 +191,6 @@ class Sequencer extends Component {
             "url": `/files/openhat.wav`,
             "autostart": false
         }).toMaster(); 
-
-        // this.state.drumsounds.array.forEach(drumsound => {
-        //     let `player_${drumsound}` = new Tone.Player({
-        //         "url": `/files/${drumsound}.wav`,
-        //         "autostart": true
-        //     }).toMaster(); 
-        // }); 
         
         Tone.immediate();
         let allCells = document.getElementsByClassName('cell');
@@ -220,14 +213,6 @@ class Sequencer extends Component {
                     }
                     if(activeCells[j].getAttribute('data-drum-sound') !== null) {
                         `${activeCells[j].getAttribute('data-drum-sound')}_player.start(0)`;
-                        // const player = new Tone.Player({
-                        //     "url": `/files/${activeCells[j].getAttribute('data-drum-sound')}.wav`,
-                        //     "autostart": true
-                        // }).toMaster();
-                        // player.autostart = true;
-                        // Tone.Buffer.on('load', () => {
-                        //     player.start('0');
-                        // })
                     }
                 }
             }
@@ -249,11 +234,21 @@ class Sequencer extends Component {
             var columnDrumDataCells = this.state.drumState[column].columnDrumDataCells;
             columnDrumDataCells.forEach(function(cellState){
                 if(cellState.dataOn) { 
-                    const player = new Tone.Player(`/files/${cellState.drumSound}.wav`).toMaster();
-                    player.autostart = false;
-                    Tone.Buffer.on('load', () => {
-                        player.start('+0.1');
-                    })
+                    switch(cellState.drumSound) {
+                        case 'kick':
+                          kick_player.start('+0.1');
+                          break;
+                        case 'snare':
+                            snare_player.start('+0.1');
+                            break;
+                        case 'closedhat':
+                            closedhat_player.start('+0.1');
+                            break;
+                        case 'openhat':
+                            openhat_player.start('+0.1');
+                            break;
+                        default:
+                      }
                 }
             }.bind(this));
         }, this.state.columns, "16n");
