@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import Tone from 'tone';
 import update from 'immutability-helper';
 import Axios from 'axios';
-import ModalComponent from './ModalComponent'
+import NewSongModal from './NewSongModal'
+import DeleteSongModal from './DeleteSongModal'
 
 // Composition Seven
 class Sequencer extends Component {
     constructor (props) {
         super(props)
-        console.log(props);
         this.state = {
             user_id: this.props.user_id,
             playing: false,
@@ -19,6 +19,7 @@ class Sequencer extends Component {
             activeColumn: 0,
             songState: [],
             activeSong: "",
+            activeSongName: "",
             synthState: [],
             bassState: [],
             drumState: [],
@@ -90,6 +91,7 @@ class Sequencer extends Component {
         this.changeSong = this.changeSong.bind(this);
         this.getUserSongs = this.getUserSongs.bind(this);
         this.handleNewSongSubmit = this.handleNewSongSubmit.bind(this);
+        this.handleDeleteSongSubmit = this.handleDeleteSongSubmit.bind(this);
     }
 
     componentDidMount () {
@@ -155,11 +157,10 @@ class Sequencer extends Component {
 
     getUserSongs() {
         axios.get('/songs/user/'+this.state.user_id).then(response => {
-            console.log('getUserSongs');
-            console.log(response);
             this.setState({
                 songState: response.data,
-                activeSong: response.data[0].id
+                activeSong: response.data[0].id,
+                activeSongName: response.data[0].name,
             });
             var songState = JSON.parse(response.data[0].songJson);
             this.setState({
@@ -311,17 +312,17 @@ class Sequencer extends Component {
     changeSong(e) {
         let {name, value} = e.target;
         axios.get('/songs/show/' + value).then(response => {
-            console.log(response);
             var songState = JSON.parse(response.data[0].songJson);
             this.setState({
-                activeSong: value
+                activeSong: value,
+                activeSongName: response.data[0].name
             }) 
             this.setState({
                 synthState: songState.synthState,
                 bassState: songState.bassState,
                 drumState: songState.drumState,
             });
-        })
+        });
     }
 
     changeSynthType(e) {
@@ -418,11 +419,32 @@ class Sequencer extends Component {
         axios.post(uri, form).then(response => {
             var songs = JSON.parse(response.data.songs);
             var newSongId = response.data.new_song_id
+            var newSongName = response.data.new_song_name
             this.setState({
                 songState: songs,
-                activeSong: newSongId
+                activeSong: newSongId,
+                activeSongName: newSongName
             });
             var newSongIndex = songs.map(function(x) {return x.id; }).indexOf(newSongId);
+            var newSongState = JSON.parse(songs[newSongIndex].songJson);
+            this.setState({
+                synthState: newSongState.synthState,
+                bassState: newSongState.bassState,
+                drumState: newSongState.drumState,
+            });
+        });
+    }
+
+    handleDeleteSongSubmit(e, name) {
+        const form  = name;
+        let uri = "/songs/delete/"+this.state.activeSong;
+        axios.post(uri, form).then(response => {
+            var songs = response.data;
+            this.setState({
+                songState: songs,
+                activeSong: response.data[0].id
+            });
+            var newSongIndex = 0
             var newSongState = JSON.parse(songs[newSongIndex].songJson);
             this.setState({
                 synthState: newSongState.synthState,
@@ -438,7 +460,7 @@ class Sequencer extends Component {
         let songList = this.state.songState;
         let songOptions = [];
         songList.forEach((song) => {
-            songOptions.push(<option value={song.id}>{song.name}</option>);
+            songOptions.push(<option key={song.id} value={song.id}>{song.name}</option>);
         });
         let songSelect = (
             <select id="song" onChange={this.changeSong} value={this.state.activeSong}>
@@ -536,12 +558,12 @@ class Sequencer extends Component {
                         data-cell-column={cell.dataDrumCellColumn} 
                         data-on={cell.dataOn} 
                         data-type="drums"
-                        key={cell.dataCellNumber}>
+                        key={parseInt(cell.dataDrumCellNumber) + parseInt(cell.dataDrumCellColumn)}>
                     </div>
                 );
             });
             drumGrid.push(
-                <div className="grid-column drum-grid-column" data-column-note={column.dataColumnNumber} key={column.dataColumnNumber}>
+                <div className="grid-column drum-grid-column" data-column-note={column.dataColumnNumber} key={column.dataDrumColumnNumber}>
                     {drumCells}
                 </div>
             )
@@ -565,7 +587,8 @@ class Sequencer extends Component {
                     {songSelect}
 
                     <button className="btn btn-primary btn-control" onClick={this.saveSong}>Save</button>
-                    <ModalComponent onNewSongSubmit={this.handleNewSongSubmit} /> 
+                    <NewSongModal onNewSongSubmit={this.handleNewSongSubmit} /> 
+                    <DeleteSongModal onDeleteSongSubmit={this.handleDeleteSongSubmit} songName={this.state.activeSongName} /> 
                     <p>{this.state.value}</p>
                     <div className="button-wrapper">
                         <button onClick={this.toggleSequence} id="make-some-noise" className="btn-sequencer btn-1 btn-1e">{buttonLabel}</button>

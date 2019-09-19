@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Tone from 'tone';
 import update from 'immutability-helper';
 import Axios from 'axios';
-import ModalComponent from './ModalComponent'
+import NewSongModal from './NewSongModal'
 
 // Composition Seven
 class SequencerRead extends Component {
@@ -142,11 +142,8 @@ class SequencerRead extends Component {
     }
 
     getRouteSong() {
-        console.log('getRouteSong');
         const songId = this.props.match.params.id
-        console.log(songId);
         axios.get(`/songs/show/${songId}`).then(response => {
-            console.log(response);
             this.setState({
                 songState: [response.data[0]],
                 activeSong: response.data[0].id
@@ -163,7 +160,6 @@ class SequencerRead extends Component {
 
     getUserSongs() {
         axios.get('/songs/user/'+this.state.user_id).then(response => {
-            console.log(response);
             this.setState({
                 songState: response.data,
                 activeSong: response.data[0].id
@@ -241,11 +237,21 @@ class SequencerRead extends Component {
             var columnDrumDataCells = this.state.drumState[column].columnDrumDataCells;
             columnDrumDataCells.forEach(function(cellState){
                 if(cellState.dataOn) { 
-                    const player = new Tone.Player(`/files/${cellState.drumSound}.wav`).toMaster();
-                    player.autostart = true;
-                    Tone.Buffer.on('load', () => {
-                        xplayer.start('+0.1');
-                    })
+                    switch(cellState.drumSound) {
+                        case 'kick':
+                          kick_player.start('+0.1');
+                          break;
+                        case 'snare':
+                            snare_player.start('+0.1');
+                            break;
+                        case 'closedhat':
+                            closedhat_player.start('+0.1');
+                            break;
+                        case 'openhat':
+                            openhat_player.start('+0.1');
+                            break;
+                        default:
+                      }
                 }
             }.bind(this));
         }, this.state.columns, "16n");
@@ -303,7 +309,6 @@ class SequencerRead extends Component {
 
         // Song menu
         let songList = this.state.songState;
-        console.log(this.state.songState);
         let songOptions = [];
         songList.forEach((song) => {
             songOptions.push(<option value={song.id}>{song.name}</option>);
@@ -404,12 +409,12 @@ class SequencerRead extends Component {
                         data-cell-column={cell.dataDrumCellColumn} 
                         data-on={cell.dataOn} 
                         data-type="drums"
-                        key={cell.dataCellNumber}>
+                        key={cell.dataDrumCellNumber}>
                     </div>
                 );
             });
             drumGrid.push(
-                <div className="grid-column drum-grid-column" data-column-note={column.dataColumnNumber} key={column.dataColumnNumber}>
+                <div className="grid-column drum-grid-column" data-column-note={column.dataColumnNumber} key={column.dataDrumColumnNumber}>
                     {drumCells}
                 </div>
             )

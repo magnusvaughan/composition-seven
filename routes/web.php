@@ -25,6 +25,7 @@ Route::group([], function () {
 Route::group(['middleware' => ['auth']], function () {
     Route::get('songs/user/{user_id}', 'SongController@index');
     Route::post('songs/{song_id}', 'SongController@store');
+    Route::post('songs/delete/{song_id}', 'SongController@destroy');
     Route::post('songs/create/{user_id}', 'SongController@create');
     Route::put('songs/{song}', 'SongController@markAsCompleted');
 });

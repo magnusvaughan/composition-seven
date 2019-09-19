@@ -35,7 +35,6 @@ export default class App extends Component {
     render() {
         var activeView;
         if(this.state.authenticated) {
-            console.log("Authenticated");
             activeView = (
             <BrowserRouter>
             <Switch>
@@ -46,7 +45,6 @@ export default class App extends Component {
             );
         }
         else {
-            console.log("UnAuthenticated");
             activeView = (
             <BrowserRouter>
                 <Switch>

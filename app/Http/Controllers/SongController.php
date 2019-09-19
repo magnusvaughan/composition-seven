@@ -36,7 +36,7 @@ class SongController extends Controller
         $song->save();
         $new_song_id = $song->id;
         $user_songs = Song::select('id', 'name', 'created_at', 'updated_at', 'songJson')->where('user_id', $id)->get();
-        return ['songs' => $user_songs->toJson(), 'new_song_id' => $new_song_id];
+        return ['songs' => $user_songs->toJson(), 'new_song_id' => $new_song_id, 'new_song_name' => $song->name];
     }
 
     /**
@@ -93,8 +93,16 @@ class SongController extends Controller
      * @param  \App\Song  $song
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Song $song)
+    public function destroy(Request $request, $id)
     {
-        //
+        $user_id = \Auth::id();
+        if($user_id) {
+            Song::find($id)->delete();
+            $user_songs = Song::select('id', 'name', 'created_at', 'updated_at', 'songJson')->where('user_id', $user_id)->get();
+            return $user_songs->toJson();
+        }
+        else {
+            return ["success" => false];
+        }
     }
 }
