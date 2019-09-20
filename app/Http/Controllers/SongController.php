@@ -60,8 +60,7 @@ class SongController extends Controller
      */
     public function show($id)
     {
-        var_dump($id);
-        if($id != undefined) {
+        if($id != 'undefined') {
             $song = Song::where('id', $id)->get();
             return $song->toJson();
         }
