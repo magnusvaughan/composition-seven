@@ -35,7 +35,7 @@ export default class NewSongModal extends React.Component {
                 <Button className="btn btn-primary" onClick={this.toggle}>
                     Create a new song
                 </Button>
-                <Modal isOpen={this.state.modal}>
+                <Modal isOpen={this.state.modal} autoFocus={false}>
                     <form onSubmit={this.handleSubmit}>
                         <ModalHeader>Create new song</ModalHeader>
                         <ModalBody>
@@ -47,6 +47,7 @@ export default class NewSongModal extends React.Component {
                                         value={this.state.name}
                                         onChange={this.handleChangeName}
                                         className="form-control"
+                                        autoFocus={true}
                                     />
                                 </div>
                             </div>

@@ -82,7 +82,9 @@ class SequencerRead extends Component {
 
     componentDidMount () {
 
-        this.getRouteSong();
+        if(this.props.match.params.id) {
+            this.getRouteSong();
+        }
 
         var synthNotes = this.state.synthNotes;
         var bassNotes = this.state.bassNotes;
