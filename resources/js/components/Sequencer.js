@@ -571,7 +571,7 @@ class Sequencer extends Component {
 
         });
 
-        var buttonLabel = this.state.playing ? 'stop' : 'noise';
+        var buttonLabel = this.state.playing ? 'stop' : 'play';
         
         return (
             <div className="content">
