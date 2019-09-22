@@ -463,7 +463,7 @@ class Sequencer extends Component {
             songOptions.push(<option key={song.id} value={song.id}>{song.name}</option>);
         });
         let songSelect = (
-            <select id="song" onChange={this.changeSong} value={this.state.activeSong}>
+            <select id="song" className="select-css" onChange={this.changeSong} value={this.state.activeSong}>
                 {songOptions}
             </select>
         );
@@ -576,13 +576,13 @@ class Sequencer extends Component {
         return (
             <div className="content">
                 <div className="control-wrapper">
-                    <select id="lang" onChange={this.changeSynthType} value={this.state.type}>
+                    {/* <select id="lang" onChange={this.changeSynthType} value={this.state.type}>
                         <option value="Poly">Polysynth</option>
                         <option value="Monosynth">Monosynth</option>
                         <option value="FM">FM</option>
                         <option value="Pluck">Pluck</option>
                         <option value="Metal">Metal</option>
-                    </select>
+                    </select> */}
 
                     {songSelect}
 
@@ -593,10 +593,10 @@ class Sequencer extends Component {
                     <div className="button-wrapper">
                         <button onClick={this.toggleSequence} id="make-some-noise" className="btn-sequencer btn-1 btn-1e">{buttonLabel}</button>
                     </div>
-                    <div className="tweak-wrapper">
+                    {/* <div className="tweak-wrapper">
                         <label htmlFor="bpm">BPM - {this.state.bpm}</label>
                         <input onChange={this.changeBpm} type="range" min="0" max="180" value={this.state.bpm} step="1" className="slider" id="bpm" />
-                    </div>
+                    </div> */}
                 </div>
                 <div className="main-grid-wrapper">
                     <div className="grid-wrapper">
