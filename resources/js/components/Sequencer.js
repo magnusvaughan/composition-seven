@@ -8,6 +8,27 @@ import DeleteSongModal from './DeleteSongModal'
 class Sequencer extends Component {
     constructor (props) {
         super(props)
+
+        var kick_player = new Tone.Player({
+            "url": `/files/kick.wav`,
+            "autostart": false
+        }).toMaster();
+
+        var snare_player = new Tone.Player({
+            "url": `/files/snare.wav`,
+            "autostart": false
+        }).toMaster();
+
+        var closedhat_player = new Tone.Player({
+            "url": `/files/closedhat.wav`,
+            "autostart": false
+        }).toMaster();
+
+        var openhat_player = new Tone.Player({
+            "url": `/files/closedhat.wav`,
+            "autostart": false
+        }).toMaster();
+
         this.state = {
             user_id: this.props.user_id,
             playing: false,
@@ -73,7 +94,11 @@ class Sequencer extends Component {
                         "baseFrequency": 50,
                         "octaves": 3.4
                     }
-                }).toMaster()
+            }).toMaster(),
+            kick_player: kick_player,
+            snare_player: snare_player,
+            closedhat_player: closedhat_player,
+            openhat_player: openhat_player
         }
         this.playSequence = this.playSequence.bind(this);
         this.toggleSequence = this.toggleSequence.bind(this);
@@ -171,28 +196,8 @@ class Sequencer extends Component {
     }
 
     playSequence() {
-
-        let kick_player = new Tone.Player({
-            "url": `/files/kick.wav`,
-            "autostart": false
-        }).toMaster(); 
-
-        let snare_player = new Tone.Player({
-            "url": `/files/snare.wav`,
-            "autostart": false
-        }).toMaster(); 
-
-        let closedhat_player = new Tone.Player({
-            "url": `/files/closedhat.wav`,
-            "autostart": false
-        }).toMaster(); 
-
-        let openhat_player = new Tone.Player({
-            "url": `/files/openhat.wav`,
-            "autostart": false
-        }).toMaster(); 
-        
         Tone.immediate();
+        Tone.context.latencyHint = 'fastest';
         let allCells = document.getElementsByClassName('cell');
         var seq = new Tone.Sequence((time, column) => {
             for (var i = 0; i < allCells.length; i++) {
@@ -236,16 +241,16 @@ class Sequencer extends Component {
                 if(cellState.dataOn) { 
                     switch(cellState.drumSound) {
                         case 'kick':
-                          kick_player.start('+0.1');
-                          break;
+                            this.state.kick_player.start('+0.1');
+                            break;
                         case 'snare':
-                            snare_player.start('+0.1');
+                            this.state.snare_player.start('+0.1');
                             break;
                         case 'closedhat':
-                            closedhat_player.start('+0.1');
+                            this.state.closedhat_player.start('+0.1');
                             break;
                         case 'openhat':
-                            openhat_player.start('+0.1');
+                            this.state.openhat_player.start('+0.1');
                             break;
                         default:
                       }
@@ -265,8 +270,11 @@ class Sequencer extends Component {
     toggleSequence() {
         if(this.state.playing) {
             Tone.Transport.stop();
+            Tone.Transport.cancel();
             this.resetActiveState();
-            this.setState({playing : false});
+            this.setState({
+                playing : false
+            });
         }
         else {
             Tone.Transport.seconds = 0;
