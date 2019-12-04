@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Tone from 'tone';
 import update from 'immutability-helper';
-import Axios from 'axios';
 import NewSongModal from './NewSongModal'
 import DeleteSongModal from './DeleteSongModal'
 
