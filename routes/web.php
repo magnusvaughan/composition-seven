@@ -13,7 +13,7 @@
 
 use App\Http\Controllers\UserController;
 
-Auth::routes();
+Auth::routes(['verify' => true]);
 
 Route::group([], function () {
     Route::get('/', 'HomeController@index');
