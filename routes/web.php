@@ -22,7 +22,7 @@ Route::group([], function () {
     Route::view('songs/{id}', 'app');
 });
 
-Route::group(['middleware' => ['auth']], function () {
+Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::get('songs/user/{user_id}', 'SongController@index');
     Route::post('songs/{song_id}', 'SongController@store');
     Route::post('songs/delete/{song_id}', 'SongController@destroy');
