@@ -35,6 +35,7 @@ class AppServiceProvider extends ServiceProvider
 
             return (new MailMessage)
                 ->subject('Welcome to Composition Seven!')
+                ->from('robot@composition-seven.com', 'Composition Seven')
                 ->markdown('emails.verify', ['url' => $verifyUrl]);
         });
     }

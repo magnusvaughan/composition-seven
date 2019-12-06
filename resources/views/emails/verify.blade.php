@@ -2,6 +2,8 @@
 
 Thank you for registering!
 
+Please verify your account by clicking the link below.
+
 @component('mail::button', ['url' => $url])
 Verify Email
 @endcomponent
