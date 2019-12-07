@@ -224,7 +224,7 @@ class Sequencer extends Component {
             //Synth
             var columnSynthDataCells = this.state.synthState[column].columnSynthDataCells;
             columnSynthDataCells.forEach(function(cellState){
-                if(cellState.dataOn) {  
+                if(cellState.dataOn) {
                     this.state.synth.triggerAttackRelease(cellState.note, '8n', '+0.1');
                 }
             }.bind(this));
@@ -293,6 +293,9 @@ class Sequencer extends Component {
             synthState:{[cellColNumber]: {columnSynthDataCells:{[dataCellNumber]: {dataOn: {$set: !synthState[cellColNumber].columnSynthDataCells[dataCellNumber].dataOn}}}}}
         });
         this.setState(newData);
+        if(!synthState[cellColNumber].columnSynthDataCells[dataCellNumber].dataOn) {
+            this.state.synth.triggerAttackRelease(this.state.synthNotes[dataCellNumber], '8n', '+0.1');
+        }
     }
 
     toggleBassOnState(e) {
@@ -303,6 +306,9 @@ class Sequencer extends Component {
             bassState:{[cellColNumber]: {columnBassDataCells:{[dataCellNumber]: {dataOn: {$set: !bassState[cellColNumber].columnBassDataCells[dataCellNumber].dataOn}}}}}
         });
         this.setState(newData);
+        if( !bassState[cellColNumber].columnBassDataCells[dataCellNumber].dataOn) {
+            this.state.bassSynth.triggerAttackRelease(this.state.bassNotes[dataCellNumber], '8n', '+0.1');
+        }
     }
 
     toggleDrumOnState(e) {
@@ -600,10 +606,10 @@ class Sequencer extends Component {
                     <div className="button-wrapper">
                         <button onClick={this.toggleSequence} id="make-some-noise" className="btn-sequencer btn-1 btn-1e">{buttonLabel}</button>
                     </div>
-                    {/* <div className="tweak-wrapper">
+                    <div className="tweak-wrapper">
                         <label htmlFor="bpm">BPM - {this.state.bpm}</label>
                         <input onChange={this.changeBpm} type="range" min="0" max="180" value={this.state.bpm} step="1" className="slider" id="bpm" />
-                    </div> */}
+                    </div>
                 </div>
                 <div className="main-grid-wrapper">
                     <div className="grid-wrapper">
