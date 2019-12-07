@@ -1,5 +1,5 @@
 // Fonts
-@import url('https://fonts.googleapis.com/css?family=Nunito');
+@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Sans&display=swap');
 
 // Variables
 @import 'variables';
@@ -7,12 +7,17 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
-html, body {
-    height: 100%;
+html {
+    background: url(../../resources/images/jj-ying-azCTGObXR14-unsplash.jpg) no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
 }
 
-body, #app, .navbar {
-    background-color: $app_background; 
+html, body {
+    height: 100%;
+    background-color: transparent
 }
 
 .navbar-light .navbar-brand, .navbar-light .navbar-nav .nav-link,
@@ -23,7 +28,6 @@ body, #app, .navbar {
 main {
     display: flex;
     align-items: center;
-    background-color: $app_background;
     height: 100%;
 }
 
@@ -35,7 +39,6 @@ main {
     align-items: center;
     justify-content: center;
     transition: height 0.3s;
-    background:  $app_background;
     padding-top: 0;
     padding-bottom: 1rem;
 }
