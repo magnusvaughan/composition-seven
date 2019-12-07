@@ -25,7 +25,7 @@ class Sequencer extends Component {
         }).toMaster();
 
         var openhat_player = new Tone.Player({
-            "url": `/files/closedhat.wav`,
+            "url": `/files/openhat.wav`,
             "autostart": false
         }).toMaster();
 
