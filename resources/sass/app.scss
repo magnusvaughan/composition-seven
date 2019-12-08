@@ -53,16 +53,17 @@ main {
     .crud-button {
         height: 2.5rem;
         color: white;
-        background-color: #f65c78;
+    background-color: #8B9EA8;
         height: 50px;
         border-radius: 14px;
         border: 2px solid white;
         margin-left: 0.5rem;
+        color: white;
     }
 }
 
 .playback-control-wrapper {
-    background-color: #f65c78;
+    background-color: #8B9EA8;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -94,7 +95,7 @@ main {
         &.play {
             border: 2px solid white;
             padding-top: 0.08rem;
-            background-color: #f65c78;
+            background-color: lightgrey;
         }
     }
 }
@@ -112,7 +113,7 @@ main {
     -webkit-appearance: menulist-button;
     height: 50px;
     border-radius: 14px;
-    background-color: #f65c78;
+    background-color: #8B9EA8;
     border: 2px solid white;
     color: white;
 }
