@@ -584,7 +584,7 @@ class Sequencer extends Component {
 
         });
 
-        var buttonLabel = this.state.playing ? 'stop' : 'play';
+        var buttonLabel = this.state.playing ? '◼' : '▶';
         
         return (
             <div className="content">
@@ -599,12 +599,14 @@ class Sequencer extends Component {
 
                     {songSelect}
 
-                    <button className="btn btn-primary btn-control" onClick={this.saveSong}>Save</button>
+                    <button className="btn btn-primary btn-control crud-button" onClick={this.saveSong}>Save</button>
                     <NewSongModal onNewSongSubmit={this.handleNewSongSubmit} /> 
                     <DeleteSongModal onDeleteSongSubmit={this.handleDeleteSongSubmit} songName={this.state.activeSongName} /> 
-                    <p>{this.state.value}</p>
+                </div>
+                <div className="playback-control-wrapper">
+                <p>{this.state.value}</p>
                     <div className="button-wrapper">
-                        <button onClick={this.toggleSequence} id="make-some-noise" className="btn-sequencer btn-1 btn-1e">{buttonLabel}</button>
+                        <button onClick={this.toggleSequence} id="make-some-noise" className="sequencer-button play">{buttonLabel}</button>
                     </div>
                     <div className="tweak-wrapper">
                         <label htmlFor="bpm">BPM - {this.state.bpm}</label>
@@ -612,13 +614,13 @@ class Sequencer extends Component {
                     </div>
                 </div>
                 <div className="main-grid-wrapper">
-                    <div className="grid-wrapper">
+                    <div className="grid-wrapper synth">
                         {synthGrid}
                     </div>
-                    <div className="grid-wrapper">
+                    <div className="grid-wrapper bass">
                         {bassGrid}
                     </div>
-                    <div className="grid-wrapper">
+                    <div className="grid-wrapper drums">
                         {drumGrid}
                     </div>
                 </div>

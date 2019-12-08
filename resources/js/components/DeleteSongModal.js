@@ -32,7 +32,7 @@ export default class NewSongModal extends React.Component {
     render() {
         return (
             <div className="new-song-modal">
-                <Button className="btn btn-primary" onClick={this.toggle}>
+                <Button className="btn btn-primary crud-button" onClick={this.toggle}>
                     Delete Song
                 </Button>
                 <Modal isOpen={this.state.modal}>

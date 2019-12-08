@@ -1,5 +1,5 @@
 // Fonts
-@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Comfortaa:300|Work+Sans&display=swap');
 
 // Variables
 @import 'variables';
@@ -7,22 +7,27 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
-html {
-    background: url(../../resources/images/jj-ying-azCTGObXR14-unsplash.jpg) no-repeat center center fixed; 
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
+* {
+    text-shadow: 1px 1px #666666!important;
 }
 
 html, body {
     height: 100%;
-    background-color: transparent
+    background-color: transparent;
+}
+
+html {
+    background-color: #555B6E;
 }
 
 .navbar-light .navbar-brand, .navbar-light .navbar-nav .nav-link,
 .navbar-light .navbar-brand:hover, .navbar-light .navbar-nav .nav-link:hover {
     color: white;
+}
+
+.navbar-brand {
+    font-family: 'Comfortaa', cursive;
+    font-size: 1.5rem;
 }
 
 main {
@@ -44,27 +49,74 @@ main {
 }
 
 .control-wrapper {
+    display:flex;
+    width: 37rem;
+    justify-content: space-around;
+    .crud-button {
+        height: 2.5rem;
+        color: white;
+        background-color: #f65c78;
+        height: 50px;
+        border-radius: 14px;
+        border: 2px solid white;
+        margin-left: 0.5rem;
+    }
+}
+
+.playback-control-wrapper {
+    background-color: #f65c78;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2rem;
+    border-radius: 14px;
+    border: 2px solid white;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    .button-wrapper {
+        margin-bottom: 0;
+    }
     .tweak-wrapper {
         display: flex;
+        margin-left: 2rem;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
         color: $primary_text_color;
         justify-content: center;
         input#bpm {
-            margin-left: 1rem;
+            margin: 0;
         }
         label {
-            color: $secondary_text_color;
+            color: white;
+        }
+    }
+    .sequencer-button {
+        border-radius: 14px;
+        &.play {
+            border: 2px solid white;
+            padding-top: 0.08rem;
+            background-color: #f65c78;
         }
     }
 }
 
 .main-grid-wrapper {
-    // display: flex;
+    border-radius: 14px;
+    padding: 8px 8px 0 8px;
+    // border: 4px solid white;
+    // border-bottom: none;
+    background-color: transparent;
 }
 
 .select-css {
     padding: 1rem;
     -webkit-appearance: menulist-button;
-    height: 36px;
+    height: 50px;
+    border-radius: 14px;
+    background-color: #f65c78;
+    border: 2px solid white;
+    color: white;
 }
 
 // Button
@@ -76,25 +128,6 @@ main {
 }
 
 /* General button style (reset) */
-.btn-sequencer {
-    border: none;
-    font-family: inherit;
-    font-size: inherit;
-    color: inherit;
-    background: none;
-    cursor: pointer;
-    padding: 25px 40px;
-    display: inline-block;
-    margin: 15px 30px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-weight: 700;
-    outline: none;
-    position: relative;
-    -webkit-transition: all 0.3s;
-    -moz-transition: all 0.3s;
-    transition: all 0.3s;
-}
 
 .btn-primary {
     background: $playhead_border;
@@ -149,7 +182,18 @@ input {
     display: flex;
     flex-direction: row;
     margin-bottom: 1rem;
-    // flex: 1 1 0;
+    // border: 4px solid white;
+    padding: 0.5rem;
+    border-radius: 14px;
+    &.synth {
+        background-color: #f65c78;
+    }
+    &.bass {
+        background-color: #ffd271;
+    }
+    &.drums {
+        background-color: #c3f584;
+    }
 }
 
 .grid-column {
@@ -211,7 +255,6 @@ input {
 
 .new-song-modal {
     display: inline-flex;
-    margin-left: 0.5rem;
     justify-content: center;
 }
 
