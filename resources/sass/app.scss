@@ -8,7 +8,7 @@
 @import '~bootstrap/scss/bootstrap';
 
 * {
-    text-shadow: 1px 1px #666666!important;
+    // text-shadow: 1px 1px #666666!important;
 }
 
 html, body {
@@ -17,7 +17,7 @@ html, body {
 }
 
 html {
-    background-color: #555B6E;
+    background-image: linear-gradient(0deg, #D9AFD9 0%, #97D9E1 100%);
 }
 
 .navbar-light .navbar-brand, .navbar-light .navbar-nav .nav-link,
@@ -52,18 +52,19 @@ main {
     display:flex;
     .crud-button {
         height: 2.5rem;
-        color: white;
-    background-color: #8B9EA8;
+        color: #202324;
+        background-color: rgba(255,255,255, 0.5);
         height: 50px;
         border-radius: 14px;
         border: 2px solid white;
         margin-left: 0.5rem;
-        color: white;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     }
 }
 
 .playback-control-wrapper {
-    background-color: #8B9EA8;
+    background-color: rgba(255,255,255, 0.5);
+    color: #666666;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -72,6 +73,7 @@ main {
     border: 2px solid white;
     padding: 1rem;
     margin-bottom: 1.5rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     .button-wrapper {
         margin-bottom: 0;
     }
@@ -87,7 +89,7 @@ main {
             margin: 0;
         }
         label {
-            color: white;
+            color: #202324;
         }
     }
     .sequencer-button {
@@ -113,9 +115,10 @@ main {
     -webkit-appearance: menulist-button;
     height: 50px;
     border-radius: 14px;
-    background-color: #8B9EA8;
+    background-color: rgba(255,255,255, 0.5);
     border: 2px solid white;
-    color: white;
+    color: #202324;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 }
 
 // Button
@@ -181,17 +184,38 @@ input {
     display: flex;
     flex-direction: row;
     margin-bottom: 1rem;
-    // border: 4px solid white;
     padding: 0.5rem;
-    border-radius: 14px;
+    border-radius: 12px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     &.synth {
         background-color: #f65c78;
+        .grid-column {
+            .cell.black-note.on-cell {
+                background-color: darken(#f65c78, 20%);
+            }
+            .on-cell {
+                background-color: #f65c78;
+            }
+        }
     }
     &.bass {
         background-color: #ffd271;
+        .grid-column {
+            .cell.black-note.on-cell {
+                background-color: darken(#ffd271, 20%);
+            }
+            .on-cell {
+                background-color: #ffd271;
+            }
+        }
     }
     &.drums {
         background-color: #c3f584;
+        .grid-column {
+            .on-cell {
+                background-color: #c3f584;
+            }
+        }
     }
 }
 
