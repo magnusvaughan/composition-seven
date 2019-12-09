@@ -33,7 +33,7 @@ export default class NewSongModal extends React.Component {
         return (
             <div className="new-song-modal">
                 <Button className="btn btn-primary crud-button" onClick={this.toggle}>
-                    Delete Song
+                    Delete
                 </Button>
                 <Modal isOpen={this.state.modal}>
                     <form onSubmit={this.handleSubmit}>

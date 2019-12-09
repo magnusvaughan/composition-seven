@@ -2,7 +2,12 @@
 $body-bg: transparent;
 
 // Typography
-$font-family-sans-serif: 'Space Mono', monospace;
+@font-face {
+    font-family: 'lazer';
+    src: url('../fonts/Lazer84.ttf')
+         format('truetype')
+}
+$font-family-sans-serif: 'lazer';
 $font-size-base: 1rem;
 $line-height-base: 1.6;
 

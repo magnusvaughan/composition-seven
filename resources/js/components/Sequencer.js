@@ -598,9 +598,8 @@ class Sequencer extends Component {
                     </select> */}
 
                     {songSelect}
-
-                    <button className="btn btn-primary btn-control crud-button" onClick={this.saveSong}>Save</button>
                     <NewSongModal onNewSongSubmit={this.handleNewSongSubmit} /> 
+                    <button className="btn btn-primary btn-control crud-button" onClick={this.saveSong}>Save</button>
                     <DeleteSongModal onDeleteSongSubmit={this.handleDeleteSongSubmit} songName={this.state.activeSongName} /> 
                 </div>
                 <div className="playback-control-wrapper">
