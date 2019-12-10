@@ -107,8 +107,6 @@ main {
 .main-grid-wrapper {
     border-radius: 14px;
     padding: 8px 8px 0 8px;
-    // border: 4px solid white;
-    // border-bottom: none;
     background-color: transparent;
 }
 
@@ -134,10 +132,12 @@ main {
 /* General button style (reset) */
 
 .btn-primary {
-    background: $playhead_border;
-    color: $primary_text_color;
+    background-color: rgba(255, 255, 255, 0.75);
+    color: #202324;
+    border-color: white;
     &:hover {
-        background: lighten(white, 5%);
+        background: white;
+        color: #202324;
     }
 }
 
@@ -190,32 +190,71 @@ input {
     border-radius: 12px;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     &.synth {
-        background-color: #f65c78;
+        background-color: $accent_colour_one;
         .grid-column {
+            .cell {
+                &.active-cell {
+                    outline: none;
+                    border-left: 1px solid $accent_colour_one;
+                    border-right: 1px solid $accent_colour_one;
+                    border-top: none;
+                    border-bottom: none;
+                    transform: scale(1.1);
+                }
+            }
             .cell.black-note.on-cell {
-                background-color: darken(#f65c78, 20%);
+                background-color: darken($accent_colour_one, 20%);
             }
             .on-cell {
-                background-color: #f65c78;
+                background-color: $accent_colour_one;
+                &.active-cell {
+                    background-color: darken($accent_colour_one, 30%);
+                }
             }
         }
     }
     &.bass {
-        background-color: #ffd271;
+        background-color: $accent_colour_two;
         .grid-column {
+            .cell {
+                &.active-cell {
+                    outline: none;
+                    border-left: 1px solid darken($accent_colour_two, 30%);
+                    border-right: 1px solid darken($accent_colour_two, 30%);
+                    border-top: none;
+                    border-bottom: none;
+                    transform: scale(1.1);
+                }
+            }
             .cell.black-note.on-cell {
-                background-color: darken(#ffd271, 20%);
+                background-color: darken($accent_colour_two, 20%);
             }
             .on-cell {
-                background-color: #ffd271;
+                background-color: $accent_colour_two;
+                &.active-cell {
+                    background-color: darken($accent_colour_two, 30%);
+                }
             }
         }
     }
     &.drums {
-        background-color: #c3f584;
+        background-color: $accent_colour_three;
         .grid-column {
+            .cell {
+                &.active-cell {
+                    outline: none;
+                    border-left: 1px solid darken($accent_colour_three, 30%);
+                    border-right: 1px solid darken($accent_colour_three, 30%);
+                    border-top: none;
+                    border-bottom: none;
+                    transform: scale(1.1);
+                }
+            }
             .on-cell {
-                background-color: #c3f584;
+                background-color: $accent_colour_three;
+                &.active-cell {
+                    background-color: darken($accent_colour_three, 30%);
+                }
             }
         }
     }
@@ -265,7 +304,6 @@ input {
                 border-right: 1px solid $playhead_border;
                 border-top: none;
                 border-bottom: none;
-                background-color: lighten(#336699, 20%);
                 transform: scale(1.15);
             }
         }
@@ -278,6 +316,15 @@ input {
 
 // Modal
 
+.modal-dialog {
+    border: 4px solid $accent_colour_one;
+    border-radius: 12px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    .modal-content {
+        background-color: rgba(255,255,255, 0.75);
+    }
+}
+
 .new-song-modal {
     display: inline-flex;
     justify-content: center;
@@ -289,4 +336,9 @@ input {
     input {
         margin-bottom: 0;
     }
+}
+
+.form-control:focus {
+    border-color: transparent;
+    box-shadow: none;
 }
