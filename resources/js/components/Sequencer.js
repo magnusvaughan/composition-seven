@@ -69,32 +69,31 @@ class Sequencer extends Component {
                     }
                 }
             ).toMaster(),
-            bassSynth: new Tone.MonoSynth(
+            bassSynth: new Tone.PolySynth(1, Tone.FMSynth,
                 {
-                    "portamento": 0.08,
-                    "oscillator": {
-                        "partials": [2, 1, 3, 2, 0.4]
-                    },
-                    "filter": {
-                        "Q": 4,
-                        "type": "lowpass",
-                        "rolloff": -48
+                    "volume": 5,
+                    "harmonicity":8,
+                    "modulationIndex": 2,
+                    "oscillator" : {
+                        "type": "sine"
                     },
                     "envelope": {
-                        "attack": 0.04,
-                        "decay": 0.06,
-                        "sustain": 0.4,
-                        "release": 1
+                        "attack": 0.001,
+                        "decay": 1,
+                        "sustain": 0.1,
+                        "release": 2
                     },
-                    "filterEnvelope": {
-                        "attack": 0.01,
-                        "decay": 0.1,
-                        "sustain": 0.6,
-                        "release": 1.5,
-                        "baseFrequency": 50,
-                        "octaves": 3.4
+                    "modulation" : {
+                        "type" : "square"
+                    },
+                    "modulationEnvelope" : {
+                        "attack": 0.002,
+                        "decay": 0.2,
+                        "sustain": 0,
+                        "release": 0.2
                     }
-            }).toMaster(),
+                }
+            ).toMaster(),
             kick_player: kick_player,
             snare_player: snare_player,
             closedhat_player: closedhat_player,
@@ -232,7 +231,7 @@ class Sequencer extends Component {
             var columnBassDataCells = this.state.bassState[column].columnBassDataCells;
             columnBassDataCells.forEach(function(cellState){
                 if(cellState.dataOn) {  
-                    this.state.synth.triggerAttackRelease(cellState.note, '8n', '+0.1');
+                    this.state.bassSynth.triggerAttackRelease(cellState.note, '8n', '+0.1');
                 }
             }.bind(this));
             // Drums
@@ -320,6 +319,23 @@ class Sequencer extends Component {
             drumState:{[cellDrumColNumber]: {columnDrumDataCells:{[dataDrumCellNumber]: {dataOn: {$set: !drumState[cellDrumColNumber].columnDrumDataCells[dataDrumCellNumber].dataOn}}}}}
         });
         this.setState(newData);
+        if( !drumState[cellDrumColNumber].columnDrumDataCells[dataDrumCellNumber].dataOn) {
+            switch(drumState[cellDrumColNumber].columnDrumDataCells[dataDrumCellNumber].drumSound) {
+                case 'kick':
+                    this.state.kick_player.start('+0.1');
+                    break;
+                case 'snare':
+                    this.state.snare_player.start('+0.1');
+                    break;
+                case 'closedhat':
+                    this.state.closedhat_player.start('+0.1');
+                    break;
+                case 'openhat':
+                    this.state.openhat_player.start('+0.1');
+                    break;
+                default:
+            }
+        }
     }
 
     changeSong(e) {
