@@ -1,14 +1,36 @@
 import React, { Component } from 'react';
 import Tone from 'tone';
 import update from 'immutability-helper';
-import Axios from 'axios';
 import NewSongModal from './NewSongModal'
+import DeleteSongModal from './DeleteSongModal'
 
 // Composition Seven
-class SequencerRead extends Component {
-    constructor () {
-        super()
+class Sequencer extends Component {
+    constructor (props) {
+        super(props)
+
+        var kick_player = new Tone.Player({
+            "url": `/files/kick.wav`,
+            "autostart": false
+        }).toMaster();
+
+        var snare_player = new Tone.Player({
+            "url": `/files/snare.wav`,
+            "autostart": false
+        }).toMaster();
+
+        var closedhat_player = new Tone.Player({
+            "url": `/files/closedhat.wav`,
+            "autostart": false
+        }).toMaster();
+
+        var openhat_player = new Tone.Player({
+            "url": `/files/openhat.wav`,
+            "autostart": false
+        }).toMaster();
+
         this.state = {
+            user_id: this.props.user_id,
             playing: false,
             synthNotes: ["C5","B4","A#4","A4","G#4","G4","F#4","F4","E4","D#4","D4","C#4","C4"],
             bassNotes: ["C3","B2","A#2","A2","G#2","G2","F#2","F2","E2","D#2","D2","C#2","C2"],
@@ -17,6 +39,7 @@ class SequencerRead extends Component {
             activeColumn: 0,
             songState: [],
             activeSong: "",
+            activeSongName: "",
             synthState: [],
             bassState: [],
             drumState: [],
@@ -46,45 +69,57 @@ class SequencerRead extends Component {
                     }
                 }
             ).toMaster(),
-            bassSynth: new Tone.MonoSynth(
+            bassSynth: new Tone.PolySynth(1, Tone.FMSynth,
                 {
-                    "portamento": 0.08,
-                    "oscillator": {
-                        "partials": [2, 1, 3, 2, 0.4]
-                    },
-                    "filter": {
-                        "Q": 4,
-                        "type": "lowpass",
-                        "rolloff": -48
+                    "volume": 5,
+                    "harmonicity":8,
+                    "modulationIndex": 2,
+                    "oscillator" : {
+                        "type": "sine"
                     },
                     "envelope": {
-                        "attack": 0.04,
-                        "decay": 0.06,
-                        "sustain": 0.4,
-                        "release": 1
+                        "attack": 0.001,
+                        "decay": 1,
+                        "sustain": 0.1,
+                        "release": 2
                     },
-                    "filterEnvelope": {
-                        "attack": 0.01,
-                        "decay": 0.1,
-                        "sustain": 0.6,
-                        "release": 1.5,
-                        "baseFrequency": 50,
-                        "octaves": 3.4
+                    "modulation" : {
+                        "type" : "square"
+                    },
+                    "modulationEnvelope" : {
+                        "attack": 0.002,
+                        "decay": 0.2,
+                        "sustain": 0,
+                        "release": 0.2
                     }
-                }).toMaster()
+                }
+            ).toMaster(),
+            kick_player: kick_player,
+            snare_player: snare_player,
+            closedhat_player: closedhat_player,
+            openhat_player: openhat_player
         }
         this.playSequence = this.playSequence.bind(this);
         this.toggleSequence = this.toggleSequence.bind(this);
+        this.toggleSynthOnState = this.toggleSynthOnState.bind(this);
+        this.toggleBassOnState = this.toggleBassOnState.bind(this);
+        this.toggleDrumOnState = this.toggleDrumOnState.bind(this);
         this.resetActiveState = this.resetActiveState.bind(this);
+        this.changeSynthType = this.changeSynthType.bind(this);
+        this.changeRelease = this.changeRelease.bind(this);
+        this.changeBpm = this.changeBpm.bind(this);
+        this.toggleDelay = this.toggleDelay.bind(this);
         this.loadSong = this.loadSong.bind(this);
-        this.getRouteSong = this.getRouteSong.bind(this);
+        this.saveSong = this.saveSong.bind(this);
+        this.changeSong = this.changeSong.bind(this);
+        this.getUserSongs = this.getUserSongs.bind(this);
+        this.handleNewSongSubmit = this.handleNewSongSubmit.bind(this);
+        this.handleDeleteSongSubmit = this.handleDeleteSongSubmit.bind(this);
     }
 
     componentDidMount () {
 
-        if(this.props.match.params.id) {
-            this.getRouteSong();
-        }
+        // this.getUserSongs();
 
         var synthNotes = this.state.synthNotes;
         var bassNotes = this.state.bassNotes;
@@ -143,12 +178,12 @@ class SequencerRead extends Component {
         }
     }
 
-    getRouteSong() {
-        const songId = this.props.match.params.id
-        axios.get(`/songs/show/${songId}`).then(response => {
+    getUserSongs() {
+        axios.get('/songs/user/'+this.state.user_id).then(response => {
             this.setState({
-                songState: [response.data[0]],
-                activeSong: response.data[0].id
+                songState: response.data,
+                activeSong: response.data[0].id,
+                activeSongName: response.data[0].name,
             });
             var songState = JSON.parse(response.data[0].songJson);
             this.setState({
@@ -157,47 +192,11 @@ class SequencerRead extends Component {
                 drumState: songState.drumState,
             });
           })
-
-    }
-
-    getUserSongs() {
-        axios.get('/songs/user/'+this.state.user_id).then(response => {
-            this.setState({
-                songState: response.data,
-                activeSong: response.data[0].id
-            });
-            var songState = JSON.parse(response.data[0].songJson);
-            this.setState({
-                synthState: songState.synthState,
-                bassState: songState.bassState,
-                drumState: songState.drumState,
-            });
-        })
     }
 
     playSequence() {
-
-        let kick_player = new Tone.Player({
-            "url": `/files/kick.wav`,
-            "autostart": false
-        }).toMaster(); 
-
-        let snare_player = new Tone.Player({
-            "url": `/files/snare.wav`,
-            "autostart": false
-        }).toMaster(); 
-
-        let closedhat_player = new Tone.Player({
-            "url": `/files/closedhat.wav`,
-            "autostart": false
-        }).toMaster(); 
-
-        let openhat_player = new Tone.Player({
-            "url": `/files/openhat.wav`,
-            "autostart": false
-        }).toMaster(); 
-
         Tone.immediate();
+        Tone.context.latencyHint = 'fastest';
         let allCells = document.getElementsByClassName('cell');
         var seq = new Tone.Sequence((time, column) => {
             for (var i = 0; i < allCells.length; i++) {
@@ -224,7 +223,7 @@ class SequencerRead extends Component {
             //Synth
             var columnSynthDataCells = this.state.synthState[column].columnSynthDataCells;
             columnSynthDataCells.forEach(function(cellState){
-                if(cellState.dataOn) {  
+                if(cellState.dataOn) {
                     this.state.synth.triggerAttackRelease(cellState.note, '8n', '+0.1');
                 }
             }.bind(this));
@@ -232,7 +231,7 @@ class SequencerRead extends Component {
             var columnBassDataCells = this.state.bassState[column].columnBassDataCells;
             columnBassDataCells.forEach(function(cellState){
                 if(cellState.dataOn) {  
-                    this.state.synth.triggerAttackRelease(cellState.note, '8n', '+0.1');
+                    this.state.bassSynth.triggerAttackRelease(cellState.note, '8n', '+0.1');
                 }
             }.bind(this));
             // Drums
@@ -241,16 +240,16 @@ class SequencerRead extends Component {
                 if(cellState.dataOn) { 
                     switch(cellState.drumSound) {
                         case 'kick':
-                          kick_player.start('+0.1');
-                          break;
+                            this.state.kick_player.start('+0.1');
+                            break;
                         case 'snare':
-                            snare_player.start('+0.1');
+                            this.state.snare_player.start('+0.1');
                             break;
                         case 'closedhat':
-                            closedhat_player.start('+0.1');
+                            this.state.closedhat_player.start('+0.1');
                             break;
                         case 'openhat':
-                            openhat_player.start('+0.1');
+                            this.state.openhat_player.start('+0.1');
                             break;
                         default:
                       }
@@ -270,8 +269,11 @@ class SequencerRead extends Component {
     toggleSequence() {
         if(this.state.playing) {
             Tone.Transport.stop();
+            Tone.Transport.cancel();
             this.resetActiveState();
-            this.setState({playing : false});
+            this.setState({
+                playing : false
+            });
         }
         else {
             Tone.Transport.seconds = 0;
@@ -282,19 +284,132 @@ class SequencerRead extends Component {
         }
     }
 
+    toggleSynthOnState(e) {
+        const synthState = this.state.synthState;
+        const cellColNumber = e.target.getAttribute('data-cell-column');
+        const dataCellNumber = parseInt(e.target.getAttribute('data-cell-number'));
+        const newData = update(this.state, {
+            synthState:{[cellColNumber]: {columnSynthDataCells:{[dataCellNumber]: {dataOn: {$set: !synthState[cellColNumber].columnSynthDataCells[dataCellNumber].dataOn}}}}}
+        });
+        this.setState(newData);
+        if(!synthState[cellColNumber].columnSynthDataCells[dataCellNumber].dataOn) {
+            this.state.synth.triggerAttackRelease(this.state.synthNotes[dataCellNumber], '8n', '+0.1');
+        }
+    }
+
+    toggleBassOnState(e) {
+        const bassState = this.state.bassState;
+        const cellColNumber = e.target.getAttribute('data-cell-column');
+        const dataCellNumber = parseInt(e.target.getAttribute('data-cell-number'));
+        const newData = update(this.state, {
+            bassState:{[cellColNumber]: {columnBassDataCells:{[dataCellNumber]: {dataOn: {$set: !bassState[cellColNumber].columnBassDataCells[dataCellNumber].dataOn}}}}}
+        });
+        this.setState(newData);
+        if( !bassState[cellColNumber].columnBassDataCells[dataCellNumber].dataOn) {
+            this.state.bassSynth.triggerAttackRelease(this.state.bassNotes[dataCellNumber], '8n', '+0.1');
+        }
+    }
+
+    toggleDrumOnState(e) {
+        const drumState = this.state.drumState;
+        const cellDrumColNumber = e.target.getAttribute('data-cell-column');
+        const dataDrumCellNumber = parseInt(e.target.getAttribute('data-cell-number'));
+        const cellPosition = drumState[cellDrumColNumber].columnDrumDataCells[dataDrumCellNumber];
+        const newData = update(this.state, {
+            drumState:{[cellDrumColNumber]: {columnDrumDataCells:{[dataDrumCellNumber]: {dataOn: {$set: !drumState[cellDrumColNumber].columnDrumDataCells[dataDrumCellNumber].dataOn}}}}}
+        });
+        this.setState(newData);
+        if( !drumState[cellDrumColNumber].columnDrumDataCells[dataDrumCellNumber].dataOn) {
+            switch(drumState[cellDrumColNumber].columnDrumDataCells[dataDrumCellNumber].drumSound) {
+                case 'kick':
+                    this.state.kick_player.start('+0.1');
+                    break;
+                case 'snare':
+                    this.state.snare_player.start('+0.1');
+                    break;
+                case 'closedhat':
+                    this.state.closedhat_player.start('+0.1');
+                    break;
+                case 'openhat':
+                    this.state.openhat_player.start('+0.1');
+                    break;
+                default:
+            }
+        }
+    }
+
     changeSong(e) {
         let {name, value} = e.target;
-        axios.get('/songs/' + value).then(response => {
+        axios.get('/songs/show/' + value).then(response => {
             var songState = JSON.parse(response.data[0].songJson);
             this.setState({
-                activeSong: value
+                activeSong: value,
+                activeSongName: response.data[0].name
             }) 
             this.setState({
                 synthState: songState.synthState,
                 bassState: songState.bassState,
                 drumState: songState.drumState,
             });
-        })
+        });
+    }
+
+    changeSynthType(e) {
+        switch(event.target.value) {
+            case 'Monosynth':
+                this.setState({synth: new Tone.MonoSynth({
+                    "oscillator" : {
+                        "type" : "square"
+                 },
+                 "envelope" : {
+                     "attack" : 0.1
+                 }
+                }).toMaster()});
+            break;
+            case 'FM':
+                this.setState({
+                    synth: new Tone.FMSynth().toMaster()
+                });
+            break;
+            case 'Poly':
+                this.setState({synth: new Tone.PolySynth(6, Tone.Synth).toMaster()});
+              break;
+            case 'Pluck':
+                this.setState({
+                    synth: new Tone.PluckSynth().toMaster()
+                });
+            break;
+            case 'Noise':
+                this.setState({synth: new Tone.NoiseSynth().toMaster()});
+              break;
+            case 'Metal':
+                this.setState({synth: new Tone.MetalSynth().toMaster()});
+              break;
+            default:
+                this.setState({synth: new Tone.PolySynth(6, Tone.Synth).toMaster()});
+          }
+    }
+
+    changeRelease(e) {
+        const changeRelease = update(this.state, {
+            synth:{envelope: {release:{$set: parseFloat(event.target.value)}}}
+        });
+        this.setState(changeRelease);
+    }
+
+    changeBpm(e) {
+        const changeBpm = update(this.state, {
+            bpm: {$set: parseFloat(event.target.value)}
+        });
+        this.setState(changeBpm);
+        Tone.Transport.bpm.value = this.state.bpm;
+    }
+
+    toggleDelay() {
+        if(!this.state.delay) {
+            var synth = this.state.synth;
+            var split = synth.split('.toMaster()})');
+        }
     }
 
     loadSong() {
@@ -306,6 +421,67 @@ class SequencerRead extends Component {
         });
     }
 
+    saveSong() {
+        var currentSongId = this.state.activeSong;
+        var currentSongObject = {
+            synthState: this.state.synthState,
+            bassState: this.state.bassState,
+            drumState: this.state.drumState
+        }
+        var currentSongString = JSON.stringify(currentSongObject);
+        axios.post('/songs/'+ currentSongId, currentSongString).then(response => {
+            // this.setState({
+            //     songState: response.data
+            // });
+            // var songState = JSON.parse(response.data[0].songJson);
+            // this.setState({
+            //     synthState: JSON.parse(songState.synth),
+            //     bassState: JSON.parse(songState.bass),
+            //     drumState: JSON.parse(songState.drums),
+            // });
+          })
+    }
+
+    handleNewSongSubmit(e, name) {
+        const form  = name;
+        let uri = "/songs/create/"+this.state.user_id;
+        axios.post(uri, form).then(response => {
+            var songs = JSON.parse(response.data.songs);
+            var newSongId = response.data.new_song_id
+            var newSongName = response.data.new_song_name
+            this.setState({
+                songState: songs,
+                activeSong: newSongId,
+                activeSongName: newSongName
+            });
+            var newSongIndex = songs.map(function(x) {return x.id; }).indexOf(newSongId);
+            var newSongState = JSON.parse(songs[newSongIndex].songJson);
+            this.setState({
+                synthState: newSongState.synthState,
+                bassState: newSongState.bassState,
+                drumState: newSongState.drumState,
+            });
+        });
+    }
+
+    handleDeleteSongSubmit(e, name) {
+        const form  = name;
+        let uri = "/songs/delete/"+this.state.activeSong;
+        axios.post(uri, form).then(response => {
+            var songs = response.data;
+            this.setState({
+                songState: songs,
+                activeSong: response.data[0].id
+            });
+            var newSongIndex = 0
+            var newSongState = JSON.parse(songs[newSongIndex].songJson);
+            this.setState({
+                synthState: newSongState.synthState,
+                bassState: newSongState.bassState,
+                drumState: newSongState.drumState,
+            });
+        });
+    }
 
     render () {
 
@@ -313,10 +489,10 @@ class SequencerRead extends Component {
         let songList = this.state.songState;
         let songOptions = [];
         songList.forEach((song) => {
-            songOptions.push(<option value={song.id}>{song.name}</option>);
+            songOptions.push(<option key={song.id} value={song.id}>{song.name}</option>);
         });
         let songSelect = (
-            <select id="song" onChange={this.changeSong} value={this.state.activeSong}>
+            <select id="song" className="select-css" onChange={this.changeSong} value={this.state.activeSong}>
                 {songOptions}
             </select>
         );
@@ -411,7 +587,7 @@ class SequencerRead extends Component {
                         data-cell-column={cell.dataDrumCellColumn} 
                         data-on={cell.dataOn} 
                         data-type="drums"
-                        key={cell.dataDrumCellNumber}>
+                        key={parseInt(cell.dataDrumCellNumber) + parseInt(cell.dataDrumCellColumn)}>
                     </div>
                 );
             });
@@ -421,25 +597,34 @@ class SequencerRead extends Component {
                 </div>
             )
 
+
         });
 
-        var buttonLabel = this.state.playing ? 'stop' : 'noise';
+        var buttonLabel = this.state.playing ? '◼' : '▶';
         
         return (
             <div className="content">
                 <div className="control-wrapper">
+                    <p className="sign-up">Sign up to save songs</p>
+                </div>
+                <div className="playback-control-wrapper">
+                <p>{this.state.value}</p>
                     <div className="button-wrapper">
-                        <button onClick={this.toggleSequence} id="make-some-noise" className="btn-sequencer btn-1 btn-1e">{buttonLabel}</button>
+                        <button onClick={this.toggleSequence} id="make-some-noise" className="sequencer-button play">{buttonLabel}</button>
+                    </div>
+                    <div className="tweak-wrapper">
+                        <label htmlFor="bpm">BPM - {this.state.bpm}</label>
+                        <input onChange={this.changeBpm} type="range" min="0" max="180" value={this.state.bpm} step="1" className="slider" id="bpm" />
                     </div>
                 </div>
                 <div className="main-grid-wrapper">
-                    <div className="grid-wrapper">
+                    <div className="grid-wrapper synth">
                         {synthGrid}
                     </div>
-                    <div className="grid-wrapper">
+                    <div className="grid-wrapper bass">
                         {bassGrid}
                     </div>
-                    <div className="grid-wrapper">
+                    <div className="grid-wrapper drums">
                         {drumGrid}
                     </div>
                 </div>
@@ -448,4 +633,4 @@ class SequencerRead extends Component {
     }
 }
 
-export default SequencerRead
+export default Sequencer
